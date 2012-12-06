@@ -4,12 +4,12 @@
 # 	starting the work script.
 # Author:	Ryan Pusztai
 # Date:		06/09/2009
-# Notes:	Built against Ubuntu 9.04 (Jaunty).
+# Notes:	Built against Ubuntu 10.04 (Lucid).
 #			Assumes root privileges.
 # ############################################################################
 
 # Install Lua first so we can run the install script.
-sudo aptitude install lua5.1
+sudo apt-get install lua5.1
 
 # Run the install script.
 sudo lua pkg-install.lua
