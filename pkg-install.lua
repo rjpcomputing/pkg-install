@@ -2,8 +2,8 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan Pusztai
--- Date:	06/09/2009
--- Notes:	Built against Ubuntu 9.04 (Jaunty).
+-- Date:	11/03/2009
+-- Notes:	Built against Ubuntu 9.10 (Karmic).
 --			Assumes root privileges.
 -- ----------------------------------------------------------------------------
 
@@ -13,6 +13,7 @@ local generalPackages =
 	"joe",
 	"htop",
 	"gnome-do",
+	"guake",
 	"p7zip-full",
 	"p7zip-rar",
 	"nautilus-open-terminal",
@@ -20,7 +21,9 @@ local generalPackages =
 	"python-setuptools",
 	"python-wxgtk2.8",
 	"ubuntu-restricted-extras",
-	"virtualbox-3.0",
+	"samba",
+	"smbfs",
+	"virtualbox-3.1",
 	"dkms",
 }
 
@@ -32,53 +35,56 @@ local develPackages =
 	"subversion",
 	"svnwcrev",
 	"premake",
+	"valgrind",
 	"codelite",
+--	"codelite-plugins",
 	"meld",
 	"wxformbuilder",
 	"wxfb-wxadditions",
 	"doxygen",
-	"liblua5.1-bit0",
-	"liblua5.1-copas0",
-	"liblua5.1-cosmo0",
-	"liblua5.1-coxpcall0",
-	"liblua5.1-curl0",
-	"liblua5.1-doc0",
-	"liblua5.1-expat0",
-	"liblua5.1-filesystem0",
-	"liblua5.1-logging",
-	"liblua5.1-lpeg1",
-	"liblua5.1-markdown0",
-	"liblua5.1-md5-0",
-	"liblua5.1-orbit0",
-	"liblua5.1-posix1",
-	"liblua5.1-rings0",
-	"liblua5.1-socket2",
-	"liblua5.1-sql-mysql-2",
-	"liblua5.1-sql-sqlite3-2",
-	"liblua5.1-zip0",
+	"liblua5.1-bit*",
+	"liblua5.1-copas*",
+	"liblua5.1-cosmo*",
+	"liblua5.1-coxpcall*",
+	"liblua5.1-curl*",
+	"liblua5.1-doc*",
+	"liblua5.1-expat*",
+	"liblua5.1-filesystem*",
+	"liblua5.1-logging*",
+	"liblua5.1-lpeg*",
+	"liblua5.1-markdown*",
+	"liblua5.1-md5-*",
+	"liblua5.1-orbit*",
+	"liblua5.1-posix*",
+	"liblua5.1-rings*",
+	"liblua5.1-socket*",
+	"liblua5.1-sql-mysql-*",
+	"liblua5.1-sql-sqlite3-*",
+	"liblua5.1-zip*",
 }
 
 local libraryPackages =
 {
-	"libwxgtk2.8-0",
-	"libwxgtk2.8-dev",
-	"libwxgtk2.8-dbg",
+	"libwxgtk2.8-*",
+	--"libwxgtk2.8-dev",
+	--"libwxgtk2.8-dbg",
 	"wx2.8-headers",
 	"wx-common",
-	"libwxadditions28",
-	"libwxadditions28-dev",
-	"libwxadditions28-dbg",
-	"libboost1.37-dev",
-	"libboost1.37-dbg",
+	"libwxadditions28*",
+	--"libwxadditions28-dev",
+	--"libwxadditions28-dbg",
+	"libboost1.40-all*",
+	"libboost1.40-dbg",
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 }
 
+local distro = "karmic"
 local aptDetails =
 {
 	gnomedo =
 	{
-		listEntry = "deb http://ppa.launchpad.net/do-core/ppa/ubuntu jaunty main\ndeb-src http://ppa.launchpad.net/do-core/ppa/ubuntu jaunty main",
+		listEntry = "deb http://ppa.launchpad.net/do-core/ppa/ubuntu "..distro.." main\ndeb-src http://ppa.launchpad.net/do-core/ppa/ubuntu "..distro.." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -92,10 +98,10 @@ Te/r0oPzrr10iTFupTe/wBR0M9JbKGdY7SvooyqU+W2rf8/LldGx7KE=
 =3C2V
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
-
+--[[
 	subversion =
 	{
-		listEntry = "deb http://ppa.launchpad.net/anders-kaseorg/subversion-1.6/ubuntu jaunty main\ndeb-src http://ppa.launchpad.net/anders-kaseorg/subversion-1.6/ubuntu jaunty main",
+		listEntry = "deb http://ppa.launchpad.net/anders-kaseorg/subversion-1.6/ubuntu "..distro.." main\ndeb-src http://ppa.launchpad.net/anders-kaseorg/subversion-1.6/ubuntu "..distro.." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -114,7 +120,7 @@ JA==
 
 	byobu =
 	{
-		listEntry = "deb http://ppa.launchpad.net/byobu/ppa/ubuntu jaunty main\ndeb-src http://ppa.launchpad.net/byobu/ppa/ubuntu jaunty main",
+		listEntry = "deb http://ppa.launchpad.net/byobu/ppa/ubuntu "..distro.." main\ndeb-src http://ppa.launchpad.net/byobu/ppa/ubuntu "..distro.." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -129,10 +135,10 @@ yw==
 =1clR
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
-
+]]
 	listen =
 	{
-		listEntry = "deb http://ppa.launchpad.net/listen-devel/ppa/ubuntu jaunty main\ndeb-src http://ppa.launchpad.net/listen-devel/ppa/ubuntu jaunty main",
+		listEntry = "deb http://ppa.launchpad.net/listen-devel/ppa/ubuntu "..distro.." main\ndeb-src http://ppa.launchpad.net/listen-devel/ppa/ubuntu "..distro.." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -149,7 +155,7 @@ EyIcAZdRDGA5772jivG1CA2VnnYKb2LhOn0tMFCKTAPL4PZoHdmVCoHG/5cLoJe2GnWFlULg
 
 	rjmyst3 =
 	{
-		listEntry = "deb http://ppa.launchpad.net/rjmyst3/ppa/ubuntu jaunty main\ndeb-src http://ppa.launchpad.net/rjmyst3/ppa/ubuntu jaunty main",
+		listEntry = "deb http://ppa.launchpad.net/rjmyst3/ppa/ubuntu "..distro.." main\ndeb-src http://ppa.launchpad.net/rjmyst3/ppa/ubuntu "..distro.." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -164,39 +170,56 @@ CRBv0kXOWYrbBYJmA/44tUSekJHlwaEzUKY1tnx+n/BXDod1ZC9B7A9Th5/G59KOD3rWQFJ/
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
+	wxformbuilder =
+	{
+		ppaRepo = "ppa:wxformbuilder/release",
+		listEntry = "deb http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro.." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro.." main",
+		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: SKS 1.0.10
+
+mI0ESy/PmQEEAO5/zYxLgGiRReb0ZmJSnD+VAaDDOQNCeysCdz7R7h9wUe5ZZOSkvogpd7sy
+E/Y7SuxHZJQoh7j+nWP5AgFdIOiSV+LZMtdsL3pG77NJkBKPOS0eH87cIK9XNWyeoj8cb9El
+KEbsgp5/GFPM9PF378tCCymxnzjak71+UCf2kCk7ABEBAAG0EUxhdW5jaHBhZCBSZWxlYXNl
+iLYEEwECACAFAksvz5kCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRDeRtnvVlJrw8D5
+BAC7tTGtqZ2YigkbyIv08BNi2kuYOe0geESXEs86JWpnzqRF3tvYaH1PPsmdHDj9BofaAc/3
+FqNHhZtWdnp7WmOMnOIXLRqtbUViZVoUdEN9PKqrjmmEIjWKkF+8Xt71vZ8bVvWH5+v7m/90
+TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
+=S2Rj
+-----END PGP PUBLIC KEY BLOCK-----]=],
+	},
+
 	virtualbox =
 	{
-		listEntry = "deb http://download.virtualbox.org/virtualbox/debian jaunty non-free",
+		listEntry = "deb http://download.virtualbox.org/virtualbox/debian "..distro.." non-free",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: GnuPG v1.4.6 (GNU/Linux)
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-mQGiBEh7C8oRBACtOAieuw71PWaeBpi3djCX2sbZ3pqvfMsTaUb4E8Jo6ylC5xOa
-rc4PUQt5/fHaFwOgP+MF11pt8LunY7nXgFNufmXWxAwjaB26EqAF9CytxJS7viu9
-tjEFqWQIL+2GHE1sEAevr8EvVr7fnmCUuY06nb1WvaOlL1VO2DAs+aJ2fwCguhlZ
-ozqrrFyhO7XjRX9imHXbIvsD/2ntslEsaYgnTaNAOCGVUZi4kUQKVZrELgYpLo0Z
-Wq6fbAskgI5qFe4XgP0TqLoI4KLg5OaMXdWDhboaJ3Ln9JgQnjLS3fJG75Lu3QF/
-6nPWYKcuQILLOcsXPthHDxyvRqTv5uUmiNRSDJSMLMA2LgUjzKJ7mEzDZ/uL8jZq
-jfR2A/9r+H4wct/YS0Xmm2JWZxDlT+D27zF0zKzHVINr2eSK8K5mIhOZxAJN37ay
-qVcegz23JII3MQKOuvuH7pBzGEY1IiT6gvAI7WjVm+pRU+TarVwytoANWOvTWfid
-2Y/OgClJ4iqnhj/egM/c3A7KrGG4Q/Tj1rHqnB+rRilVoYQbaLRRU3VuIE1pY3Jv
-c3lzdGVtcywgSW5jLiAoeFZNIFZpcnR1YWxCb3ggYXJjaGl2ZSBzaWduaW5nIGtl
-eSkgPGluZm9AdmlydHVhbGJveC5vcmc+iGAEExECACAFAkh7C8oCGwMGCwkIBwMC
-BBUCCAMEFgIDAQIeAQIXgAAKCRDc+fh7bfvLrnOHAJwLYTeiZC3HyO6758GKiMHZ
-2VTO5gCfXb1PdW17wqGKz5nyka9qpjOAs2C5Ag0ESHsL0BAIAKVaUE5yk8vsXkbj
-CPxrs2R7XuqrLp2/KSdjV7wi1dhwOgFUNObNMsK3K683mxmMnT65mJ/HqiXgW9WY
-5PgLzrHnEA27O7v2ol3O86wkr5BHaaStsLpkDIMItywjPqZkp7KHFDRXrhGTiHLg
-0D6YQB/+GRlxWZTAmB6F+ZGwQj3k9+q7kUd5Gj+LbmC6RA/7yrxgLgCRpdbilGQd
-xV2mGanX2qoA0Fu1nVXDWw3lPU95za3iAXVle89YRNFRK2WxV0hIFhqA/DndR1Y8
-M9fL4jDYXRtbDnUTkhfZiH9MiuDVSzcXN0cUApaovLlnvDaPB7iLTi8SmIMdO6YY
-ME7JwCsAAwUIAISgj2zdQC4TilbTGifMMJ0m3dVbjaoApuTaQc+vulCIhr/rf1DN
-V7gtLNd+CRx67xtyVKfxPWL5vBL9OBCWcCdYY2iCplXv8gUZmwRtTN/B0+Ce07Re
-+bWUe/wBl7z6YBYQnmtOxK55OXEgzv3/wL7L8Mt3co8AeO1qy4kM66JFnq8Scw81
-Axx4lcIPW1q17moygSwD/1YbEgFMQHs/8V8aqB9xIs5yOdsA4VWj32V7ymW2V+sx
-4oKoiZiYuGZOjgGpZlQMxgUaORO0PPRSqnCmuV9zujmd28Fljdrb+WDvc/xDwiKg
-nN/FKpMczPur8keOGpPSeUmZPaxkNmKbqGyISQQYEQIACQUCSHsL0AIbDAAKCRDc
-+fh7bfvLronZAKCfiCvC2s61vA1x/YJ9QUPn4lCpjgCbB4dSVAHE/imWR02yFhqz
-32NqKPU=
-=FQ5T
+mQGiBEvy0LARBACPBH1AUv6krDseyvbL63CWS9fw43iReZ+NmgmDp4/sPsYHLduQ
+rxKSqiK7fgFFE+fas/7DCaZXIQW6hnqeD3CgnX0w1+gYiyqEuPY1LQH9okBR5o92
+/s2FLm7oUN4RNGv6vWoNSH1ZiRHknL5D0pKSGTKU+pG6cBYWJytAuJZHfwCguS55
+aPZuXfhjaWsXG8TF6GH0K8ED/RY3KbirJ7rueK/7KL7ziwqn4CdhQSLOhbZ/R2E0
+bknJQDo+vWJciRRRpTe+AG59ctgDF7lEXpjvCms0atyKtE8hObNaMJ5p48l/sgFL
+LEujqiq4tByAn2hDOf0s7YrfruIY+HHkBSI9XbwH9nPlsQq8WNsTWTzPrw+ZlQ7v
+AEuuA/9cJ/4qYUOq1pg3i/GqH+2dbRHOFH6idXr5YrdB3cYW8jORagOcwdQHeV/0
+CaTZVMyMhTVjtIiUt+UR/96CHKxedg0giHwD61GidpUVBUYSaDhjOKE3jwf6/jo5
+714e4+ZfL3y1Q2N4HzfK/gEkvPZby/o8WX2N7vUcxfztQ8yq6bRJT3JhY2xlIENv
+cnBvcmF0aW9uIChWaXJ0dWFsQm94IGFyY2hpdmUgc2lnbmluZyBrZXkpIDxpbmZv
+QHZpcnR1YWxib3gub3JnPohgBBMRAgAgBQJL8tCwAhsDBgsJCAcDAgQVAggDBBYC
+AwECHgECF4AACgkQVEIqS5irUTmlvwCeIjsPZ0I9HhLmlS9dLjk397Y5rncAn3kB
+XUPRIWb83FMxRwqS85rTCZyouQINBEvy0LAQCAC/pkqDW6H99qQdyW8zvQL5xj6C
+UcvlTpL5VkaIRDVwRNbiFoWsVMv2jdhmlJEoh5N+aXYcAzLv0HaiZBSDmTO6fqMM
+uPRHyIioQQUFNW4hRI7sdMkYvd2oZcxnzRCLdzG+s42EmzxE4F29eT/FA7o/QBj2
+nDbomVqM9jCXKB5/jSJ0W3Uf7I8b7go0AawJT9vVARRMFjz4A7h6QfjeSO9sPHSC
+1Dx5Fmd3u4y08W+o6w2kxXRYT9wfMFuGl4MWVJ+f6KPyRhqRCEaa/mz7lXhQdfeG
+qW8psDHKmoNnpPEq5Rl4aDIJOppwYJhnDELv+k8JJ6R1JM9hJUWTG8zv9sLzAAMF
+CAC6pagGYEK8Dh+3SV6dXjBLNghmj5qnx6GoCXwCDTEFXeWUnszZrqM7PTKLyrfK
+ZjOhluydpQSGY7TqDBJJ6emLyNNJV92IQ21eN/h9i0wB97pu8jwvi7RjD0vSkDHh
+OpSr9vJm9EeESU1Z+mEKOjz2AONjRLplbBNt9kbXmSWpIP8XMFkU+1KTuNbfi+h4
+muOJWKkAGcT7bMUlqbZQjZ2O0RtwDjThxHvw8NhRkxPDYHVxE4uRRobhPquq4NsC
+QkMc7LlRilXZCS5mrabHw5+edullNWaQtGuKGlQXGfM4kEhGt7b/XIiyhI5bsh60
+o8Mz0KuFpClp9B7c78+QBzTbiEkEGBECAAkFAkvy0LACGwwACgkQVEIqS5irUTnq
+qACgtXuTbe2b72sgKdc6gGRKPhLDoEMAmgLwGVN3a4CqewQL+03bqfcKczNH
+=19g1
 -----END PGP PUBLIC KEY BLOCK-----]=]
 	},
 }
@@ -244,11 +267,11 @@ function main()
 
 	-- Update apt.
 	print( "Updating APT..." )
-	os.execute( "aptitude update" )
+	os.execute( "apt-get update" )
 
 	-- Install all packages
 	print( "Installing packages..." )
-	local cmd = "aptitude -y install "..allPackages
+	local cmd = "apt-get -y install "..allPackages
 	os.execute( cmd )
 
 	print( "Finished installing packages..." )
