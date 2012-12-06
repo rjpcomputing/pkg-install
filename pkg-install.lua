@@ -2,26 +2,38 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan Pusztai
--- Date:	10/13/2011
--- Notes:	Built against Ubuntu 11.10 (Oneiric).
+-- Date:	04/27/2012
+-- Notes:	Built against Ubuntu 12.04 (Precise).
 --			Assumes root privileges.
 --
 -- Changes:
---	10/13/2011 (11.10-01) - Initial Release
---	12/07/2011 (11.10-02) - Added codegear ppa suport for Premake and svnwcrev
+--	04/27/2012 (12.04-01) - Initial Release
+--	05/04/2012 (12.04-02) - Removed Remmina because it is now default
+--							Removed the "nautilus-gksu" package. Apparently it is not maintained :(
+--							Changed rabbitvcs to use the correct version of gtk
+--	05/11/2012 (12.04-03) - Changed to using Boost "Lastest"
+--	05/14/2012 (12.04-04) - Changed to using libboost1.48-all-dev
+--							Added neon SSL support
+--	05/14/2012 (12.04-05) - Moved making the manual user login possible to the start instead of
+--							at the end when super user rights have expired.
+--							Added alacarte menu editor.
+--							Added exuberant-ctags for code completion support.
+--	08/27/2012 (12.04-06) - Added LuaJSON.
+--	11/13/2012 (12.04-07) - Added SubLua to the installed Lua modules
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Oneiric"
+local distro = "Precise"
 local appName = "pkg-install"
-local appVer = "11.10-02"
+local appVer = "12.04-07"
 
 -- General Applications
 local generalPackages =
 {
 	"aptitude",
 	"synaptic",
-	--"avant-window-navigator-trunk",
+	"gdebi",
+	"alacarte",
 	"chromium-browser",
 	"joe",
 	"htop",
@@ -34,8 +46,8 @@ local generalPackages =
 	"unzip",
 	"pidgin",
 	"nautilus-open-terminal",
-	"nautilus-gksu",
-	"remmina",
+	--"nautilus-gksu",
+	--"remmina",
 	"ubuntu-restricted-extras",
 	"samba",
 	"smbfs",
@@ -90,6 +102,7 @@ local develPackages =
 	"liblua5.1-doc*",
 	"liblua5.1-expat*",
 	"liblua5.1-filesystem*",
+	"liblua5.1-json*",
 	"liblua5.1-logging*",
 	"liblua5.1-lpeg*",
 	"liblua5.1-markdown*",
@@ -102,9 +115,9 @@ local develPackages =
 	"liblua5.1-sql-sqlite3-*",
 	"liblua5.1-sql-postgres-*",
 	"liblua5.1-zip*",
-	"rabbitvcs-cli",
-	"rabbitvcs-core",
-	"rabbitvcs-nautilus",
+	"liblua5.1-sublua*",
+	"rabbitvcs-nautilus-3.0",
+	"exuberant-ctags",
 }
 
 local libraryPackages =
@@ -122,12 +135,12 @@ local libraryPackages =
 	"qt4-dev-tools",
 	"libgtk2.0-dev",
 	"libgtk2.0-0-dbg",
-	"libboost1.46-all*",
-	"libboost1.46-dbg",
+	"libboost1.48-all-dev",
+	"libboost1.48-dbg",
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
-	"libneon27-dev",
+	"libneon27-gnutls-dev",
 	"libpq-dev",
 	"libmysqlclient-dev",
 	"libsqlite3-dev",
@@ -192,7 +205,7 @@ bUNO0IcvKBBkOn5o4CiBsMp4DJHdrgJU4S00nAJK00E8I/yAv+x4C9uOacW3yrzSHs7Hv/vG
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
-	["awn-testing"] =
+	--[["awn-testing"] =
 	{
 		ppaRepo = "ppa:awn-testing/ppa",
 		listEntry = "deb http://ppa.launchpad.net/awn-testing/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/awn-testing/ppa/ubuntu "..distro:lower().." main",
@@ -214,7 +227,7 @@ DUFbUs+Yc2usRyZY8pVe2Uwy2x7lFsi6VBfo0k9jVsu1l1qBU9BhANJDUTHjR15aPYiUJiZa
 13CZ
 =IvZS
 -----END PGP PUBLIC KEY BLOCK-----]=],
-	},
+	},]]
 
 	--[[rjmyst3 =
 	{
@@ -428,8 +441,8 @@ function InstallNonAptApplications()
 	os.remove( penlightFilename )
 
 	-- VirtualBox 4.x Extension Pack (gives USB2.0 support)
-	local virtualBoxExtensionFilename	= "Oracle_VM_VirtualBox_Extension_Pack-4.1.4.vbox-extpack"
-	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://dlc.sun.com.edgesuite.net/virtualbox/4.1.4/%s", virtualBoxExtensionFilename, virtualBoxExtensionFilename ) )
+	local virtualBoxExtensionFilename	= "Oracle_VM_VirtualBox_Extension_Pack-4.1.14-77440.vbox-extpack"
+	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://download.virtualbox.org/virtualbox/4.1.14/%s", virtualBoxExtensionFilename, virtualBoxExtensionFilename ) )
 	-- Install
 	os.execute( "VBoxManage extpack install " .. virtualBoxExtensionFilename )
 	-- Cleanup
@@ -445,6 +458,11 @@ function main()
 	if username ~= "root" then
 		error( "Please run this as root. Use 'sudo' to run this as root" )
 	end
+
+	print( ">>", "Making manual user login possible..." )
+	local file = io.open( "/etc/lightdm/lightdm.conf\n", "a+" )
+	file:write( "greeter-show-manual-login=true" )
+	file:close()
 
 	if arg[1] ~= "--no-add-apt-sources" then
 		-- Add the needed apt repository
