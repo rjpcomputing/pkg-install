@@ -2,26 +2,26 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan Pusztai
--- Date:	04/28/2011
--- Notes:	Built against Ubuntu 11.04 (Natty).
+-- Date:	10/13/2011
+-- Notes:	Built against Ubuntu 11.10 (Oneiric).
 --			Assumes root privileges.
 --
 -- Changes:
---	04/28/2011 (11.04-01) - Initial Release
---	05/11/2011 (11.04-02) - Added getdeb apt repo for updates to
---							RabbitVCS.
+--	10/13/2011 (11.10-01) - Initial Release
+--	12/07/2011 (11.10-02) - Added codegear ppa suport for Premake and svnwcrev
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Natty"
+local distro = "Oneiric"
 local appName = "pkg-install"
-local appVer = "11.04-05"
+local appVer = "11.10-02"
 
 -- General Applications
 local generalPackages =
 {
 	"aptitude",
-	"avant-window-navigator-trunk",
+	"synaptic",
+	--"avant-window-navigator-trunk",
 	"chromium-browser",
 	"joe",
 	"htop",
@@ -44,7 +44,9 @@ local generalPackages =
 	"virtualbox-4.1",
 	"dkms",
 	"unetbootin",
-	"ubuntu-tweak",
+	"compizconfig-settings-manager",
+	"xul-ext-lightning",
+	--"ubuntu-tweak",
 }
 
 -- Development packages
@@ -73,7 +75,6 @@ local develPackages =
 	"valgrind",
 	"debhelper",
 	"codelite",
-	--"codelite-plugins",
 	"meld",
 	"ghex",
 	"wxformbuilder",
@@ -121,8 +122,8 @@ local libraryPackages =
 	"qt4-dev-tools",
 	"libgtk2.0-dev",
 	"libgtk2.0-0-dbg",
-	"libboost1.42-all*",
-	"libboost1.42-dbg",
+	"libboost1.46-all*",
+	"libboost1.46-dbg",
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
@@ -215,7 +216,7 @@ DUFbUs+Yc2usRyZY8pVe2Uwy2x7lFsi6VBfo0k9jVsu1l1qBU9BhANJDUTHjR15aPYiUJiZa
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
-	rjmyst3 =
+	--[[rjmyst3 =
 	{
 		ppaRepo = "ppa:rjmyst3/ppa",
 		listEntry = "deb http://ppa.launchpad.net/rjmyst3/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/rjmyst3/ppa/ubuntu "..distro:lower().." main",
@@ -230,6 +231,24 @@ CRBv0kXOWYrbBYJmA/44tUSekJHlwaEzUKY1tnx+n/BXDod1ZC9B7A9Th5/G59KOD3rWQFJ/
 2vUcoX0o68OrbAGjwTupFz5oEXp4/g5gmKbSKK4G6HAZNpNIgm3+pZ0SS0uxgEBocAJMw1fh
 2A3Psk0xstMJcHexfYmfdkrFtIiqlL/o5pGRUbbb/mt/Ag==
 =34Ck
+-----END PGP PUBLIC KEY BLOCK-----]=],
+	},]]
+
+	codegear =
+	{
+		ppaRepo = "ppa:codegear/release",
+		listEntry = "deb http://ppa.launchpad.net/codegear/release/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/codegear/release/ubuntu "..distro:lower().." main",
+		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: SKS 1.0.10
+
+mI0ETp8G7QEEAL1tQSp/GNeGvnLfjv/5xGJzBMRbXe1upf6d6u7N2vrRPtzlsutQnik7Vb8x
+fPbuOQl26vokV3h6+27Lph0B0fQUqb7VwC37yh19cct99Wm4I2YDgOuWvmwUUbLEXrXuChV+
+Kwq5Y1Ia9HUXDSd+1Pj6uWO4/vxN3e5VpFUQipfPABEBAAG0GkxhdW5jaHBhZCBQUEEgZm9y
+IENvZGVHZWFyiLgEEwECACIFAk6fBu0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJ
+ELPd8HImZBuRU84EAIwZ/bh/y+dmbG3gNfnlUxIx3co0ztW0GJNjK3ppCKeWFwa2RMRSkFPl
+VUjsQMxhPSrz4lAfsFlFnr2UKBhyCpew/V0fJGGV2g8OwZpR50EwiaBowKpoTK6EDJGwLX6k
+FZNAsp3EmvwZr+hRfX+z2KbV01yxU5ITSx47tUB3orVc
+=g/kS
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
@@ -251,7 +270,7 @@ TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
-	kupfer =
+	--[[kupfer =
 	{
 		ppaRepo = "ppa:kupfer-team/ppa",
 		listEntry = "deb http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro:lower().." main",
@@ -267,7 +286,7 @@ R3GtJucJcYW6wIFoaDJ/mTzHH2GIcHbK7CH/3PjCL7wlvMQGPOR4a1DcXRh5ItobL/pmKGGo
 D/r6CSKuBlF4zOVAwzFwAD+aaBZU
 =fULo
 -----END PGP PUBLIC KEY BLOCK-----]=],
-	},
+	},]]
 
 	virtualbox =
 	{
@@ -366,7 +385,7 @@ function AddExtraAptSources()
 		print( ">>", "Adding '" .. ppa .. "' PPA" )
 		if value.ppaRepo ~= nil then
 			-- Add key using add-apt-repository.
-			os.execute( "sudo add-apt-repository " .. value.ppaRepo )
+			os.execute( "sudo add-apt-repository -y " .. value.ppaRepo )
 		else
 			-- Write the comment to the file.
 			file:write( "# "..ppa.." PPA\n" )
@@ -409,8 +428,8 @@ function InstallNonAptApplications()
 	os.remove( penlightFilename )
 
 	-- VirtualBox 4.x Extension Pack (gives USB2.0 support)
-	local virtualBoxExtensionFilename	= "Oracle_VM_VirtualBox_Extension_Pack-4.1.2-73507.vbox-extpack"
-	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://download.virtualbox.org/virtualbox/4.1.2/%s", virtualBoxExtensionFilename, virtualBoxExtensionFilename ) )
+	local virtualBoxExtensionFilename	= "Oracle_VM_VirtualBox_Extension_Pack-4.1.4.vbox-extpack"
+	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://dlc.sun.com.edgesuite.net/virtualbox/4.1.4/%s", virtualBoxExtensionFilename, virtualBoxExtensionFilename ) )
 	-- Install
 	os.execute( "VBoxManage extpack install " .. virtualBoxExtensionFilename )
 	-- Cleanup
