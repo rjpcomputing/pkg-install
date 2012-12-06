@@ -4,8 +4,8 @@
 # 	starting the work script.
 # Author:	Ryan Pusztai
 # Date:		06/09/2009
-# Notes:	Built against Ubuntu 10.04 (Lucid).
-#			Assumes root privileges.
+# Notes:	Assumes root privileges.
+#			
 # ############################################################################
 
 # Install Lua first so we can run the install script.

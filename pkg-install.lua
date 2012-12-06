@@ -2,15 +2,20 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan Pusztai
--- Date:	03/17/2011
--- Notes:	Built against Ubuntu 10.10 (Maverick).
+-- Date:	04/28/2011
+-- Notes:	Built against Ubuntu 11.04 (Natty).
 --			Assumes root privileges.
+--
+-- Changes:
+--	04/28/2011 (11.04-01) - Initial Release
+--	05/11/2011 (11.04-02) - Added getdeb apt repo for updates to
+--							RabbitVCS.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Maverick"
+local distro = "Natty"
 local appName = "pkg-install"
-local appVer = "10.10-11"
+local appVer = "11.04-05"
 
 -- General Applications
 local generalPackages =
@@ -21,7 +26,6 @@ local generalPackages =
 	"joe",
 	"htop",
 	"geany",
-	"gnome-do",
 	"kupfer",
 	"guake",
 	"p7zip-full",
@@ -31,17 +35,13 @@ local generalPackages =
 	"pidgin",
 	"nautilus-open-terminal",
 	"nautilus-gksu",
-	--"python-setuptools",
-	--"python-wxgtk2.8",
 	"remmina",
-	"remmina-gnome",
 	"ubuntu-restricted-extras",
 	"samba",
-	--"smbfs",
+	"smbfs",
 	"cifs-utils",
 	"ssh",
-	"virtualbox-4.0",
---	"virtualbox-3.2",
+	"virtualbox-4.1",
 	"dkms",
 	"unetbootin",
 	"ubuntu-tweak",
@@ -65,6 +65,8 @@ local develPackages =
 	"libtool",
 	"autoconf",
 	"subversion",
+	"git-core",
+	"git-svn",
 	"svnwcrev",
 	"premake",
 	"premake4",
@@ -97,6 +99,7 @@ local develPackages =
 	"liblua5.1-socket*",
 	"liblua5.1-sql-mysql-*",
 	"liblua5.1-sql-sqlite3-*",
+	"liblua5.1-sql-postgres-*",
 	"liblua5.1-zip*",
 	"rabbitvcs-cli",
 	"rabbitvcs-core",
@@ -123,7 +126,10 @@ local libraryPackages =
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
-	"libneon27-dev"
+	"libneon27-dev",
+	"libpq-dev",
+	"libmysqlclient-dev",
+	"libsqlite3-dev",
 }
 
 local aptDetails =
@@ -146,25 +152,25 @@ hzXKImEEiTVJc40nhLfZXtQ0qBdGFqLPsRww
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},]]
 
-	--[[gnomedo =
+	--[[rabbitvcs =
 	{
-		ppaRepo = "ppa:do-core/ppa",
-		listEntry = "deb http://ppa.launchpad.net/do-core/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/do-core/ppa/ubuntu "..distro:lower().." main",
+		ppaRepo = "ppa:rabbitvcs/ppa",
+		listEntry = "deb http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..distro:lower().." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
-mI0ESXUVdQEEAN8ALfH3wueKsSgDwA/HVEHdB7nlppqGKW/tubvGTy0ayf4M9ylX45szZK97
-uL9/UHh5/B7eGMSB45EMJ0/qvTiflS6SwCxRCoKCW1PpYZlVcOLh5UUBkyREPJZcki1lK7pf
-xvG9LkYKnvBP89s2PnO5LlDheEsVR4SqDGEtich/ABEBAAG0JExhdW5jaHBhZCBQUEEgZm9y
-IEdOT01FIERvIENvcmUgVGVhbYi2BBMBAgAgBQJJdRV1AhsDBgsJCAcDAgQVAggDBBYCAwEC
-HgECF4AACgkQKKggUHdVjdCVeAP+ONJtMFx9MGSJe33YiskagXEG5cQGYdDi5sWWUAP80bP1
-Qe+Dsnjs3VKQ9ZZW3M8UNXsoFFN501hgJFBwUUCWIRSGZkzVgKoZZtZOe0Dws39xfV//8JFS
-Te/r0oPzrr10iTFupTe/wBR0M9JbKGdY7SvooyqU+W2rf8/LldGx7KE=
-=3C2V
+mI0ESsykEwEEAKq7U4qgEM0AhtarHcAqMxmKN8TUUwktQWu/JNxk+aNoqK9P5pY+aRYFzUCX
+IVKVQg6KxC5TO4dapz4xvz8KvI0aKLtb6kpJhVKnydg000DA/bkEJbor/YBc4OfvdbjqPIbC
+O2CL394ZvDGqpQbXoP0Auy9wKF1A3Kvd2g8LZa7VABEBAAG0E0xhdW5jaHBhZCBSYWJiaXRW
+Q1OItgQTAQIAIAUCSsykEwIbAwYLCQgHAwIEFQIIAwQWAgMBAh4BAheAAAoJEC7leTY070o1
+mW0D/RWsC9AFVjEoQYF9UOdu4sq3eY6uT/GUfIBJMmm10SI4/CzBLChoRg9ZkCDAdlfP6qab
+bXQnWfI6BV0NwNbb4AQjImLvpXZikzx5NDbRXjML6/Qk9DkLfn6cZpKbr2gI41k1ar3LHCE2
+APlN9ZheYInv1XLS4G+jDQjnMbd0VdzP
+=P8E1
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},]]
 
-	["chromium-daily"] =
+	["chromium-stable"] =
 	{
 		ppaRepo = "ppa:chromium-daily/stable",
 		listEntry = "deb http://ppa.launchpad.net/chromium-daily/stable/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/chromium-daily/stable/ubuntu "..distro:lower().." main",
@@ -182,43 +188,6 @@ EwECACAFAkmkj7QCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRBam/O7Tl4XtV/2BACs
 bUNO0IcvKBBkOn5o4CiBsMp4DJHdrgJU4S00nAJK00E8I/yAv+x4C9uOacW3yrzSHs7Hv/vG
 6Z1Jh+1JrabK13hdhwOL8+aY6Q==
 =9P6G
------END PGP PUBLIC KEY BLOCK-----]=],
-	},
-
-	remmina =
-	{
-		ppaRepo = "ppa:llyzs/ppa",
-		listEntry = "deb http://ppa.launchpad.net/llyzs/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/llyzs/ppa/ubuntu "..distro:lower().." main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
-
-mI0EStwwGQEEANZbC0HylrJgQ9CjbpoUWomZ7UcIJyS74afTfaT9GYKb3j+BHsLtnBanFNQ0
-l7UVA1JH2Dr1ky1x7QI5zymBfn7hAq7FQ2lqx52nKWsWFZVmGZqEb7uvOhi+cNs8TS+hKXt6
-zYkd5y2NZcc66k/ipjMfDFHJIswq9A4byLex7M1TABEBAAG0EUxhdW5jaHBhZCBSZW1taW5h
-iLYEEwECACAFAkrcMBkCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRDXJguPWg+o8TtU
-A/9MA5Z2PSOv4qzm+Hudcj8j6YH6WTYi/vgYPUn3F6D/32yh49+fbKq7167P4IB+4CmvxSGy
-rcx+1d04yUg8ZazMZxVODu3z4M2kytOcXvonpkIG1S0MA9LJITMJLvJqC8jMAPDUCgqJkM29
-VCLpcDE8yPw6I1SeT0nQRm//yDFgUg==
-=CP/S
------END PGP PUBLIC KEY BLOCK-----]=],
-	},
-
-	byobu =
-	{
-		ppaRepo = "ppa:byobu/ppa",
-		listEntry = "deb http://ppa.launchpad.net/byobu/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/byobu/ppa/ubuntu "..distro:lower().." main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
-
-mI0ESY8IVwEEALW6ef/McyEoO3jvMURrYdaHp7obBOxWUjuZhM09bUUysfWyDY2VIPGMvuAX
-jjnJkC9zGsKWqLhhmvcP2MpIpGb6RbdKINT9RkVNYPe09rGPfTcEYh4enFRLxUA+dcDkLR2h
-JFB+ScFoCz4B0hslaZuRZXPVBQP9wizg7+hXzKuLABEBAAG0MkxhdW5jaHBhZCBQUEEgZm9y
-IFVidW50dSBTY3JlZW4gUHJvZmlsZSBEZXZlbG9wZXJziLYEEwECACAFAkmPCFcCGwMGCwkI
-BwMCBBUCCAMEFgIDAQIeAQIXgAAKCRDPXnSW9DC7pU7hA/4t2hD6udZZofQGmpURmrdHXyEg
-D9lXpfDst4RmK2p9Hxo4eVF6Jjcgfw00WkdNb/69jG6AqHInfv+5ihH+JsErN0GZJBUsNe9E
-OIOGiOh7ASpUW0+VB5gWqOZgqocQwJoGxZgXriu7NgnRIA9r5MJgnGsKS3EKK17LgiHvD1Bn
-yw==
-=1clR
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
@@ -282,21 +251,21 @@ TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
-	rabbitvcs =
+	kupfer =
 	{
-		ppaRepo = "ppa:rabbitvcs/ppa",
-		listEntry = "deb http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..distro:lower().." main",
+		ppaRepo = "ppa:kupfer-team/ppa",
+		listEntry = "deb http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro:lower().." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
-mI0ESsykEwEEAKq7U4qgEM0AhtarHcAqMxmKN8TUUwktQWu/JNxk+aNoqK9P5pY+aRYFzUCX
-IVKVQg6KxC5TO4dapz4xvz8KvI0aKLtb6kpJhVKnydg000DA/bkEJbor/YBc4OfvdbjqPIbC
-O2CL394ZvDGqpQbXoP0Auy9wKF1A3Kvd2g8LZa7VABEBAAG0E0xhdW5jaHBhZCBSYWJiaXRW
-Q1OItgQTAQIAIAUCSsykEwIbAwYLCQgHAwIEFQIIAwQWAgMBAh4BAheAAAoJEC7leTY070o1
-mW0D/RWsC9AFVjEoQYF9UOdu4sq3eY6uT/GUfIBJMmm10SI4/CzBLChoRg9ZkCDAdlfP6qab
-bXQnWfI6BV0NwNbb4AQjImLvpXZikzx5NDbRXjML6/Qk9DkLfn6cZpKbr2gI41k1ar3LHCE2
-APlN9ZheYInv1XLS4G+jDQjnMbd0VdzP
-=P8E1
+mI0ESrzzZgEEAL271y6y9swKMrM9WDLN1b0mdw+392lXOpi1r1xyR9DocpNgFQgvWKN7cx4w
+d7nXCCv3AQV3R9gnHo0keB6jTCpofCUax8Gt86znZECyJpwBD8UUypRDws0zkMw/vjoe8JK2
+tEyxzrJahNtgQfyoWSx/SyGwNh8jpTr59HuozHPPABEBAAG0EExhdW5jaHBhZCBLdXBmZXKI
+tgQTAQIAIAUCSrzzZgIbAwYLCQgHAwIEFQIIAwQWAgMBAh4BAheAAAoJEBe1E3ApL2BmQAoD
+/2Szs2fp6WEcnQkxdX4awPJDyj5IljEbFhPD+KRM3VK9j76bfSDyOEc/sk8ErWqK3/VocqDf
+R3GtJucJcYW6wIFoaDJ/mTzHH2GIcHbK7CH/3PjCL7wlvMQGPOR4a1DcXRh5ItobL/pmKGGo
+D/r6CSKuBlF4zOVAwzFwAD+aaBZU
+=fULo
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
@@ -335,25 +304,38 @@ qACgtXuTbe2b72sgKdc6gGRKPhLDoEMAmgLwGVN3a4CqewQL+03bqfcKczNH
 -----END PGP PUBLIC KEY BLOCK-----]=]
 	},
 
-	["ubuntu-tweak"] =
+	getdeb =
 	{
-		ppaRepo = "ppa:tualatrix/ppa",
-		listEntry = "deb http://ppa.launchpad.net/tualatrix/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/tualatrix/ppa/ubuntu "..distro.." main",
+		listEntry = "deb http://archive.getdeb.net/ubuntu "..distro:lower().."-getdeb apps",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-mI0ESXTUHwEEAMtdNPmcgQcoPN3JcUcRrmdm1chJSmX6gj28OamOgE3Nxp3XgkDdg/vLFPv6
-Tk8zIMxQnvuSpuG1YGp3x8atcKlQAlEHncAo27Vlio6pk8jG+qipDBKq7X7FyXE6X9Peg/k7
-t7eXMLwH6ZJFN6IEmvPRTsiiQEd/dXRRuIRhPHirABEBAAG0G0xhdW5jaHBhZCBQUEEgZm9y
-IFR1YWxhdHJpWIheBBARCAAGBQJL6UvCAAoJEPySDzP/xnPEIjwA/jqEp/TNbIbmPut3iHEr
-Ewmd8ofm/Y+AXvH7lMu68mUqAP9SNPgYQSLKYaTY1EIfS3gB9s8ty92QkntTKY2t3H3IHIhe
-BBARCAAGBQJMc4FNAAoJEOvvgzFXGVgwm18BAIdCCSrg7mFThVWVeX5WOEhpjlRTwaO8h5jJ
-z+BsyXr/AQCeuc+3tUmQK97jJ6ulqHjkNGo3afrjgnF6odCMb5B/OIi2BBMBAgAgBQJJdNQf
-AhsDBgsJCAcDAgQVAggDBBYCAwECHgECF4AACgkQavDhlAYkoiC8mAQAmaxr4Kw/R2WZKde7
-MfbTPy7O9YoL/NQeThYGwxX6ICVr0IZUj9nxFQ/vtmhZ59p53bpdR8jpPXjdDwjZIIlxTf72
-Fky6Ri3/zsC4YRD6idS4c4L50dTy74W6IabCt8GQLtJy5YASlEp5OGwRNptRSFxVE59LuOPR
-o2kvLIAa0Dc=
-=FoK5
+mQINBEoN6uABEADGJQBv6TJubjMfaPfT8WGKta5KuFXHgyjuDINE3GDEu9V/L6hD
+OjpNUblSGtkRvljjkp+HvBphrIrFtg7/T1YH/jhG1mngJEayXUrWKwcQBwxHVJlJ
+8+S5FCXa31RyCmdd0DhMdLMJf7tfN0MxsmcK9MtbxVdONSWRqaC1+4Voqk/VuVIv
+qdQUJu/7H1WdBmLELrjtL0khfX85AblYphbuPsQfx/9k7cT+JnjcT5hR8Fl7/rpf
+1H9AUHv/nAxbj28kpIi7Xgpa7JFrklqujyjLhjS504dHXriYILM1ZC4neVg2j+kc
+IBvRoT3Uvb5BGZ2k+hh5MOG0V+Xpxb5HLjtez2jjiujE7EbaLiax2pVTcGKmc0ae
+HEDXjGfBgoCKl7emDf6huJnmiVcdHxuVFGJEsmKSHSUsAtOkCkKqK6K4C0VC2+Rf
+TN8EOLaDejFRTPKBDsULjM6eDF45+Aqnqg98NvA/CIUftCZ5MmUPy7+j8cbh7QIy
+Y7rGKVHoZv5BZHnTydMbaOe34clJmxJ+JEcInEVR50GN3g3OjiiCBa+P7DQdV7ff
+bCOmssB5+Fcaa85CSmjMbmwFvNQvAmpNPVOdRNy9Ct6iJ+9mLWxfhKzac8gGy+Cm
+ZrXe3xLxZIlogoVX/NLEuJwEWLCya/f4sAbNuOZqGhqX2I8BaiT2eTeJfQARAQAB
+tDlHZXREZWIgQXJjaGl2ZSBBdXRvbWF0aWMgU2lnbmluZyBLZXkgPGFyY2hpdmVA
+Z2V0ZGViLm5ldD6JAjcEEwEIACEFAkoN6uACGwMFCwkIBwMFFQoJCAsFFgIDAQAC
+HgECF4AACgkQqKUV8EbX588I3w/+MLMjIDB3HPOTucaxuUWfsFKm4RB7nkVIhPuW
+6rdsFH4eqFgivMS47oNTi8QmviPsU7TXBchtNfGrIWZUP4CGiLYSwResbN+UMB9f
+JRx/FNp6VwjeRYPJObk0q/EukNDaiT/UItrQz08laLlj7QScxoh7u3NGZnCGvacd
+dzNcOwfmkh1N5tzyXMae3Zv2L0VG3v4ZP/yPWB6W9ziUsFVI65oiFkHHvjZgLOp0
+2pB54YcjUz91z6Fq2RVgDk+p7T6YTo8ZInptb/Blfu4+uSp1Pcloe2eyGMDMy5fp
+mrtIWfDqVYkZGFU2w+GpaJMPe3ZKlAOUBxiTmB4AqKj1K1sQ3PMUzrQaWdbuWZz4
+w+rQCeF3BPOolIyudGhHis6oXQykOZwYBA2/AQAKlfdJDqnKqULKjFe5UTiy32Od
+r/3dWnNZGJ0dY+6G/bTtpMIHzZkfdd3tgqybtQjX3sTMtG7g7PZdg0awXlfvbo7N
+QoqkzaQhpqDajQ7kigFQ6ZAcvUio58ePehWkwiHsdrrK80Zhy69azDJpgN2zGRBA
+1RFv1x7YetjSfUyGv3632UcOcpGagA4BwEDYB5Tgav5Vz/QRgjlkh/UQP11eq3BD
+aOR5ibezxThk9Ukuba7U1Nbqr6YUvxuVMFz14okaw9FlhCwB9PMiZT+sp3/Ygxdr
+I+LZoJw=
+=35Cn
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
@@ -427,8 +409,8 @@ function InstallNonAptApplications()
 	os.remove( penlightFilename )
 
 	-- VirtualBox 4.x Extension Pack (gives USB2.0 support)
-	local virtualBoxExtensionFilename	= "Oracle_VM_VirtualBox_Extension_Pack-4.0.2-69518.vbox-extpack"
-	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://download.virtualbox.org/virtualbox/4.0.2/%s", virtualBoxExtensionFilename, virtualBoxExtensionFilename ) )
+	local virtualBoxExtensionFilename	= "Oracle_VM_VirtualBox_Extension_Pack-4.1.2-73507.vbox-extpack"
+	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://download.virtualbox.org/virtualbox/4.1.2/%s", virtualBoxExtensionFilename, virtualBoxExtensionFilename ) )
 	-- Install
 	os.execute( "VBoxManage extpack install " .. virtualBoxExtensionFilename )
 	-- Cleanup
