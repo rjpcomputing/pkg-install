@@ -2,19 +2,23 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your server machine up and running quickly after a fresh install.
 -- Author:	Ryan Pusztai
--- Date:	05/16/2012
--- Notes:	Built against Ubuntu 12.04 (Precise).
+-- Date:	10/26/2012
+-- Notes:	Built against Ubuntu 12.10 (Quantal).
 --			Assumes root privileges.
 --
 -- Changes:
---	05/17/2012 (12.04-01) - Initial Release
---	11/13/2012 (12.04-02) - Added SubLua to the installed Lua modules
+--	11/05/2012 (12.10-01) - Initial Release
+--	11/06/2012 (12.10-02) - Fixed the absence of add-apt-repository
+--	11/08/2012 (12.10-03) - Fixed TC tweak
+--	11/13/2012 (12.10-04) - Added SubLua to the installed Lua modules
+--	11/20/2012 (12.10-05) - Added TexAdept
+--	11/27/2012 (12.10-06) - Added ncurses development library
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Precise"
+local distro = "Quantal"
 local appName = "pkg-install-srv"
-local appVer = "12.04-02"
+local appVer = "12.10-06"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -40,9 +44,10 @@ local generalPackages =
 	"zip",
 	"unzip",
 	"samba",
-	"smbfs",
 	"cifs-utils",
 	"ssh",
+	"dos2unix",
+	"openjdk-7-jdk",
 }
 
 -- Development packages
@@ -50,6 +55,8 @@ local develPackages =
 {
 	"build-essential",
 	"gdb",
+	"linux-source",
+	"linux-headers-generic",
 	"automake",
 	"checkinstall",
 	"patchutils",
@@ -81,19 +88,21 @@ local develPackages =
 	"liblua5.1-doc*",
 	"liblua5.1-expat*",
 	"liblua5.1-filesystem*",
+	"liblua5.1-json*",
 	"liblua5.1-logging*",
 	"liblua5.1-lpeg*",
 	"liblua5.1-markdown*",
 	"liblua5.1-md5-*",
 	"liblua5.1-orbit*",
 	"liblua5.1-posix*",
+	"liblua5.1-rex*",
 	"liblua5.1-rings*",
+	"liblua5.1-sec*",
 	"liblua5.1-socket*",
-	"liblua5.1-sql-mysql-*",
-	"liblua5.1-sql-sqlite3-*",
-	"liblua5.1-sql-postgres-*",
+	"liblua5.1-sql-*",
 	"liblua5.1-zip*",
 	"liblua5.1-sublua*",
+	"exuberant-ctags",
 }
 
 local libraryPackages =
@@ -111,8 +120,8 @@ local libraryPackages =
 	"qt4-dev-tools",
 	"libgtk2.0-dev",
 	"libgtk2.0-0-dbg",
-	"libboost1.48-all-dev",
-	"libboost1.48-dbg",
+	"libboost1.50-all-dev",
+	"libboost1.50-dbg",
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
@@ -120,6 +129,7 @@ local libraryPackages =
 	"libpq-dev",
 	"libmysqlclient-dev",
 	"libsqlite3-dev",
+	"libncurses5-dev",
 }
 
 local aptDetails =
@@ -177,8 +187,8 @@ TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
 =S2Rj
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
-	--[[ TODO: VMWare has not released a apt repo for Precies yet, so this is hard coded to oneiric
-	vmware =
+	-- TODO: VMWare has not released a apt repo for Quantal yet, so I am using oneiric
+	--[==[vmware =
 	{
 		listEntry = "deb http://packages.vmware.com/tools/esx/4.1latest/ubuntu oneiric main restricted",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -196,10 +206,13 @@ S/eu0g9IenS49i0hcOnjShGIRgQQEQIABgUCSAQWfAAKCRD1ZoIQEyn810LTAJ9k
 IOziCqa/awfBvlLq4eRgN/NnkwCeJLOuL6eAueYjaODTcFEGKUXlgM4=
 =bXtp
 -----END PGP PUBLIC KEY BLOCK-----]=],
-	},]]
+	},]==]
 }
 
 function AddExtraAptSources()
+	-- Make sure that 'add-apt-repository' is on the machine
+	os.execute( "sudo apt-get -y install software-properties-common" )
+
 	local file = io.output( "/etc/apt/sources.list.d/pkg-install-additional.list" )
 	file:write( "# This file was created by a script, don't edit this by hand.\n# Any changes made will be lost.\n\n" )
 
@@ -240,6 +253,39 @@ function InstallNonAptApplications()
 	os.execute( "sudo mv pl/ /usr/share/lua/5.1/")
 	-- Cleanup
 	os.remove( penlightFilename )
+
+	-- TextAdept
+	local texadeptFilename			= "textadept_6.0.x86_64.tgz"
+	local texadeptModuleFilename	= "textadept_6.0.modules.zip"
+	local texadeptSettingsFilename	= "textadept_6.0.settings.zip"
+	local texadeptOutput			= "textadept_6.0.x86_64"
+	os.execute( ("wget --output-document=%s http://foicica.com/textadept/download/%s"):format( texadeptFilename, texadeptFilename ) )
+	os.execute( ("wget --output-document=%s http://foicica.com/textadept/download/%s"):format( texadeptModuleFilename, texadeptModuleFilename ) )
+	os.execute( ("wget --output-document=%s https://dl.dropbox.com/s/lwylj0g44nig74h/%s?dl=1"):format( texadeptSettingsFilename, texadeptSettingsFilename ) )
+
+	-- Create directories if don't exist
+	os.execute( "mkdir -p ~/bin" )
+
+	-- Extract
+	os.execute( ("tar -xvzf %s --directory=$HOME/bin"):format( texadeptFilename ) )
+	os.execute( ("unzip -oj %s *modules/modules* -d ~/bin/%s/modules"):format( texadeptModuleFilename, texadeptOutput ) )
+	os.execute( ("unzip %s -d ~"):format( texadeptSettingsFilename ) )		-- Settings go in the home dir
+
+	-- Add symlink
+	os.execute( ("ln -s %s/textadeptjit-ncurses ~/bin/ta"):format( texadeptOutput ) )
+	-- Add to $PATH
+	local bashrc = io.input( ".bashrc" ):read("*a")
+	local contents = "\nexport PATH=$PATH:$HOME/bin\n"
+	-- If it does not exist add $HOME/bin to the $PATH
+	if not string.find( bashrc, contents ) then
+		bashrc = bashrc .. contents
+		io.output( ".bashrc" ):write( bashrc )
+	end
+
+	-- Cleanup
+	os.remove( texadeptFilename )
+	os.remove( texadeptModuleFilename )
+	os.remove( texadeptSettingsFilename )
 end
 
 
@@ -289,7 +335,7 @@ function main()
 	print( appName .. " v" .. appVer .. " - Quick setup of a fresh install." )
 	print( ">>", #generalPackages + #develPackages + #libraryPackages + 1 .. " packages to install" )
 
-	-- Load tweaks file, if specified
+	-- Load tweaks files, if specified
 	local tweaksFilename = arg[1]
 	print( tweaksFilename )
 	local tweaks = nil

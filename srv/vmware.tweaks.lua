@@ -12,6 +12,7 @@ local tweaks =
 {
 	_VERSION = "1.00",
 	_APP_NAME = "VMWare Setup Tweaks",
+--[[
 	{
 		name = "add_vmware_apt_rep",
 		comment = "Add the VMWare apt repository",
@@ -36,6 +37,12 @@ local tweaks =
 		name = "vmware-open-vm-tools-nox",
 		comment = "Installs VMWare Tools for headless system.",
 		command = "sudo apt-get install vmware-open-vm-tools-nox"
+	},
+]]
+	{
+		name = "open-vm-tools",
+		comment = "Installs VMWare Tools for headless system.",
+		command = "sudo apt-get install open-vm-tools"
 	}
 }
 

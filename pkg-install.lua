@@ -2,30 +2,32 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan Pusztai
--- Date:	04/27/2012
--- Notes:	Built against Ubuntu 12.04 (Precise).
+-- Date:	10/22/2012
+-- Notes:	Built against Ubuntu 12.10 (Quantal Quetzal).
 --			Assumes root privileges.
 --
 -- Changes:
---	04/27/2012 (12.04-01) - Initial Release
---	05/04/2012 (12.04-02) - Removed Remmina because it is now default
---							Removed the "nautilus-gksu" package. Apparently it is not maintained :(
---							Changed rabbitvcs to use the correct version of gtk
---	05/11/2012 (12.04-03) - Changed to using Boost "Lastest"
---	05/14/2012 (12.04-04) - Changed to using libboost1.48-all-dev
---							Added neon SSL support
---	05/14/2012 (12.04-05) - Moved making the manual user login possible to the start instead of
---							at the end when super user rights have expired.
---							Added alacarte menu editor.
---							Added exuberant-ctags for code completion support.
---	08/27/2012 (12.04-06) - Added LuaJSON.
---	11/13/2012 (12.04-07) - Added SubLua to the installed Lua modules
+--	10/22/2012 (12.10-01) - Initial Release
+--	10/23/2012 (12.10-02) - Removed the Chromium PPA (not updated)
+--							Removed the missing smbfs package
+--	10/25/2012 (12.10-03) - Made it so that if lighttdm is not used on the
+--							system and it will still work.
+--	10/26/2012 (12.10-04) -	Added nVidia Driver
+--							Added LikewiseOpen to the default insall
+--	10/26/2012 (12.10-05) -	Added joining computer to domain, optional
+--	10/26/2012 (12.10-06) -	Fixed the adding of the manual login
+--	10/31/2012 (12.10-07) -	Added exFAT support
+--							Added dos2unix
+--							Added openjdk 7 and browser plugin.
+--	11/13/2012 (12.10-08) - Added SubLua to the installed Lua modules
+--	11/20/2012 (12.10-09) - Added TextAdept
+--	11/27/2012 (12.10-10) - Added ncurses development libraries
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Precise"
+local distro = "Quantal"
 local appName = "pkg-install"
-local appVer = "12.04-07"
+local appVer = "12.10-10"
 
 -- General Applications
 local generalPackages =
@@ -37,28 +39,37 @@ local generalPackages =
 	"chromium-browser",
 	"joe",
 	"htop",
+	"syspeek",
 	"geany",
+	"pinta",
+	"gimp",
 	"kupfer",
 	"guake",
 	"p7zip-full",
 	"p7zip-rar",
 	"zip",
 	"unzip",
+	"dos2unix",
 	"pidgin",
 	"nautilus-open-terminal",
-	--"nautilus-gksu",
-	--"remmina",
+	"remmina",
 	"ubuntu-restricted-extras",
 	"samba",
-	"smbfs",
+	--"smbfs",
 	"cifs-utils",
 	"ssh",
-	"virtualbox-4.1",
+	"virtualbox-4.2",
 	"dkms",
 	"unetbootin",
 	"compizconfig-settings-manager",
 	"xul-ext-lightning",
-	--"ubuntu-tweak",
+	"synergy",
+	"nvidia-current-updates",
+	"likewise-open-gui",
+	"likewise-open",
+	"fuse-exfat",
+	"exfat-utils",
+	"icedtea-7-plugin",
 }
 
 -- Development packages
@@ -66,6 +77,8 @@ local develPackages =
 {
 	"build-essential",
 	"gdb",
+	"linux-source",
+	"linux-headers-generic",
 	"automake",
 	"checkinstall",
 	"patchutils",
@@ -76,6 +89,7 @@ local develPackages =
 	"lintian",
 	"dput",
 	"dh-make",
+	"devscripts",
 	"libtool",
 	"autoconf",
 	"subversion",
@@ -93,6 +107,7 @@ local develPackages =
 	"wxfb-wxadditions",
 	"doxygen",
 	"graphviz",
+	"xavante",
 	"luarocks",
 	"liblua5.1-bit*",
 	"liblua5.1-copas*",
@@ -109,11 +124,11 @@ local develPackages =
 	"liblua5.1-md5-*",
 	"liblua5.1-orbit*",
 	"liblua5.1-posix*",
+	"liblua5.1-rex*",
 	"liblua5.1-rings*",
+	"liblua5.1-sec*",
 	"liblua5.1-socket*",
-	"liblua5.1-sql-mysql-*",
-	"liblua5.1-sql-sqlite3-*",
-	"liblua5.1-sql-postgres-*",
+	"liblua5.1-sql-*",
 	"liblua5.1-zip*",
 	"liblua5.1-sublua*",
 	"rabbitvcs-nautilus-3.0",
@@ -135,8 +150,8 @@ local libraryPackages =
 	"qt4-dev-tools",
 	"libgtk2.0-dev",
 	"libgtk2.0-0-dbg",
-	"libboost1.48-all-dev",
-	"libboost1.48-dbg",
+	"libboost1.50-all-dev",
+	"libboost1.50-dbg",
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
@@ -144,6 +159,7 @@ local libraryPackages =
 	"libpq-dev",
 	"libmysqlclient-dev",
 	"libsqlite3-dev",
+	"libncurses5-dev",
 }
 
 local aptDetails =
@@ -166,7 +182,7 @@ hzXKImEEiTVJc40nhLfZXtQ0qBdGFqLPsRww
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},]]
 
-	--[[rabbitvcs =
+	rabbitvcs =
 	{
 		ppaRepo = "ppa:rabbitvcs/ppa",
 		listEntry = "deb http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..distro:lower().." main",
@@ -182,8 +198,9 @@ bXQnWfI6BV0NwNbb4AQjImLvpXZikzx5NDbRXjML6/Qk9DkLfn6cZpKbr2gI41k1ar3LHCE2
 APlN9ZheYInv1XLS4G+jDQjnMbd0VdzP
 =P8E1
 -----END PGP PUBLIC KEY BLOCK-----]=],
-	},]]
+	},
 
+--[===[
 	["chromium-stable"] =
 	{
 		ppaRepo = "ppa:chromium-daily/stable",
@@ -204,49 +221,7 @@ bUNO0IcvKBBkOn5o4CiBsMp4DJHdrgJU4S00nAJK00E8I/yAv+x4C9uOacW3yrzSHs7Hv/vG
 =9P6G
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
-
-	--[["awn-testing"] =
-	{
-		ppaRepo = "ppa:awn-testing/ppa",
-		listEntry = "deb http://ppa.launchpad.net/awn-testing/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/awn-testing/ppa/ubuntu "..distro:lower().." main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
-
-mI0ESXS1/wEEALis4to4JdgrkdRunmSTfB2tYRq99Cdcgdh9up4HzAf1yTZU1EtmETPP1Uy2
-vnAFf/cCunL5VRywNJB3QOxiHdvNlijbdsa0H/fT/ulq+A4iDljUEfsaJug+dAB5uEJE0BzZ
-agRjgLbFvRYtsKf3BwZizbo4XtWSAm3JSjZCGZKTABEBAAG0IkxhdW5jaHBhZCBQUEEgZm9y
-IEF3biBUZXN0aW5nIFRlYW2IRgQQEQIABgUCSXqnWgAKCRBBf7ZCSCH+JPZMAJ4xW7gbpuA+
-yedehvDQWdJHHUgseQCgy6NOmAyXqRKrIXWERkXw6h9TsRuIRgQQEQIABgUCSZQmIAAKCRDZ
-S0hfw6VdfffwAJ4n9DnPkv9lEBKBRXXOB/XicTj/TgCgxMmuYalY6LyFqzBRj3VThdx06ICI
-RgQQEQIABgUCSdLknAAKCRD2s9PG7NlK/fnGAKDZgIE8ALyl435hYvEsTLSODM65VgCeK/NI
-7SuT8DQSMNmtNKbTNShwknqIRgQQEQIABgUCSdLlowAKCRCtk5F6ntjH6u9lAJ9yp2XhA2Lq
-LeOad69gnSgsMSAt5ACfS5izZBI+GxzT1JUXN6vefzELxLqItgQTAQIAIAUCSXS1/wIbAwYL
-CQgHAwIEFQIIAwQWAgMBAh4BAheAAAoJEH0seiO/gQzVpSID/0FXxTSLtxPHrT7IE9eif5qJ
-vjOjzcmOCXe9/3G0ctV8IfYHx0VynddjxgTqJ9WuEjMLVHRgXvK1Rw1XMlik+MeyyHrr9EWQ
-DUFbUs+Yc2usRyZY8pVe2Uwy2x7lFsi6VBfo0k9jVsu1l1qBU9BhANJDUTHjR15aPYiUJiZa
-13CZ
-=IvZS
------END PGP PUBLIC KEY BLOCK-----]=],
-	},]]
-
-	--[[rjmyst3 =
-	{
-		ppaRepo = "ppa:rjmyst3/ppa",
-		listEntry = "deb http://ppa.launchpad.net/rjmyst3/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/rjmyst3/ppa/ubuntu "..distro:lower().." main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
-
-mI0ESXVF7wEEALZ5fK89WdKlneHD+Wb68yRTCcKTyJKyunxNqjjeXeObz+oiwyqQ9TDyJG5j
-fb3PsEZX6vNKQr5I0W5sFDrhFiNAvXYiQLW731lDOKOQuHjkiHtg63mZUt+/ZDU2lY4+yvmQ
-XbCue1t8TyijeEAv9l38JJB4P5Gk7qD44OoB/I9FABEBAAG0HUxhdW5jaHBhZCBQUEEgZm9y
-IFJ5YW4gTXVsZGVyiLYEEwECACAFAkl1Re8CGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAK
-CRBv0kXOWYrbBYJmA/44tUSekJHlwaEzUKY1tnx+n/BXDod1ZC9B7A9Th5/G59KOD3rWQFJ/
-2vUcoX0o68OrbAGjwTupFz5oEXp4/g5gmKbSKK4G6HAZNpNIgm3+pZ0SS0uxgEBocAJMw1fh
-2A3Psk0xstMJcHexfYmfdkrFtIiqlL/o5pGRUbbb/mt/Ag==
-=34Ck
------END PGP PUBLIC KEY BLOCK-----]=],
-	},]]
-
+]===]
 	codegear =
 	{
 		ppaRepo = "ppa:codegear/release",
@@ -282,24 +257,6 @@ TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
 =S2Rj
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
-
-	--[[kupfer =
-	{
-		ppaRepo = "ppa:kupfer-team/ppa",
-		listEntry = "deb http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro:lower().." main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
-
-mI0ESrzzZgEEAL271y6y9swKMrM9WDLN1b0mdw+392lXOpi1r1xyR9DocpNgFQgvWKN7cx4w
-d7nXCCv3AQV3R9gnHo0keB6jTCpofCUax8Gt86znZECyJpwBD8UUypRDws0zkMw/vjoe8JK2
-tEyxzrJahNtgQfyoWSx/SyGwNh8jpTr59HuozHPPABEBAAG0EExhdW5jaHBhZCBLdXBmZXKI
-tgQTAQIAIAUCSrzzZgIbAwYLCQgHAwIEFQIIAwQWAgMBAh4BAheAAAoJEBe1E3ApL2BmQAoD
-/2Szs2fp6WEcnQkxdX4awPJDyj5IljEbFhPD+KRM3VK9j76bfSDyOEc/sk8ErWqK3/VocqDf
-R3GtJucJcYW6wIFoaDJ/mTzHH2GIcHbK7CH/3PjCL7wlvMQGPOR4a1DcXRh5ItobL/pmKGGo
-D/r6CSKuBlF4zOVAwzFwAD+aaBZU
-=fULo
------END PGP PUBLIC KEY BLOCK-----]=],
-	},]]
 
 	virtualbox =
 	{
@@ -371,7 +328,42 @@ I+LZoJw=
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
-	unetbootin =
+	syspeek =
+	{
+		--ppaRepo = "ppa:vicox/syspeek",
+		listEntry = "deb http://ppa.launchpad.net/vicox/syspeek/ubuntu oneiric main\ndeb-src http://ppa.launchpad.net/vicox/syspeek/ubuntu oneiric main",
+		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: SKS 1.0.10
+
+mI0EScK9mwEEAMz00TJgdmc1pBUUIOti5rRILpl/DMcNhLQW3BtKHQkeW9udmNv+rPShFReG
+lsER3mq3NSNqLbpodwYFsDL3RKXouStIzgVePGOUF6RGcJPPJJO6NGgEocGH6mBu1+ghFQRy
+/dHIhQrvZwspfkyFDigA2mnROUFPoxJX1rP6Zcy5ABEBAAG0H0xhdW5jaHBhZCBQUEEgZm9y
+IEdlb3JnIFNjaG1pZGyItgQTAQIAIAUCScK9mwIbAwYLCQgHAwIEFQIIAwQWAgMBAh4BAheA
+AAoJEN9229RT/8woxwUEAMqCliAhdje0taw0Hrjk5vhqzgPQRE0krV22b+e5/mjuxTk8Z1/H
+LHhIzjtxzhkGPUBeIJpWEXHILdcwVYDfPzpWJJgs93bWD3ggip6QAvBZ9ZJdGkzLXsLOgCj+
+c7bCfuPeZ8n1hVzL1pjjKStTrdq5YeNfDbsnCVZB9RDgfXce
+=R59j
+-----END PGP PUBLIC KEY BLOCK-----]=],
+	},
+	exfat =
+	{
+		ppaRepo = "ppa:relan/exfat",
+		listEntry = "deb http://ppa.launchpad.net/relan/exfat/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/relan/exfat/ubuntu "..distro.." main",
+		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: SKS 1.0.10
+
+mI0ETDiLkAEEAMSaDcuqqD1s6bHbkNqr4tHTotoabGt1kxrPGKf5lhyGDF99CTJ9xkiPAfSp
+ItX3gjI7LMyDwcRUpvxAfgDE/pSkYPkUp2fX+moMdiekdsvJOAZWw8UxXPh0TVLobIoDz/s7
+7GDKUoe354QE0p6W9/VRxw5izLlR2XguBB879S15ABEBAAG0L0xhdW5jaHBhZCBGcmVlIGV4
+RkFUIGZpbGUgc3lzdGVtIGltcGxlbWVudGF0aW9uiLYEEwECACAFAkw4i5ACGwMGCwkIBwMC
+BBUCCAMEFgIDAQIeAQIXgAAKCRBN+bKMolKnhGTIA/9GmK3r2/w1Zm26FGvLTCl/9nMkS8Q8
+F9rnugwEuBOfguGenVVARTH3asNl1uLTBUAMgwdHiLNGd9zR70JADgFZobH1oVkAQ0xvos50
+vEFxcnTV6NPI4nrqt/SNQBEKNYRdznOeqMkVlC2W2HNa18L17QFBkzJxhdnNm/4YbUSweg==
+=+jvj
+-----END PGP PUBLIC KEY BLOCK-----]=],
+	},
+
+	--[===[unetbootin =
 	{
 		ppaRepo = "ppa:gezakovacs/ppa",
 		listEntry = "deb http://ppa.launchpad.net/gezakovacs/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/gezakovacs/ppa/ubuntu "..distro.." main",
@@ -387,7 +379,7 @@ UAiYCHIu7tiJL2e8Wq3uEp5sGbqdIOqAeAANlvAKJbv1P6tePGPhTRRvWwULnU+xfGzk3HeL
 SVKYjJboojJ/ntFqP0vrr4FIKgzXbKNSVjoOMsHRvpeoaA==
 =c5Rb
 -----END PGP PUBLIC KEY BLOCK-----]=],
-	},
+	},]===]
 }
 
 function AddExtraAptSources()
@@ -421,8 +413,8 @@ end
 
 function InstallNonAptApplications()
 	-- Diffuse diff tool
-	local diffuseFilename = "diffuse_0.4.3-1_all.deb"
-	os.execute( string.format( "wget --output-document=%s http://sourceforge.net/projects/diffuse/files/diffuse/0.4.3/%s/download", diffuseFilename, diffuseFilename ) )
+	local diffuseFilename = "diffuse_0.4.6-1_all.deb"
+	os.execute( string.format( "wget --output-document=%s http://sourceforge.net/projects/diffuse/files/diffuse/0.4.6/%s/download", diffuseFilename, diffuseFilename ) )
 	-- Install
 	os.execute( "dpkg -i " .. diffuseFilename )
 	-- Cleanup
@@ -441,12 +433,64 @@ function InstallNonAptApplications()
 	os.remove( penlightFilename )
 
 	-- VirtualBox 4.x Extension Pack (gives USB2.0 support)
-	local virtualBoxExtensionFilename	= "Oracle_VM_VirtualBox_Extension_Pack-4.1.14-77440.vbox-extpack"
-	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://download.virtualbox.org/virtualbox/4.1.14/%s", virtualBoxExtensionFilename, virtualBoxExtensionFilename ) )
+	local virtualBoxExtensionFilename	= "Oracle_VM_VirtualBox_Extension_Pack-4.2.2-81494.vbox-extpack"
+	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://download.virtualbox.org/virtualbox/4.2.2/%s", virtualBoxExtensionFilename, virtualBoxExtensionFilename ) )
 	-- Install
 	os.execute( "VBoxManage extpack install " .. virtualBoxExtensionFilename )
 	-- Cleanup
 	os.remove( virtualBoxExtensionFilename )
+
+	-- TextAdept
+	local texadeptFilename			= "textadept_6.0.x86_64.tgz"
+	local texadeptModuleFilename	= "textadept_6.0.modules.zip"
+	local texadeptSettingsFilename	= "textadept_6.0.settings.zip"
+	local texadeptOutput			= "textadept_6.0.x86_64"
+	os.execute( ("wget --output-document=%s http://foicica.com/textadept/download/%s"):format( texadeptFilename, texadeptFilename ) )
+	os.execute( ("wget --output-document=%s http://foicica.com/textadept/download/%s"):format( texadeptModuleFilename, texadeptModuleFilename ) )
+	os.execute( ("wget --output-document=%s https://dl.dropbox.com/s/lwylj0g44nig74h/%s?dl=1"):format( texadeptSettingsFilename, texadeptSettingsFilename ) )
+
+	-- Create directories if don't exist
+	os.execute( "mkdir -p ~/bin" )
+
+	-- Extract
+	os.execute( ("tar -xvzf %s --directory=$HOME/bin"):format( texadeptFilename ) )
+	os.execute( ("unzip -oj %s *modules/modules* -d ~/bin/%s/modules"):format( texadeptModuleFilename, texadeptOutput ) )
+	os.execute( ("unzip %s -d ~"):format( texadeptSettingsFilename ) )		-- Settings go in the home dir
+
+	-- Add symlink
+	os.execute( ("ln -s %s/textadeptjit-ncurses ~/bin/ta"):format( texadeptOutput ) )
+	os.execute( ("ln -s %s/textadeptjit ~/bin/textadept"):format( texadeptOutput ) )
+	-- Add to $PATH
+	local bashrc = io.input( ".bashrc" ):read("*a")
+	local contents = "\nexport PATH=$PATH:$HOME/bin\n"
+	-- If it does not exist add $HOME/bin to the $PATH
+	if not string.find( bashrc, contents ) then
+		bashrc = bashrc .. contents
+		io.output( ".bashrc" ):write( bashrc )
+	end
+
+	-- Cleanup
+	os.remove( texadeptFilename )
+	os.remove( texadeptModuleFilename )
+	os.remove( texadeptSettingsFilename )
+end
+
+function AddManualUserLogin()
+	local file = io.open( "/etc/lightdm/lightdm.conf", "a+" )
+	if file then
+		print( ">>", "Making manual user login possible..." )
+
+		-- Make a backup
+		os.execute( "cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.bak" )
+
+		-- Check to see if it has been added already
+		local lineToAdd = "greeter-show-manual-login=true"
+		if nil == string.find( file:read( "*a" ), lineToAdd:gsub( "-", "%%-" ) ) then
+			file:write( ("%s\n"):format( lineToAdd ) )
+		end
+
+		file:close()
+	end
 end
 
 function main()
@@ -459,10 +503,7 @@ function main()
 		error( "Please run this as root. Use 'sudo' to run this as root" )
 	end
 
-	print( ">>", "Making manual user login possible..." )
-	local file = io.open( "/etc/lightdm/lightdm.conf\n", "a+" )
-	file:write( "greeter-show-manual-login=true" )
-	file:close()
+	AddManualUserLogin()
 
 	if arg[1] ~= "--no-add-apt-sources" then
 		-- Add the needed apt repository
@@ -491,6 +532,14 @@ function main()
 
 	print( ">>", "Installing packages that don't have any APT repository..." )
 	InstallNonAptApplications()
+
+	local success, domain = pcall( dofile, "domain-setup.lua" )
+	if success then
+		print( ">>", "Joining computer to domain..." )
+		domain()
+	else
+		print( ">>", "No script for joining the domain found..." )
+	end
 
 	print( ">>", "Finished installing packages..." )
 end
