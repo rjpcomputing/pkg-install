@@ -3,24 +3,26 @@
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan Pusztai
 -- Date:	03/17/2011
--- Notes:	Built against Ubuntu 10.04 (Lucid).
+-- Notes:	Built against Ubuntu 10.10 (Maverick).
 --			Assumes root privileges.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "lucid"
+local distro = "Maverick"
 local appName = "pkg-install"
-local appVer = "10.04-14"
+local appVer = "10.10-11"
 
 -- General Applications
 local generalPackages =
 {
+	"aptitude",
 	"avant-window-navigator-trunk",
 	"chromium-browser",
 	"joe",
 	"htop",
 	"geany",
 	"gnome-do",
+	"kupfer",
 	"guake",
 	"p7zip-full",
 	"p7zip-rar",
@@ -41,7 +43,6 @@ local generalPackages =
 	"virtualbox-4.0",
 --	"virtualbox-3.2",
 	"dkms",
-	"ttf-ubuntu-font-family",
 	"unetbootin",
 	"ubuntu-tweak",
 }
@@ -122,15 +123,15 @@ local libraryPackages =
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
-	"libneon27-dev",
+	"libneon27-dev"
 }
 
 local aptDetails =
 {
-	["boost-latest"] =
+	--[[["boost-latest"] =
 	{
 		ppaRepo = "ppa:boost-latest/ppa",
-		listEntry = "deb http://ppa.launchpad.net/boost-latest/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/boost-latest/ppa/ubuntu "..distro.." main",
+		listEntry = "deb http://ppa.launchpad.net/boost-latest/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/boost-latest/ppa/ubuntu "..distro:lower().." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -143,12 +144,12 @@ FPj1IVLHus1M/k44s3QjDnaJu/WH6E8KW15xLxXhh724s6lrHuNqmd9Mu8v5lAE27ttOSSrZ
 hzXKImEEiTVJc40nhLfZXtQ0qBdGFqLPsRww
 =qE4j
 -----END PGP PUBLIC KEY BLOCK-----]=],
-	},
+	},]]
 
 	--[[gnomedo =
 	{
 		ppaRepo = "ppa:do-core/ppa",
-		listEntry = "deb http://ppa.launchpad.net/do-core/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/do-core/ppa/ubuntu "..distro.." main",
+		listEntry = "deb http://ppa.launchpad.net/do-core/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/do-core/ppa/ubuntu "..distro:lower().." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -166,7 +167,7 @@ Te/r0oPzrr10iTFupTe/wBR0M9JbKGdY7SvooyqU+W2rf8/LldGx7KE=
 	["chromium-daily"] =
 	{
 		ppaRepo = "ppa:chromium-daily/stable",
-		listEntry = "deb http://ppa.launchpad.net/chromium-daily/stable/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/chromium-daily/stable/ubuntu "..distro.." main",
+		listEntry = "deb http://ppa.launchpad.net/chromium-daily/stable/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/chromium-daily/stable/ubuntu "..distro:lower().." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -187,7 +188,7 @@ bUNO0IcvKBBkOn5o4CiBsMp4DJHdrgJU4S00nAJK00E8I/yAv+x4C9uOacW3yrzSHs7Hv/vG
 	remmina =
 	{
 		ppaRepo = "ppa:llyzs/ppa",
-		listEntry = "deb http://ppa.launchpad.net/llyzs/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/llyzs/ppa/ubuntu "..distro.." main",
+		listEntry = "deb http://ppa.launchpad.net/llyzs/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/llyzs/ppa/ubuntu "..distro:lower().." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -205,7 +206,7 @@ VCLpcDE8yPw6I1SeT0nQRm//yDFgUg==
 	byobu =
 	{
 		ppaRepo = "ppa:byobu/ppa",
-		listEntry = "deb http://ppa.launchpad.net/byobu/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/byobu/ppa/ubuntu "..distro.." main",
+		listEntry = "deb http://ppa.launchpad.net/byobu/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/byobu/ppa/ubuntu "..distro:lower().." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -224,7 +225,7 @@ yw==
 	["awn-testing"] =
 	{
 		ppaRepo = "ppa:awn-testing/ppa",
-		listEntry = "deb http://ppa.launchpad.net/awn-testing/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/awn-testing/ppa/ubuntu "..distro.." main",
+		listEntry = "deb http://ppa.launchpad.net/awn-testing/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/awn-testing/ppa/ubuntu "..distro:lower().." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -248,7 +249,7 @@ DUFbUs+Yc2usRyZY8pVe2Uwy2x7lFsi6VBfo0k9jVsu1l1qBU9BhANJDUTHjR15aPYiUJiZa
 	rjmyst3 =
 	{
 		ppaRepo = "ppa:rjmyst3/ppa",
-		listEntry = "deb http://ppa.launchpad.net/rjmyst3/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/rjmyst3/ppa/ubuntu "..distro.." main",
+		listEntry = "deb http://ppa.launchpad.net/rjmyst3/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/rjmyst3/ppa/ubuntu "..distro:lower().." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -266,7 +267,7 @@ CRBv0kXOWYrbBYJmA/44tUSekJHlwaEzUKY1tnx+n/BXDod1ZC9B7A9Th5/G59KOD3rWQFJ/
 	wxformbuilder =
 	{
 		ppaRepo = "ppa:wxformbuilder/release",
-		listEntry = "deb http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro.." main",
+		listEntry = "deb http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro:lower().." main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -353,43 +354,6 @@ MfbTPy7O9YoL/NQeThYGwxX6ICVr0IZUj9nxFQ/vtmhZ59p53bpdR8jpPXjdDwjZIIlxTf72
 Fky6Ri3/zsC4YRD6idS4c4L50dTy74W6IabCt8GQLtJy5YASlEp5OGwRNptRSFxVE59LuOPR
 o2kvLIAa0Dc=
 =FoK5
------END PGP PUBLIC KEY BLOCK-----]=],
-	},
-
-	["ubuntu-font"] =
-	{
-		ppaRepo = "ppa:webupd8team/ubuntu-font-family",
-		listEntry = "deb http://ppa.launchpad.net/webupd8team/ubuntu-font-family/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/webupd8team/ubuntu-font-family/ubuntu "..distro.." main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-mI0ES9/P3AEEAPbI+9BwCbJucuC78iUeOPKl/HjAXGV49FGat0PcwfDd69MVp6zU
-tIMbLgkUOxIlhiEkDmlYkwWVS8qy276hNg9YKZP37ut5+GPObuS6ZWLpwwNus5Ph
-LvqeGawVJ/obu7d7gM8mBWTgvk0ErnZDaqaU2OZtHataxbdeW8qH/9FJABEBAAG0
-DUxhdW5jaHBhZCBWTEOItgQTAQIAIAUCS9/P3AIbAwYLCQgHAwIEFQIIAwQWAgMB
-Ah4BAheAAAoJEMJRgkjuoUiG5wYEANCdjhXXEpPUbP7cRGXL6cFvrUFKpHHopSC9
-NIQ9qxJVlUK2NjkzCCFhTxPSHU8LHapKKvie3e+lkvWW5bbFN3IuQUKttsgBkQe2
-aNdGBC7dVRxKSAcx2fjqP/s32q1lRxdDRM6xlQlEA1j94ewG9SDVwGbdGcJ43gLx
-BmuKvUJ4
-=0Cp+
------END PGP PUBLIC KEY BLOCK-----]=],
-	},
-
-	["light-themes"] =
-	{
-		ppaRepo = "ppa:webupd8team/light-themes",
-		listEntry = "deb http://ppa.launchpad.net/webupd8team/light-themes/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/webupd8team/light-themes/ubuntu "..distro.." main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
-
-mI0ES9/P3AEEAPbI+9BwCbJucuC78iUeOPKl/HjAXGV49FGat0PcwfDd69MVp6zUtIMbLgkU
-OxIlhiEkDmlYkwWVS8qy276hNg9YKZP37ut5+GPObuS6ZWLpwwNus5PhLvqeGawVJ/obu7d7
-gM8mBWTgvk0ErnZDaqaU2OZtHataxbdeW8qH/9FJABEBAAG0DUxhdW5jaHBhZCBWTEOItgQT
-AQIAIAUCS9/P3AIbAwYLCQgHAwIEFQIIAwQWAgMBAh4BAheAAAoJEMJRgkjuoUiG5wYEANCd
-jhXXEpPUbP7cRGXL6cFvrUFKpHHopSC9NIQ9qxJVlUK2NjkzCCFhTxPSHU8LHapKKvie3e+l
-kvWW5bbFN3IuQUKttsgBkQe2aNdGBC7dVRxKSAcx2fjqP/s32q1lRxdDRM6xlQlEA1j94ewG
-9SDVwGbdGcJ43gLxBmuKvUJ4
-=0Cp+
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
