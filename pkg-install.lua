@@ -345,6 +345,7 @@ c7bCfuPeZ8n1hVzL1pjjKStTrdq5YeNfDbsnCVZB9RDgfXce
 =R59j
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
+
 	exfat =
 	{
 		ppaRepo = "ppa:relan/exfat",
