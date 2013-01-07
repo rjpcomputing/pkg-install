@@ -20,14 +20,20 @@
 --							Added dos2unix
 --							Added openjdk 7 and browser plugin.
 --	11/13/2012 (12.10-08) - Added SubLua to the installed Lua modules
---	11/20/2012 (12.10-09) - Added TextAdept
+--	11/20/2012 (12.10-09) - Added TextAdept v6.0
 --	11/27/2012 (12.10-10) - Added ncurses development libraries
+--	11/27/2012 (12.10-11) - Updated to use TextAdept v6.1
+--	01/07/2013 (12.10-12) - Fixed RabbitVCS package name.
+--							Removed the defunct GetDeb repository.
+--							Fixed bug when a fresh system doesn't have a .bashrc file.
+--							Moved TextAdept to it's own file because it was not
+--							installing it in the correct user directory.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Quantal"
 local appName = "pkg-install"
-local appVer = "12.10-10"
+local appVer = "12.10-12"
 
 -- General Applications
 local generalPackages =
@@ -131,7 +137,7 @@ local develPackages =
 	"liblua5.1-sql-*",
 	"liblua5.1-zip*",
 	"liblua5.1-sublua*",
-	"rabbitvcs-nautilus-3.0",
+	"rabbitvcs-nautilus3",
 	"exuberant-ctags",
 }
 
@@ -292,7 +298,7 @@ qACgtXuTbe2b72sgKdc6gGRKPhLDoEMAmgLwGVN3a4CqewQL+03bqfcKczNH
 =19g1
 -----END PGP PUBLIC KEY BLOCK-----]=]
 	},
-
+--[===[
 	getdeb =
 	{
 		listEntry = "deb http://archive.getdeb.net/ubuntu "..distro:lower().."-getdeb apps",
@@ -327,7 +333,7 @@ I+LZoJw=
 =35Cn
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
-
+]===]
 	syspeek =
 	{
 		--ppaRepo = "ppa:vicox/syspeek",
@@ -440,40 +446,6 @@ function InstallNonAptApplications()
 	os.execute( "VBoxManage extpack install " .. virtualBoxExtensionFilename )
 	-- Cleanup
 	os.remove( virtualBoxExtensionFilename )
-
-	-- TextAdept
-	local texadeptFilename			= "textadept_6.0.x86_64.tgz"
-	local texadeptModuleFilename	= "textadept_6.0.modules.zip"
-	local texadeptSettingsFilename	= "textadept_6.0.settings.zip"
-	local texadeptOutput			= "textadept_6.0.x86_64"
-	os.execute( ("wget --output-document=%s http://foicica.com/textadept/download/%s"):format( texadeptFilename, texadeptFilename ) )
-	os.execute( ("wget --output-document=%s http://foicica.com/textadept/download/%s"):format( texadeptModuleFilename, texadeptModuleFilename ) )
-	os.execute( ("wget --output-document=%s https://dl.dropbox.com/s/lwylj0g44nig74h/%s?dl=1"):format( texadeptSettingsFilename, texadeptSettingsFilename ) )
-
-	-- Create directories if don't exist
-	os.execute( "mkdir -p ~/bin" )
-
-	-- Extract
-	os.execute( ("tar -xvzf %s --directory=$HOME/bin"):format( texadeptFilename ) )
-	os.execute( ("unzip -oj %s *modules/modules* -d ~/bin/%s/modules"):format( texadeptModuleFilename, texadeptOutput ) )
-	os.execute( ("unzip %s -d ~"):format( texadeptSettingsFilename ) )		-- Settings go in the home dir
-
-	-- Add symlink
-	os.execute( ("ln -s %s/textadeptjit-ncurses ~/bin/ta"):format( texadeptOutput ) )
-	os.execute( ("ln -s %s/textadeptjit ~/bin/textadept"):format( texadeptOutput ) )
-	-- Add to $PATH
-	local bashrc = io.input( ".bashrc" ):read("*a")
-	local contents = "\nexport PATH=$PATH:$HOME/bin\n"
-	-- If it does not exist add $HOME/bin to the $PATH
-	if not string.find( bashrc, contents ) then
-		bashrc = bashrc .. contents
-		io.output( ".bashrc" ):write( bashrc )
-	end
-
-	-- Cleanup
-	os.remove( texadeptFilename )
-	os.remove( texadeptModuleFilename )
-	os.remove( texadeptSettingsFilename )
 end
 
 function AddManualUserLogin()
