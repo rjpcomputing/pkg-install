@@ -13,12 +13,13 @@
 --	11/13/2012 (12.10-04) - Added SubLua to the installed Lua modules
 --	11/20/2012 (12.10-05) - Added TexAdept
 --	11/27/2012 (12.10-06) - Added ncurses development library
+--	11/30/2012 (12.10-07) - Updated the tc_build_agent.tweaks.lua file.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Quantal"
 local appName = "pkg-install-srv"
-local appVer = "12.10-06"
+local appVer = "12.10-07"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
