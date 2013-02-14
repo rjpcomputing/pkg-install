@@ -28,12 +28,13 @@
 --							Fixed bug when a fresh system doesn't have a .bashrc file.
 --							Moved TextAdept to it's own file because it was not
 --							installing it in the correct user directory.
+--	02/14/2013 (12.10-13) - Added LuaDBI.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Quantal"
 local appName = "pkg-install"
-local appVer = "12.10-12"
+local appVer = "12.10-13"
 
 -- General Applications
 local generalPackages =
@@ -115,6 +116,9 @@ local develPackages =
 	"graphviz",
 	"xavante",
 	"luarocks",
+	"lua-dbi-postgresql*",
+	"lua-dbi-sqlite3*",
+	"lua-dbi-mysql*",
 	"liblua5.1-bit*",
 	"liblua5.1-copas*",
 	"liblua5.1-cosmo*",

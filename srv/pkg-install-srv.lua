@@ -14,12 +14,13 @@
 --	11/20/2012 (12.10-05) - Added TexAdept
 --	11/27/2012 (12.10-06) - Added ncurses development library
 --	11/30/2012 (12.10-07) - Updated the tc_build_agent.tweaks.lua file.
+--	02/14/2013 (12.10-08) - Added LuaDBI.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Quantal"
 local appName = "pkg-install-srv"
-local appVer = "12.10-07"
+local appVer = "12.10-08"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -81,6 +82,9 @@ local develPackages =
 	"doxygen",
 	"graphviz",
 	"luarocks",
+	"lua-dbi-postgresql*",
+	"lua-dbi-sqlite3*",
+	"lua-dbi-mysql*",
 	"liblua5.1-bit*",
 	"liblua5.1-copas*",
 	"liblua5.1-cosmo*",
