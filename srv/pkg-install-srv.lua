@@ -15,12 +15,13 @@
 --	11/27/2012 (12.10-06) - Added ncurses development library
 --	11/30/2012 (12.10-07) - Updated the tc_build_agent.tweaks.lua file.
 --	02/14/2013 (12.10-08) - Added LuaDBI.
+--	03/18/2013 (12.10-09) - Added Clang.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Quantal"
 local appName = "pkg-install-srv"
-local appVer = "12.10-08"
+local appVer = "12.10-09"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -57,6 +58,7 @@ local develPackages =
 {
 	"build-essential",
 	"gdb",
+	"clang",
 	"linux-source",
 	"linux-headers-generic",
 	"automake",

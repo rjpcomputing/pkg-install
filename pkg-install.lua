@@ -29,12 +29,13 @@
 --							Moved TextAdept to it's own file because it was not
 --							installing it in the correct user directory.
 --	02/14/2013 (12.10-13) - Added LuaDBI.
+--	03/18/2013 (12.10-14) - Added clang.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Quantal"
 local appName = "pkg-install"
-local appVer = "12.10-13"
+local appVer = "12.10-14"
 
 -- General Applications
 local generalPackages =
@@ -84,6 +85,7 @@ local develPackages =
 {
 	"build-essential",
 	"gdb",
+	"clang",
 	"linux-source",
 	"linux-headers-generic",
 	"automake",
