@@ -2,40 +2,22 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan Pusztai
--- Date:	10/22/2012
--- Notes:	Built against Ubuntu 12.10 (Quantal Quetzal).
+-- Date:	05/29/2013
+-- Notes:	Built against Ubuntu 13.04 (Raring Ringtail).
 --			Assumes root privileges.
 --
 -- Changes:
---	10/22/2012 (12.10-01) - Initial Release
---	10/23/2012 (12.10-02) - Removed the Chromium PPA (not updated)
---							Removed the missing smbfs package
---	10/25/2012 (12.10-03) - Made it so that if lighttdm is not used on the
---							system and it will still work.
---	10/26/2012 (12.10-04) -	Added nVidia Driver
---							Added LikewiseOpen to the default insall
---	10/26/2012 (12.10-05) -	Added joining computer to domain, optional
---	10/26/2012 (12.10-06) -	Fixed the adding of the manual login
---	10/31/2012 (12.10-07) -	Added exFAT support
---							Added dos2unix
---							Added openjdk 7 and browser plugin.
---	11/13/2012 (12.10-08) - Added SubLua to the installed Lua modules
---	11/20/2012 (12.10-09) - Added TextAdept v6.0
---	11/27/2012 (12.10-10) - Added ncurses development libraries
---	11/27/2012 (12.10-11) - Updated to use TextAdept v6.1
---	01/07/2013 (12.10-12) - Fixed RabbitVCS package name.
---							Removed the defunct GetDeb repository.
---							Fixed bug when a fresh system doesn't have a .bashrc file.
---							Moved TextAdept to it's own file because it was not
---							installing it in the correct user directory.
---	02/14/2013 (12.10-13) - Added LuaDBI.
---	03/18/2013 (12.10-14) - Added clang.
+--	05/29/2013 (13.04-01) - Initial Release
+--	05/29/2013 (13.04-02) - Added fix for RabbitVCS and nautilus-python.
+--	                        Removed installing diffuse from a download.
+--	                        Moved the install of likewiseopen to the domain setup script.
+--	                        Removed installing the fuse-exfat support it does not work as of creation of this script.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Quantal"
+local distro = "Raring"
 local appName = "pkg-install"
-local appVer = "12.10-14"
+local appVer = "13.04-02"
 
 -- General Applications
 local generalPackages =
@@ -47,7 +29,7 @@ local generalPackages =
 	"chromium-browser",
 	"joe",
 	"htop",
-	"syspeek",
+	--"syspeek",
 	"geany",
 	"pinta",
 	"gimp",
@@ -60,23 +42,22 @@ local generalPackages =
 	"dos2unix",
 	"pidgin",
 	"nautilus-open-terminal",
-	"remmina",
+	--"remmina",
 	"ubuntu-restricted-extras",
 	"samba",
 	--"smbfs",
 	"cifs-utils",
 	"ssh",
-	"virtualbox-4.2",
+	"virtualbox",
+	"virtualbox-dkms",
+	"virtualbox-guest-dkms",
 	"dkms",
 	"unetbootin",
 	"compizconfig-settings-manager",
 	"xul-ext-lightning",
 	"synergy",
-	"nvidia-current-updates",
-	"likewise-open-gui",
-	"likewise-open",
-	"fuse-exfat",
-	"exfat-utils",
+	--"fuse-exfat",
+	--"exfat-utils",
 	"icedtea-7-plugin",
 }
 
@@ -102,7 +83,7 @@ local develPackages =
 	"libtool",
 	"autoconf",
 	"subversion",
-	"git-core",
+	"git",
 	"git-svn",
 	"svnwcrev",
 	"premake",
@@ -111,6 +92,7 @@ local develPackages =
 	"debhelper",
 	"codelite",
 	"meld",
+	"diffuse",
 	"ghex",
 	"wxformbuilder",
 	"wxfb-wxadditions",
@@ -118,30 +100,30 @@ local develPackages =
 	"graphviz",
 	"xavante",
 	"luarocks",
-	"lua-dbi-postgresql*",
-	"lua-dbi-sqlite3*",
-	"lua-dbi-mysql*",
-	"liblua5.1-bit*",
-	"liblua5.1-copas*",
-	"liblua5.1-cosmo*",
-	"liblua5.1-coxpcall*",
-	"liblua5.1-curl*",
-	"liblua5.1-doc*",
-	"liblua5.1-expat*",
-	"liblua5.1-filesystem*",
-	"liblua5.1-json*",
-	"liblua5.1-logging*",
-	"liblua5.1-lpeg*",
-	"liblua5.1-markdown*",
-	"liblua5.1-md5-*",
-	"liblua5.1-orbit*",
-	"liblua5.1-posix*",
-	"liblua5.1-rex*",
-	"liblua5.1-rings*",
-	"liblua5.1-sec*",
-	"liblua5.1-socket*",
-	"liblua5.1-sql-*",
-	"liblua5.1-zip*",
+	"lua-bitop*",
+	"lua-copas",
+	"lua-cosmo",
+	"lua-coxpcall",
+	"lua-curl*",
+	"lua-dbi-*",
+	"lua-doc",
+	"lua-expat*",
+	"lua-filesystem*",
+	"lua-json",
+	"lua-logging",
+	"lua-lpeg*",
+	"lua-markdown",
+	"lua-md5*",
+	"lua-orbit",
+	"lua-penlight*",
+	"lua-posix*",
+	"lua-rex-*",
+	"lua-rings*",
+	"lua-sec*",
+	"lua-socket*",
+	"lua-sql-*",
+	"lua-zip*",
+	"lua-zlib*",
 	"liblua5.1-sublua*",
 	"rabbitvcs-nautilus3",
 	"exuberant-ctags",
@@ -162,8 +144,8 @@ local libraryPackages =
 	"qt4-dev-tools",
 	"libgtk2.0-dev",
 	"libgtk2.0-0-dbg",
-	"libboost1.50-all-dev",
-	"libboost1.50-dbg",
+	"libboost1.53-all-dev",
+	"libboost1.53-dbg",
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
@@ -340,7 +322,9 @@ I+LZoJw=
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 ]===]
-	syspeek =
+
+--[===[
+	["syspeek-old"] =
 	{
 		--ppaRepo = "ppa:vicox/syspeek",
 		listEntry = "deb http://ppa.launchpad.net/vicox/syspeek/ubuntu oneiric main\ndeb-src http://ppa.launchpad.net/vicox/syspeek/ubuntu oneiric main",
@@ -355,6 +339,26 @@ AAoJEN9229RT/8woxwUEAMqCliAhdje0taw0Hrjk5vhqzgPQRE0krV22b+e5/mjuxTk8Z1/H
 LHhIzjtxzhkGPUBeIJpWEXHILdcwVYDfPzpWJJgs93bWD3ggip6QAvBZ9ZJdGkzLXsLOgCj+
 c7bCfuPeZ8n1hVzL1pjjKStTrdq5YeNfDbsnCVZB9RDgfXce
 =R59j
+-----END PGP PUBLIC KEY BLOCK-----]=],
+	},
+]===]
+	
+	syspeek =
+	{
+		--ppaRepo = "ppa:emptythevoid/syspeeknew",
+		listEntry = "deb http://ppa.launchpad.net/emptythevoid/syspeeknew/ubuntu quantal main\ndeb-src http://ppa.launchpad.net/emptythevoid/syspeeknew/ubuntu quantal main",
+		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: SKS 1.1.4
+Comment: Hostname: keyserver.ubuntu.com
+
+mI0EUI9MHQEEAN6pIGqrOfIV4/lj+Yf5Sct8CulM1nnvwfwkKkm2HlP7oj49rJ/eZpF0zL7X
+/KwRVYBfjGGsqEDpuaBL/1txL6LUtUoDlE1dFe4lrSBYXAihGNA80Vmmg4FNAUTFZf7ndxvc
+jAn1q7zrDE05LmYAyQEECJsHjs3mZkjNmhIB2/lpABEBAAG0HkxhdW5jaHBhZCBQUEEgZm9y
+IGVtcHR5dGhldm9pZIi4BBMBAgAiBQJQj0wdAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIX
+gAAKCRAHyGRjeAgdFdAhBADQ9o23ykZSA/0jkb4s8hSzsuSt/fFgGxihzyq9EgSM6d9BCLqA
+QmsU0L1TnP7lWcX3yztBMf8OkEsSdVHILeJ+3Rt1jQ05W2BlDJzhjVFJTiWb3QdtKYmKOxfS
+uy1pABBlTj2tiUpI2RKTjAsvJHGuYEYiBHNnfjEUYkMLthjwNw==
+=imbP
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
@@ -426,24 +430,24 @@ end
 
 function InstallNonAptApplications()
 	-- Diffuse diff tool
-	local diffuseFilename = "diffuse_0.4.6-1_all.deb"
-	os.execute( string.format( "wget --output-document=%s http://sourceforge.net/projects/diffuse/files/diffuse/0.4.6/%s/download", diffuseFilename, diffuseFilename ) )
+	--local diffuseFilename = "diffuse_0.4.6-1_all.deb"
+	--os.execute( string.format( "wget --output-document=%s http://sourceforge.net/projects/diffuse/files/diffuse/0.4.6/%s/download", diffuseFilename, diffuseFilename ) )
 	-- Install
-	os.execute( "dpkg -i " .. diffuseFilename )
+	--os.execute( "dpkg -i " .. diffuseFilename )
 	-- Cleanup
-	os.remove( diffuseFilename )
+	--os.remove( diffuseFilename )
 
 	-- Penlight Lua module
-	local penlightFilename	= "penlight-latest.zip"
-	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://github.com/stevedonovan/Penlight/zipball/master", penlightFilename ) )
+	--local penlightFilename	= "penlight-latest.zip"
+	--os.execute( string.format( "wget --no-check-certificate --output-document=%s http://github.com/stevedonovan/Penlight/zipball/master", penlightFilename ) )
 	-- Extract
-	os.execute( string.format( "unzip -oj %s *lua/* -d pl", penlightFilename ) )
+	--os.execute( string.format( "unzip -oj %s *lua/* -d pl", penlightFilename ) )
 	-- Create directories if don't exist
-	os.execute( "sudo mkdir -p /usr/share/lua/5.1/")
+	--os.execute( "sudo mkdir -p /usr/share/lua/5.1/")
 	-- Move to location
-	os.execute( "sudo mv pl/ /usr/share/lua/5.1/")
+	--os.execute( "sudo mv pl/ /usr/share/lua/5.1/")
 	-- Cleanup
-	os.remove( penlightFilename )
+	--os.remove( penlightFilename )
 
 	-- VirtualBox 4.x Extension Pack (gives USB2.0 support)
 	local virtualBoxExtensionFilename	= "Oracle_VM_VirtualBox_Extension_Pack-4.2.2-81494.vbox-extpack"
@@ -472,6 +476,15 @@ function AddManualUserLogin()
 	end
 end
 
+local function IsRunningInVm()
+	local cmdOutput = io.popen( "dmidecode  | grep -i product" ):read( "*all" )
+	if cmdOutput:find( "VirtualBox" ) or cmdOutput:find( "VMWare" ) then
+		return true
+	else
+		return false
+	end
+end
+
 function main()
 	print( appName .. " v" .. appVer .. " - Script to get your machine up and running quickly after a fresh install." )
 	print( ">>", #generalPackages + #develPackages + #libraryPackages + 1 .. " packages to install" )
@@ -496,11 +509,16 @@ function main()
 	-- Upgrade all packages
 	print( ">>", "Upgrading packages..." )
 	os.execute( "apt-get -y dist-upgrade" )
+	
+	-- FIX: RabbitVCS is broken in 13.04 so these symlinks are needed.
+	os.execute( "ln -s /usr/lib/x86_64-linux-gnu/libpython2.7.so.1.0 /usr/lib/libpython2.7.so.1.0" )
+	os.execute( "ln -s /usr/lib/x86_64-linux-gnu/libpython2.7.so.1.0 /usr/lib/x86_64-linux-gnu/libpython2.7.so" )
 
 	-- Build the packages into a string.
 	local allPackages = table.concat( generalPackages, " " ).." "
 	allPackages = allPackages..table.concat( develPackages, " " ).." "
 	allPackages = allPackages..table.concat( libraryPackages, " " ).." "
+	if not IsRunningInVm() then allPackages = allPackages.." nvidia-current-updates" end
 	print( ">>", "Full list of packages to be installed..." )
 	print( allPackages )
 
