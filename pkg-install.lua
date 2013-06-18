@@ -12,12 +12,13 @@
 --	                        Removed installing diffuse from a download.
 --	                        Moved the install of likewiseopen to the domain setup script.
 --	                        Removed installing the fuse-exfat support it does not work as of creation of this script.
+--	06/18/2013 (13.04-03) - Only install the virtualbox guest addtions if a vm
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Raring"
 local appName = "pkg-install"
-local appVer = "13.04-02"
+local appVer = "13.04-03"
 
 -- General Applications
 local generalPackages =
@@ -50,7 +51,6 @@ local generalPackages =
 	"ssh",
 	"virtualbox",
 	"virtualbox-dkms",
-	"virtualbox-guest-dkms",
 	"dkms",
 	"unetbootin",
 	"compizconfig-settings-manager",
@@ -342,7 +342,7 @@ c7bCfuPeZ8n1hVzL1pjjKStTrdq5YeNfDbsnCVZB9RDgfXce
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 ]===]
-	
+
 	syspeek =
 	{
 		--ppaRepo = "ppa:emptythevoid/syspeeknew",
@@ -509,7 +509,7 @@ function main()
 	-- Upgrade all packages
 	print( ">>", "Upgrading packages..." )
 	os.execute( "apt-get -y dist-upgrade" )
-	
+
 	-- FIX: RabbitVCS is broken in 13.04 so these symlinks are needed.
 	os.execute( "ln -s /usr/lib/x86_64-linux-gnu/libpython2.7.so.1.0 /usr/lib/libpython2.7.so.1.0" )
 	os.execute( "ln -s /usr/lib/x86_64-linux-gnu/libpython2.7.so.1.0 /usr/lib/x86_64-linux-gnu/libpython2.7.so" )
@@ -518,7 +518,12 @@ function main()
 	local allPackages = table.concat( generalPackages, " " ).." "
 	allPackages = allPackages..table.concat( develPackages, " " ).." "
 	allPackages = allPackages..table.concat( libraryPackages, " " ).." "
-	if not IsRunningInVm() then allPackages = allPackages.." nvidia-current-updates" end
+	if IsRunningInVm() then
+		allPackages = allPackages.." virtualbox-guest-dkms"
+	else
+		allPackages = allPackages.." nvidia-current-updates"
+	end
+
 	print( ">>", "Full list of packages to be installed..." )
 	print( allPackages )
 
