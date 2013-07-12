@@ -13,12 +13,13 @@
 --	                        Moved the install of likewiseopen to the domain setup script.
 --	                        Removed installing the fuse-exfat support it does not work as of creation of this script.
 --	06/18/2013 (13.04-03) - Only install the virtualbox guest addtions if a vm
+--	07/12/2013 (13.04-04) - Added smbnetfs and rake
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Raring"
 local appName = "pkg-install"
-local appVer = "13.04-03"
+local appVer = "13.04-04"
 
 -- General Applications
 local generalPackages =
@@ -43,10 +44,9 @@ local generalPackages =
 	"dos2unix",
 	"pidgin",
 	"nautilus-open-terminal",
-	--"remmina",
 	"ubuntu-restricted-extras",
 	"samba",
-	--"smbfs",
+	"smbnetfs",
 	"cifs-utils",
 	"ssh",
 	"virtualbox",
@@ -90,6 +90,7 @@ local develPackages =
 	"premake4",
 	"valgrind",
 	"debhelper",
+	"rake",
 	"codelite",
 	"meld",
 	"diffuse",

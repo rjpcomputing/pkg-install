@@ -16,12 +16,13 @@
 --	11/30/2012 (12.10-07) - Updated the tc_build_agent.tweaks.lua file.
 --	02/14/2013 (12.10-08) - Added LuaDBI.
 --	03/18/2013 (12.10-09) - Added Clang.
+--	07/12/2013 (12.10-10) - Added smbnetfs and rake.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Quantal"
 local appName = "pkg-install-srv"
-local appVer = "12.10-09"
+local appVer = "12.10-10"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -48,6 +49,7 @@ local generalPackages =
 	"unzip",
 	"samba",
 	"cifs-utils",
+	"smbnetfs",
 	"ssh",
 	"dos2unix",
 	"openjdk-7-jdk",
@@ -81,6 +83,7 @@ local develPackages =
 	"premake4",
 	"valgrind",
 	"debhelper",
+	"rake",
 	"doxygen",
 	"graphviz",
 	"luarocks",
