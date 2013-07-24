@@ -1,28 +1,19 @@
 #!/usr/bin/env lua
 -- ----------------------------------------------------------------------------
 -- Script to get your server machine up and running quickly after a fresh install.
--- Author:	Ryan Pusztai
--- Date:	10/26/2012
--- Notes:	Built against Ubuntu 12.10 (Quantal).
+-- Author:	Ryan P. <rjpcomputing@gmail.com>
+-- Date:	07/24/2013
+-- Notes:	Built against Ubuntu 13.04 (Raring Ringtail).
 --			Assumes root privileges.
 --
 -- Changes:
---	11/05/2012 (12.10-01) - Initial Release
---	11/06/2012 (12.10-02) - Fixed the absence of add-apt-repository
---	11/08/2012 (12.10-03) - Fixed TC tweak
---	11/13/2012 (12.10-04) - Added SubLua to the installed Lua modules
---	11/20/2012 (12.10-05) - Added TexAdept
---	11/27/2012 (12.10-06) - Added ncurses development library
---	11/30/2012 (12.10-07) - Updated the tc_build_agent.tweaks.lua file.
---	02/14/2013 (12.10-08) - Added LuaDBI.
---	03/18/2013 (12.10-09) - Added Clang.
---	07/12/2013 (12.10-10) - Added smbnetfs and rake.
+--	07/24/2013 (13.04-01) - Initial Release
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Quantal"
+local distro = "Raring"
 local appName = "pkg-install-srv"
-local appVer = "12.10-10"
+local appVer = "13.04-01"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -76,7 +67,7 @@ local develPackages =
 	"libtool",
 	"autoconf",
 	"subversion",
-	"git-core",
+	"git",
 	"git-svn",
 	"svnwcrev",
 	"premake",
@@ -86,31 +77,32 @@ local develPackages =
 	"rake",
 	"doxygen",
 	"graphviz",
+	"xavante",
 	"luarocks",
-	"lua-dbi-postgresql*",
-	"lua-dbi-sqlite3*",
-	"lua-dbi-mysql*",
-	"liblua5.1-bit*",
-	"liblua5.1-copas*",
-	"liblua5.1-cosmo*",
-	"liblua5.1-coxpcall*",
-	"liblua5.1-curl*",
-	"liblua5.1-doc*",
-	"liblua5.1-expat*",
-	"liblua5.1-filesystem*",
-	"liblua5.1-json*",
-	"liblua5.1-logging*",
-	"liblua5.1-lpeg*",
-	"liblua5.1-markdown*",
-	"liblua5.1-md5-*",
-	"liblua5.1-orbit*",
-	"liblua5.1-posix*",
-	"liblua5.1-rex*",
-	"liblua5.1-rings*",
-	"liblua5.1-sec*",
-	"liblua5.1-socket*",
-	"liblua5.1-sql-*",
-	"liblua5.1-zip*",
+	"lua-bitop*",
+	"lua-copas",
+	"lua-cosmo",
+	"lua-coxpcall",
+	"lua-curl*",
+	"lua-dbi-*",
+	"lua-doc",
+	"lua-expat*",
+	"lua-filesystem*",
+	"lua-json",
+	"lua-logging",
+	"lua-lpeg*",
+	"lua-markdown",
+	"lua-md5*",
+	"lua-orbit",
+	"lua-penlight*",
+	"lua-posix*",
+	"lua-rex-*",
+	"lua-rings*",
+	"lua-sec*",
+	"lua-socket*",
+	"lua-sql-*",
+	"lua-zip*",
+	"lua-zlib*",
 	"liblua5.1-sublua*",
 	"exuberant-ctags",
 }
@@ -118,20 +110,16 @@ local develPackages =
 local libraryPackages =
 {
 	"libwxgtk2.8-*",
-	--"libwxgtk2.8-dev",
-	--"libwxgtk2.8-dbg",
 	"wx2.8-headers",
 	"wx-common",
 	"libwxadditions28*",
-	--"libwxadditions28-dev",
-	--"libwxadditions28-dbg",
 	"libqt4-dev",
 	"libqt4-dbg",
 	"qt4-dev-tools",
 	"libgtk2.0-dev",
 	"libgtk2.0-0-dbg",
-	"libboost1.50-all-dev",
-	"libboost1.50-dbg",
+	"libboost1.53-all-dev",
+	"libboost1.53-dbg",
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
@@ -179,44 +167,6 @@ FZNAsp3EmvwZr+hRfX+z2KbV01yxU5ITSx47tUB3orVc
 =g/kS
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
-
-	wxformbuilder =
-	{
-		ppaRepo = "ppa:wxformbuilder/release",
-		listEntry = "deb http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro:lower().." main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
-
-mI0ESy/PmQEEAO5/zYxLgGiRReb0ZmJSnD+VAaDDOQNCeysCdz7R7h9wUe5ZZOSkvogpd7sy
-E/Y7SuxHZJQoh7j+nWP5AgFdIOiSV+LZMtdsL3pG77NJkBKPOS0eH87cIK9XNWyeoj8cb9El
-KEbsgp5/GFPM9PF378tCCymxnzjak71+UCf2kCk7ABEBAAG0EUxhdW5jaHBhZCBSZWxlYXNl
-iLYEEwECACAFAksvz5kCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRDeRtnvVlJrw8D5
-BAC7tTGtqZ2YigkbyIv08BNi2kuYOe0geESXEs86JWpnzqRF3tvYaH1PPsmdHDj9BofaAc/3
-FqNHhZtWdnp7WmOMnOIXLRqtbUViZVoUdEN9PKqrjmmEIjWKkF+8Xt71vZ8bVvWH5+v7m/90
-TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
-=S2Rj
------END PGP PUBLIC KEY BLOCK-----]=],
-	},
-	-- TODO: VMWare has not released a apt repo for Quantal yet, so I am using oneiric
-	--[==[vmware =
-	{
-		listEntry = "deb http://packages.vmware.com/tools/esx/4.1latest/ubuntu oneiric main restricted",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: GnuPG v1.4.7 (GNU/Linux)
-
-mI0ESAP+VwEEAMZylR8dOijUPNn3He3GdgM/kOXEhn3uQl+sRMNJUDm1qebi2D5b
-Qa7GNBIlXm3DEMAS+ZlkiFQ4WnhUq5awEXU7MGcWCEGfums5FckV2tysSfn7HeWd
-9mkEnsY2CUZF54lyKfY0f+vdFd6QdYo6b+YxGnLyiunEYHXSEo1TNj1vABEBAAG0
-QlZNd2FyZSwgSW5jLiAtLSBMaW51eCBQYWNrYWdpbmcgS2V5IC0tIDxsaW51eC1w
-YWNrYWdlc0B2bXdhcmUuY29tPoi8BBMBAgAmBQJIA/5XAhsDBQkRcu4ZBgsJCAcD
-AgQVAggDBBYCAwECHgECF4AACgkQwLXgq2b9SUkw0AP/UlmWQIjMNcYfTKCOOyFx
-Csl3bY5OZ6HZs4qCRvzESVTyKs0YN1gX5YDDRmE5EbaqSO7OLriA7p81CYhstYID
-GjVTBqH/zJz/DGKQUv0A7qGvnX4MDt/cvvgEXjGpeRx42le/mkPsHdwbG/8jKveY
-S/eu0g9IenS49i0hcOnjShGIRgQQEQIABgUCSAQWfAAKCRD1ZoIQEyn810LTAJ9k
-IOziCqa/awfBvlLq4eRgN/NnkwCeJLOuL6eAueYjaODTcFEGKUXlgM4=
-=bXtp
------END PGP PUBLIC KEY BLOCK-----]=],
-	},]==]
 }
 
 function AddExtraAptSources()
@@ -252,50 +202,7 @@ function AddExtraAptSources()
 end
 
 function InstallNonAptApplications()
-	-- Penlight Lua module
-	local penlightFilename	= "penlight-latest.zip"
-	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://github.com/stevedonovan/Penlight/zipball/master", penlightFilename ) )
-	-- Extract
-	os.execute( string.format( "unzip -oj %s *lua/* -d pl", penlightFilename ) )
-	-- Create directories if don't exist
-	os.execute( "sudo mkdir -p /usr/share/lua/5.1/")
-	-- Move to location
-	os.execute( "sudo mv pl/ /usr/share/lua/5.1/")
-	-- Cleanup
-	os.remove( penlightFilename )
 
-	-- TextAdept
-	local texadeptFilename			= "textadept_6.0.x86_64.tgz"
-	local texadeptModuleFilename	= "textadept_6.0.modules.zip"
-	local texadeptSettingsFilename	= "textadept_6.0.settings.zip"
-	local texadeptOutput			= "textadept_6.0.x86_64"
-	os.execute( ("wget --output-document=%s http://foicica.com/textadept/download/%s"):format( texadeptFilename, texadeptFilename ) )
-	os.execute( ("wget --output-document=%s http://foicica.com/textadept/download/%s"):format( texadeptModuleFilename, texadeptModuleFilename ) )
-	os.execute( ("wget --output-document=%s https://dl.dropbox.com/s/lwylj0g44nig74h/%s?dl=1"):format( texadeptSettingsFilename, texadeptSettingsFilename ) )
-
-	-- Create directories if don't exist
-	os.execute( "mkdir -p ~/bin" )
-
-	-- Extract
-	os.execute( ("tar -xvzf %s --directory=$HOME/bin"):format( texadeptFilename ) )
-	os.execute( ("unzip -oj %s *modules/modules* -d ~/bin/%s/modules"):format( texadeptModuleFilename, texadeptOutput ) )
-	os.execute( ("unzip %s -d ~"):format( texadeptSettingsFilename ) )		-- Settings go in the home dir
-
-	-- Add symlink
-	os.execute( ("ln -s %s/textadeptjit-ncurses ~/bin/ta"):format( texadeptOutput ) )
-	-- Add to $PATH
-	local bashrc = io.input( ".bashrc" ):read("*a")
-	local contents = "\nexport PATH=$PATH:$HOME/bin\n"
-	-- If it does not exist add $HOME/bin to the $PATH
-	if not string.find( bashrc, contents ) then
-		bashrc = bashrc .. contents
-		io.output( ".bashrc" ):write( bashrc )
-	end
-
-	-- Cleanup
-	os.remove( texadeptFilename )
-	os.remove( texadeptModuleFilename )
-	os.remove( texadeptSettingsFilename )
 end
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 -- ----------------------------------------------------------------------------
 -- Script to get your machine up and running quickly after a fresh install.
--- Author:	Ryan Pusztai
+-- Author:	Ryan P. <rjpcomputing@gmail.com>
 -- Date:	05/29/2013
 -- Notes:	Built against Ubuntu 13.04 (Raring Ringtail).
 --			Assumes root privileges.
@@ -14,12 +14,13 @@
 --	                        Removed installing the fuse-exfat support it does not work as of creation of this script.
 --	06/18/2013 (13.04-03) - Only install the virtualbox guest addtions if a vm
 --	07/12/2013 (13.04-04) - Added smbnetfs and rake
+--	07/24/2013 (13.04-05) - Added kupfer PPA to fix crash.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Raring"
 local appName = "pkg-install"
-local appVer = "13.04-04"
+local appVer = "13.04-05"
 
 -- General Applications
 local generalPackages =
@@ -195,28 +196,25 @@ APlN9ZheYInv1XLS4G+jDQjnMbd0VdzP
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
---[===[
-	["chromium-stable"] =
-	{
-		ppaRepo = "ppa:chromium-daily/stable",
-		listEntry = "deb http://ppa.launchpad.net/chromium-daily/stable/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/chromium-daily/stable/ubuntu "..distro:lower().." main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
+	kupfer =
+		{
+			ppaRepo = "ppa:kupfer-team/ppa",
+			listEntry = "deb http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro.." main",
+			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: SKS 1.1.4
+Comment: Hostname: keyserver.ubuntu.com
 
-mI0ESaSPtAEEAK1nJtoDZ0ewpOOf0ET6Vp28LqO9mB4ubWjzXyRSbiha5pCvnnSIU1K+7Gzb
-t3r0iUV9eKLUmf8pqfF/9kwsoqFqFSCjp+XjUzXsEChcGBWvyfGdTX8ClFfwNxSVLvGSqmdX
-gZhs0F8tQB0lPWHGy3VvEt7wG/VHqpcOYpdNYRqxABEBAAG0IExhdW5jaHBhZCBQUEEgZm9y
-IGNocm9taXVtLWRhaWx5iEYEEBECAAYFAknOwV0ACgkQ9rPTxuzZSv0f2QCeLjemEkq5tYjI
-xtFpw3F11szeakYAoKsBZcl3Az08cYEd9UNZjQE1j4YtiEYEEBECAAYFAknS5Z8ACgkQrZOR
-ep7Yx+qZ8wCfZYBABDkYO0Ulrivpxn6hARmgLxEAn0SeWaGjVQ4UE3zpNESguf+t9K1xiLYE
-EwECACAFAkmkj7QCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRBam/O7Tl4XtV/2BACs
-/RTpEWB/NUlluJmp1e6iFoyyfbT+HOD3hg35aQMzbdcmijsAiY9MvIfZ0YKWyqNUdGpDj5n0
-bUNO0IcvKBBkOn5o4CiBsMp4DJHdrgJU4S00nAJK00E8I/yAv+x4C9uOacW3yrzSHs7Hv/vG
-6Z1Jh+1JrabK13hdhwOL8+aY6Q==
-=9P6G
+mI0ESrzzZgEEAL271y6y9swKMrM9WDLN1b0mdw+392lXOpi1r1xyR9DocpNgFQgvWKN7cx4w
+d7nXCCv3AQV3R9gnHo0keB6jTCpofCUax8Gt86znZECyJpwBD8UUypRDws0zkMw/vjoe8JK2
+tEyxzrJahNtgQfyoWSx/SyGwNh8jpTr59HuozHPPABEBAAG0EExhdW5jaHBhZCBLdXBmZXKI
+tgQTAQIAIAUCSrzzZgIbAwYLCQgHAwIEFQIIAwQWAgMBAh4BAheAAAoJEBe1E3ApL2BmQAoD
+/2Szs2fp6WEcnQkxdX4awPJDyj5IljEbFhPD+KRM3VK9j76bfSDyOEc/sk8ErWqK3/VocqDf
+R3GtJucJcYW6wIFoaDJ/mTzHH2GIcHbK7CH/3PjCL7wlvMQGPOR4a1DcXRh5ItobL/pmKGGo
+D/r6CSKuBlF4zOVAwzFwAD+aaBZU
+=fULo
 -----END PGP PUBLIC KEY BLOCK-----]=],
-	},
-]===]
+		},
+
 	codegear =
 	{
 		ppaRepo = "ppa:codegear/release",
