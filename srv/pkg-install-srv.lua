@@ -8,12 +8,15 @@
 --
 -- Changes:
 --	07/24/2013 (13.04-01) - Initial Release
+--	07/24/2013 (13.04-02) - Fixed missing wxFormBuild PPA so we could
+--	                        install wxAdditions.
+--	09/18/2013 (13.04-03) - Added gdebi
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Raring"
 local appName = "pkg-install-srv"
-local appVer = "13.04-01"
+local appVer = "13.04-03"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -32,6 +35,7 @@ end
 local generalPackages =
 {
 	"aptitude",
+	"gdebi-core",
 	"joe",
 	"htop",
 	"p7zip-full",
@@ -165,6 +169,24 @@ ELPd8HImZBuRU84EAIwZ/bh/y+dmbG3gNfnlUxIx3co0ztW0GJNjK3ppCKeWFwa2RMRSkFPl
 VUjsQMxhPSrz4lAfsFlFnr2UKBhyCpew/V0fJGGV2g8OwZpR50EwiaBowKpoTK6EDJGwLX6k
 FZNAsp3EmvwZr+hRfX+z2KbV01yxU5ITSx47tUB3orVc
 =g/kS
+-----END PGP PUBLIC KEY BLOCK-----]=],
+	},
+
+	wxformbuilder =
+	{
+		ppaRepo = "ppa:wxformbuilder/release",
+		listEntry = "deb http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro:lower().." main",
+		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: SKS 1.0.10
+
+mI0ESy/PmQEEAO5/zYxLgGiRReb0ZmJSnD+VAaDDOQNCeysCdz7R7h9wUe5ZZOSkvogpd7sy
+E/Y7SuxHZJQoh7j+nWP5AgFdIOiSV+LZMtdsL3pG77NJkBKPOS0eH87cIK9XNWyeoj8cb9El
+KEbsgp5/GFPM9PF378tCCymxnzjak71+UCf2kCk7ABEBAAG0EUxhdW5jaHBhZCBSZWxlYXNl
+iLYEEwECACAFAksvz5kCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRDeRtnvVlJrw8D5
+BAC7tTGtqZ2YigkbyIv08BNi2kuYOe0geESXEs86JWpnzqRF3tvYaH1PPsmdHDj9BofaAc/3
+FqNHhZtWdnp7WmOMnOIXLRqtbUViZVoUdEN9PKqrjmmEIjWKkF+8Xt71vZ8bVvWH5+v7m/90
+TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
+=S2Rj
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 }
