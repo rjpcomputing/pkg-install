@@ -9,12 +9,13 @@
 -- Changes:
 --	01/13/2011 (13.10-01) - Initial Release
 --	                        Updated to wxWidgets 3.0
+--	01/17/2011 (13.10-02) - Added wxWidgets media library
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Saucy"
 local appName = "pkg-install-srv"
-local appVer = "13.10-01"
+local appVer = "13.10-02"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
