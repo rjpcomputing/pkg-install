@@ -2,25 +2,23 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan P. <rjpcomputing@gmail.com>
--- Date:	05/29/2013
--- Notes:	Built against Ubuntu 13.04 (Raring Ringtail).
+-- Date:	12/06/2013
+-- Notes:	Built against Ubuntu 13.10 (Saucy Salamander).
 --			Assumes root privileges.
 --
 -- Changes:
---	05/29/2013 (13.04-01) - Initial Release
---	05/29/2013 (13.04-02) - Added fix for RabbitVCS and nautilus-python.
---	                        Removed installing diffuse from a download.
---	                        Moved the install of likewiseopen to the domain setup script.
---	                        Removed installing the fuse-exfat support it does not work as of creation of this script.
---	06/18/2013 (13.04-03) - Only install the virtualbox guest addtions if a vm
---	07/12/2013 (13.04-04) - Added smbnetfs and rake
---	07/24/2013 (13.04-05) - Added kupfer PPA to fix crash.
+--	12/06/2013 (13.10-01) - Initial Release
+--	01/06/2014 (13.10-02) - Switched to using Google Chrome instead of Chromium
+--	01/07/2014 (13.10-03) - Fixed lighdm greeter configuration
+--	                      - Removed the automatic install of nvidia drivers
+--	                        because it was causing to many problems
+--	01/16/2014 (13.10-04) - Updated to wxAdditioiins 3.0
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Raring"
+local distro = "Saucy"
 local appName = "pkg-install"
-local appVer = "13.04-05"
+local appVer = "13.10-04"
 
 -- General Applications
 local generalPackages =
@@ -29,7 +27,8 @@ local generalPackages =
 	"synaptic",
 	"gdebi",
 	"alacarte",
-	"chromium-browser",
+	--"chromium-browser",
+	"google-chrome-stable",
 	"joe",
 	"htop",
 	--"syspeek",
@@ -54,7 +53,8 @@ local generalPackages =
 	"virtualbox-dkms",
 	"dkms",
 	"unetbootin",
-	"compizconfig-settings-manager",
+	--"compizconfig-settings-manager",
+	"unity-tweak-tool",
 	"xul-ext-lightning",
 	"synergy",
 	--"fuse-exfat",
@@ -133,21 +133,18 @@ local develPackages =
 
 local libraryPackages =
 {
-	"libwxgtk2.8-*",
-	--"libwxgtk2.8-dev",
-	--"libwxgtk2.8-dbg",
-	"wx2.8-headers",
+	"libwxgtk3.0-*",
+	"libwxgtk-media3.0*",
+	"wx3.0-headers",
 	"wx-common",
-	"libwxadditions28*",
-	--"libwxadditions28-dev",
-	--"libwxadditions28-dbg",
+	"libwxadditions30*",
 	"libqt4-dev",
 	"libqt4-dbg",
 	"qt4-dev-tools",
 	"libgtk2.0-dev",
 	"libgtk2.0-0-dbg",
-	"libboost1.53-all-dev",
-	"libboost1.53-dbg",
+	"libboost1.54-all-dev",
+	"libboost1.54-dbg",
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
@@ -233,6 +230,25 @@ FZNAsp3EmvwZr+hRfX+z2KbV01yxU5ITSx47tUB3orVc
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
+	wxwidgets =
+	{
+		ppaRepo = "ppa:wxformbuilder/wxwidgets",
+		listEntry = "deb http://ppa.launchpad.net/wxformbuilder/wxwidgets/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/wxwidgets/ubuntu "..distro:lower().." main",
+		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: SKS 1.1.4
+Comment: Hostname: keyserver.ubuntu.com
+
+mI0ESy/PmQEEAO5/zYxLgGiRReb0ZmJSnD+VAaDDOQNCeysCdz7R7h9wUe5ZZOSkvogpd7sy
+E/Y7SuxHZJQoh7j+nWP5AgFdIOiSV+LZMtdsL3pG77NJkBKPOS0eH87cIK9XNWyeoj8cb9El
+KEbsgp5/GFPM9PF378tCCymxnzjak71+UCf2kCk7ABEBAAG0EUxhdW5jaHBhZCBSZWxlYXNl
+iLYEEwECACAFAksvz5kCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRDeRtnvVlJrw8D5
+BAC7tTGtqZ2YigkbyIv08BNi2kuYOe0geESXEs86JWpnzqRF3tvYaH1PPsmdHDj9BofaAc/3
+FqNHhZtWdnp7WmOMnOIXLRqtbUViZVoUdEN9PKqrjmmEIjWKkF+8Xt71vZ8bVvWH5+v7m/90
+TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
+=S2Rj
+-----END PGP PUBLIC KEY BLOCK-----]=],
+	},
+	
 	wxformbuilder =
 	{
 		ppaRepo = "ppa:wxformbuilder/release",
@@ -285,62 +301,42 @@ qACgtXuTbe2b72sgKdc6gGRKPhLDoEMAmgLwGVN3a4CqewQL+03bqfcKczNH
 =19g1
 -----END PGP PUBLIC KEY BLOCK-----]=]
 	},
---[===[
-	getdeb =
+	
+	chrome =
 	{
-		listEntry = "deb http://archive.getdeb.net/ubuntu "..distro:lower().."-getdeb apps",
+		listEntry = "deb http://dl.google.com/linux/chrome/deb/ stable main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+Version: GnuPG v1.4.2.2 (GNU/Linux)
 
-mQINBEoN6uABEADGJQBv6TJubjMfaPfT8WGKta5KuFXHgyjuDINE3GDEu9V/L6hD
-OjpNUblSGtkRvljjkp+HvBphrIrFtg7/T1YH/jhG1mngJEayXUrWKwcQBwxHVJlJ
-8+S5FCXa31RyCmdd0DhMdLMJf7tfN0MxsmcK9MtbxVdONSWRqaC1+4Voqk/VuVIv
-qdQUJu/7H1WdBmLELrjtL0khfX85AblYphbuPsQfx/9k7cT+JnjcT5hR8Fl7/rpf
-1H9AUHv/nAxbj28kpIi7Xgpa7JFrklqujyjLhjS504dHXriYILM1ZC4neVg2j+kc
-IBvRoT3Uvb5BGZ2k+hh5MOG0V+Xpxb5HLjtez2jjiujE7EbaLiax2pVTcGKmc0ae
-HEDXjGfBgoCKl7emDf6huJnmiVcdHxuVFGJEsmKSHSUsAtOkCkKqK6K4C0VC2+Rf
-TN8EOLaDejFRTPKBDsULjM6eDF45+Aqnqg98NvA/CIUftCZ5MmUPy7+j8cbh7QIy
-Y7rGKVHoZv5BZHnTydMbaOe34clJmxJ+JEcInEVR50GN3g3OjiiCBa+P7DQdV7ff
-bCOmssB5+Fcaa85CSmjMbmwFvNQvAmpNPVOdRNy9Ct6iJ+9mLWxfhKzac8gGy+Cm
-ZrXe3xLxZIlogoVX/NLEuJwEWLCya/f4sAbNuOZqGhqX2I8BaiT2eTeJfQARAQAB
-tDlHZXREZWIgQXJjaGl2ZSBBdXRvbWF0aWMgU2lnbmluZyBLZXkgPGFyY2hpdmVA
-Z2V0ZGViLm5ldD6JAjcEEwEIACEFAkoN6uACGwMFCwkIBwMFFQoJCAsFFgIDAQAC
-HgECF4AACgkQqKUV8EbX588I3w/+MLMjIDB3HPOTucaxuUWfsFKm4RB7nkVIhPuW
-6rdsFH4eqFgivMS47oNTi8QmviPsU7TXBchtNfGrIWZUP4CGiLYSwResbN+UMB9f
-JRx/FNp6VwjeRYPJObk0q/EukNDaiT/UItrQz08laLlj7QScxoh7u3NGZnCGvacd
-dzNcOwfmkh1N5tzyXMae3Zv2L0VG3v4ZP/yPWB6W9ziUsFVI65oiFkHHvjZgLOp0
-2pB54YcjUz91z6Fq2RVgDk+p7T6YTo8ZInptb/Blfu4+uSp1Pcloe2eyGMDMy5fp
-mrtIWfDqVYkZGFU2w+GpaJMPe3ZKlAOUBxiTmB4AqKj1K1sQ3PMUzrQaWdbuWZz4
-w+rQCeF3BPOolIyudGhHis6oXQykOZwYBA2/AQAKlfdJDqnKqULKjFe5UTiy32Od
-r/3dWnNZGJ0dY+6G/bTtpMIHzZkfdd3tgqybtQjX3sTMtG7g7PZdg0awXlfvbo7N
-QoqkzaQhpqDajQ7kigFQ6ZAcvUio58ePehWkwiHsdrrK80Zhy69azDJpgN2zGRBA
-1RFv1x7YetjSfUyGv3632UcOcpGagA4BwEDYB5Tgav5Vz/QRgjlkh/UQP11eq3BD
-aOR5ibezxThk9Ukuba7U1Nbqr6YUvxuVMFz14okaw9FlhCwB9PMiZT+sp3/Ygxdr
-I+LZoJw=
-=35Cn
------END PGP PUBLIC KEY BLOCK-----]=],
+mQGiBEXwb0YRBADQva2NLpYXxgjNkbuP0LnPoEXruGmvi3XMIxjEUFuGNCP4Rj/a
+kv2E5VixBP1vcQFDRJ+p1puh8NU0XERlhpyZrVMzzS/RdWdyXf7E5S8oqNXsoD1z
+fvmI+i9b2EhHAA19Kgw7ifV8vMa4tkwslEmcTiwiw8lyUl28Wh4Et8SxzwCggDcA
+feGqtn3PP5YAdD0km4S4XeMEAJjlrqPoPv2Gf//tfznY2UyS9PUqFCPLHgFLe80u
+QhI2U5jt6jUKN4fHauvR6z3seSAsh1YyzyZCKxJFEKXCCqnrFSoh4WSJsbFNc4PN
+b0V0SqiTCkWADZyLT5wll8sWuQ5ylTf3z1ENoHf+G3um3/wk/+xmEHvj9HCTBEXP
+78X0A/0Tqlhc2RBnEf+AqxWvM8sk8LzJI/XGjwBvKfXe+l3rnSR2kEAvGzj5Sg0X
+4XmfTg4Jl8BNjWyvm2Wmjfet41LPmYJKsux3g0b8yzQxeOA4pQKKAU3Z4+rgzGmf
+HdwCG5MNT2A5XxD/eDd+L4fRx0HbFkIQoAi1J3YWQSiTk15fw7RMR29vZ2xlLCBJ
+bmMuIExpbnV4IFBhY2thZ2UgU2lnbmluZyBLZXkgPGxpbnV4LXBhY2thZ2VzLWtl
+eW1hc3RlckBnb29nbGUuY29tPohjBBMRAgAjAhsDBgsJCAcDAgQVAggDBBYCAwEC
+HgECF4AFAkYVdn8CGQEACgkQoECDD3+sWZHKSgCfdq3HtNYJLv+XZleb6HN4zOcF
+AJEAniSFbuv8V5FSHxeRimHx25671az+uQINBEXwb0sQCACuA8HT2nr+FM5y/kzI
+A51ZcC46KFtIDgjQJ31Q3OrkYP8LbxOpKMRIzvOZrsjOlFmDVqitiVc7qj3lYp6U
+rgNVaFv6Qu4bo2/ctjNHDDBdv6nufmusJUWq/9TwieepM/cwnXd+HMxu1XBKRVk9
+XyAZ9SvfcW4EtxVgysI+XlptKFa5JCqFM3qJllVohMmr7lMwO8+sxTWTXqxsptJo
+pZeKz+UBEEqPyw7CUIVYGC9ENEtIMFvAvPqnhj1GS96REMpry+5s9WKuLEaclWpd
+K3krttbDlY1NaeQUCRvBYZ8iAG9YSLHUHMTuI2oea07Rh4dtIAqPwAX8xn36JAYG
+2vgLAAMFB/wKqaycjWAZwIe98Yt0qHsdkpmIbarD9fGiA6kfkK/UxjL/k7tmS4Vm
+CljrrDZkPSQ/19mpdRcGXtb0NI9+nyM5trweTvtPw+HPkDiJlTaiCcx+izg79Fj9
+KcofuNb3lPdXZb9tzf5oDnmm/B+4vkeTuEZJ//IFty8cmvCpzvY+DAz1Vo9rA+Zn
+cpWY1n6z6oSS9AsyT/IFlWWBZZ17SpMHu+h4Bxy62+AbPHKGSujEGQhWq8ZRoJAT
+G0KSObnmZ7FwFWu1e9XFoUCt0bSjiJWTIyaObMrWu/LvJ3e9I87HseSJStfw6fki
+5og9qFEkMrIrBCp3QGuQWBq/rTdMuwNFiEkEGBECAAkFAkXwb0sCGwwACgkQoECD
+D3+sWZF/WACfeNAu1/1hwZtUo1bR+MWiCjpvHtwAnA1R3IHqFLQ2X3xJ40XPuAyY
+/FJG
+=Quqp
+-----END PGP PUBLIC KEY BLOCK-----]=]
 	},
-]===]
-
---[===[
-	["syspeek-old"] =
-	{
-		--ppaRepo = "ppa:vicox/syspeek",
-		listEntry = "deb http://ppa.launchpad.net/vicox/syspeek/ubuntu oneiric main\ndeb-src http://ppa.launchpad.net/vicox/syspeek/ubuntu oneiric main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
-
-mI0EScK9mwEEAMz00TJgdmc1pBUUIOti5rRILpl/DMcNhLQW3BtKHQkeW9udmNv+rPShFReG
-lsER3mq3NSNqLbpodwYFsDL3RKXouStIzgVePGOUF6RGcJPPJJO6NGgEocGH6mBu1+ghFQRy
-/dHIhQrvZwspfkyFDigA2mnROUFPoxJX1rP6Zcy5ABEBAAG0H0xhdW5jaHBhZCBQUEEgZm9y
-IEdlb3JnIFNjaG1pZGyItgQTAQIAIAUCScK9mwIbAwYLCQgHAwIEFQIIAwQWAgMBAh4BAheA
-AAoJEN9229RT/8woxwUEAMqCliAhdje0taw0Hrjk5vhqzgPQRE0krV22b+e5/mjuxTk8Z1/H
-LHhIzjtxzhkGPUBeIJpWEXHILdcwVYDfPzpWJJgs93bWD3ggip6QAvBZ9ZJdGkzLXsLOgCj+
-c7bCfuPeZ8n1hVzL1pjjKStTrdq5YeNfDbsnCVZB9RDgfXce
-=R59j
------END PGP PUBLIC KEY BLOCK-----]=],
-	},
-]===]
 
 	syspeek =
 	{
@@ -458,12 +454,12 @@ function InstallNonAptApplications()
 end
 
 function AddManualUserLogin()
-	local file = io.open( "/etc/lightdm/lightdm.conf", "a+" )
+	local file = io.open( "/etc/lightdm/lightdm.conf.d/50-unity-greeter.conf", "a+" )
 	if file then
 		print( ">>", "Making manual user login possible..." )
 
 		-- Make a backup
-		os.execute( "cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.bak" )
+		os.execute( "cp /etc/lightdm/lightdm.conf.d/50-unity-greeter.conf /etc/lightdm/50-unity-greeter.conf.bak" )
 
 		-- Check to see if it has been added already
 		local lineToAdd = "greeter-show-manual-login=true"
@@ -510,8 +506,8 @@ function main()
 	os.execute( "apt-get -y dist-upgrade" )
 
 	-- FIX: RabbitVCS is broken in 13.04 so these symlinks are needed.
-	os.execute( "ln -s /usr/lib/x86_64-linux-gnu/libpython2.7.so.1.0 /usr/lib/libpython2.7.so.1.0" )
-	os.execute( "ln -s /usr/lib/x86_64-linux-gnu/libpython2.7.so.1.0 /usr/lib/x86_64-linux-gnu/libpython2.7.so" )
+	--os.execute( "ln -s /usr/lib/x86_64-linux-gnu/libpython2.7.so.1.0 /usr/lib/libpython2.7.so.1.0" )
+	--os.execute( "ln -s /usr/lib/x86_64-linux-gnu/libpython2.7.so.1.0 /usr/lib/x86_64-linux-gnu/libpython2.7.so" )
 
 	-- Build the packages into a string.
 	local allPackages = table.concat( generalPackages, " " ).." "
@@ -519,10 +515,8 @@ function main()
 	allPackages = allPackages..table.concat( libraryPackages, " " ).." "
 	if IsRunningInVm() then
 		allPackages = allPackages.." virtualbox-guest-dkms"
-	else
-		allPackages = allPackages.." nvidia-current-updates"
 	end
-
+	
 	print( ">>", "Full list of packages to be installed..." )
 	print( allPackages )
 
@@ -533,6 +527,10 @@ function main()
 
 	print( ">>", "Installing packages that don't have any APT repository..." )
 	InstallNonAptApplications()
+	
+	-- Upgrade all packages again. In case there was a failure during install.
+	print( ">>", "Finish with a full system package upgrate..." )
+	os.execute( "apt-get -y dist-upgrade" )
 
 	local success, domain = pcall( dofile, "domain-setup.lua" )
 	if success then
