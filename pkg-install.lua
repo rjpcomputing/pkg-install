@@ -2,23 +2,23 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan P. <rjpcomputing@gmail.com>
--- Date:	12/06/2013
--- Notes:	Built against Ubuntu 13.10 (Saucy Salamander).
+-- Date:	04/15/2014
+-- Notes:	Built against Ubuntu 14.04 (Trusty Tahr).
 --			Assumes root privileges.
 --
 -- Changes:
---	12/06/2013 (13.10-01) - Initial Release
---	01/06/2014 (13.10-02) - Switched to using Google Chrome instead of Chromium
---	01/07/2014 (13.10-03) - Fixed lighdm greeter configuration
---	                      - Removed the automatic install of nvidia drivers
---	                        because it was causing to many problems
---	01/16/2014 (13.10-04) - Updated to wxAdditioiins 3.0
+--	04/15/2014 (14.04-01) - Initial Release
+--	04/28/2014 (14.04-02) - Added PowerBroker Identity Services for domain authentication
+--	                      - Updated CodeLite to use their PPA
+--	                      - Cleaned up PPA repo creation
+--	                      - Fixed Google Chromes install not adding Google's repo to apt,
+--	                        because it is done in this script
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Saucy"
+local distro = "Trusty"
 local appName = "pkg-install"
-local appVer = "13.10-04"
+local appVer = "14.04-02"
 
 -- General Applications
 local generalPackages =
@@ -143,14 +143,14 @@ local libraryPackages =
 	"qt4-dev-tools",
 	"libgtk2.0-dev",
 	"libgtk2.0-0-dbg",
-	"libboost1.54-all-dev",
-	"libboost1.54-dbg",
+	"libboost1.55-all-dev",
+	"libboost1.55-dbg",
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
 	"libneon27-gnutls-dev",
 	"libpq-dev",
-	"libmysqlclient-dev",
+	--"libmysqlclient-dev",
 	"libsqlite3-dev",
 	"libncurses5-dev",
 }
@@ -193,7 +193,7 @@ APlN9ZheYInv1XLS4G+jDQjnMbd0VdzP
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
-	kupfer =
+	--[[kupfer =
 		{
 			ppaRepo = "ppa:kupfer-team/ppa",
 			listEntry = "deb http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro.." main",
@@ -210,7 +210,7 @@ R3GtJucJcYW6wIFoaDJ/mTzHH2GIcHbK7CH/3PjCL7wlvMQGPOR4a1DcXRh5ItobL/pmKGGo
 D/r6CSKuBlF4zOVAwzFwAD+aaBZU
 =fULo
 -----END PGP PUBLIC KEY BLOCK-----]=],
-		},
+		},]]
 
 	codegear =
 	{
@@ -230,22 +230,38 @@ FZNAsp3EmvwZr+hRfX+z2KbV01yxU5ITSx47tUB3orVc
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
-	wxwidgets =
+	codelite =
 	{
-		ppaRepo = "ppa:wxformbuilder/wxwidgets",
-		listEntry = "deb http://ppa.launchpad.net/wxformbuilder/wxwidgets/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/wxwidgets/ubuntu "..distro:lower().." main",
+		listEntry = "deb http://repos.codelite.org/ubuntu/ "..distro:lower().." universe",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.1.4
-Comment: Hostname: keyserver.ubuntu.com
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-mI0ESy/PmQEEAO5/zYxLgGiRReb0ZmJSnD+VAaDDOQNCeysCdz7R7h9wUe5ZZOSkvogpd7sy
-E/Y7SuxHZJQoh7j+nWP5AgFdIOiSV+LZMtdsL3pG77NJkBKPOS0eH87cIK9XNWyeoj8cb9El
-KEbsgp5/GFPM9PF378tCCymxnzjak71+UCf2kCk7ABEBAAG0EUxhdW5jaHBhZCBSZWxlYXNl
-iLYEEwECACAFAksvz5kCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRDeRtnvVlJrw8D5
-BAC7tTGtqZ2YigkbyIv08BNi2kuYOe0geESXEs86JWpnzqRF3tvYaH1PPsmdHDj9BofaAc/3
-FqNHhZtWdnp7WmOMnOIXLRqtbUViZVoUdEN9PKqrjmmEIjWKkF+8Xt71vZ8bVvWH5+v7m/90
-TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
-=S2Rj
+mQENBEyFTVoBCACiQXR6FXSrsjmCVa1380zYQ+QEE0OWegO1TwBzjYLQ+CSN/e3H
+6XqBYdMEZo/eKTbUJxzUELkAQ/WrxSpJknxbr6PocQvCktyocMgK8cSpvvAgj2oh
+Pj0TN2DkeAemvEsnk9jRZIbRo6/ylX4LhnkztSaAQxHICT1iXX9Arf9XgIl/7XYa
+fDaNss3W+Ts/zIV0r9CgvBvBpJoePMrMyk9Ft+tM13b7r0oOQtmIfmIHUFYXk3ci
+TtE9LuqvQNCIN0iDq9EvdI9hKZ46yVCKSNU93CLGwrionyz/tNKPl8Py8VptAwfJ
+RUGccitpGLoruXpIloSyoFYSVNLqNa2QhQ7NABEBAAG0MERhdmlkIEhhcnQgKGNv
+ZGVsaXRlIGtleSkgPGRhdmlkQGNvZGVsaXRlLmNvLnVrPokBOAQTAQIAIgUCTIVN
+WgIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQaFbh2xrIJgnWagf9EoqF
+OBbY+BeEpZ3UzSDz39rMSUAHTPzt+FLmrnU/g5MCoX5rEW3MiDuWBK5mkvfQTkrq
+DRPNGZf/SQmqL5qjmt8uvX9e5oyOZAma1vZ1Aza+kni5XhmbNX3HkAznYAC9rnIP
+QVLKVUVfGr9xLwJwnCvQ9XbrAMCOSiG5l2PNP1v31CLYvEiCoTiIUyjok/GnSSoO
+fxxE6NDcWod4J3GjnOck+POPEIRjNs449kILt9zOJTDSTIeaO9cYknn8L4dLpfBl
+rYKkeksPq5Ha0/Jcd86qsUzAIqEoXJw07IARMsXBTgG4gR/C2P78x77pBOitRFNx
+KgGLozlAfSTMu3Xpi7kBDQRMhU1aAQgAusdK91OIJDwtoDmE+5Crqf0SZDQ4PijL
+l4INXt0GE0exBOQCpCbFnk8Ja4zF4S2485kSrqE9AzPl1D1LYj01UiiwJQ09EwX2
+5KKNCB/05IAGrRx10yb9ZiEe7PnsH/VlfwJapGZgyMwS8+6EmDffw23tHtX96ykr
+vkBVWQkrAnnB+Q+7gs/y3+M1OQXLRxGx6N67EiTvygmAE93kI4wc+9lRbK/Au7B1
+K9eWTLAhphFuFbNOgChdkv+zD57D1nclmNGG8EDwbxU4NjFdFUKUyKp0v+QB6OqM
+fBdH4M10EDNX7Cn5wx0xJbMfny/LV/yUzmlRkDu4bn7BIJGoHrEroQARAQABiQEf
+BBgBAgAJBQJMhU1aAhsMAAoJEGhW4dsayCYJcb8H/Ahp0JSqol1AiBIRxMQXNXh9
+hha4MdPWW3rTcIuBVJ6FjEJPTw/rE9dbUcxjxoCn0WgYy48AFyrBp/TM4Y9CuAh7
+AIyEtsxtuzEjf8keSpW6dsAhxpPrUXEDTUdNaDi/efNdHumZwl79mreFPIFiWlpg
+VAPtLxbsylPXxJamylkSJ8UKGnu6qqSmvIB8vyMvYBtRXAjDR3XQ1u2dsaYAsiXF
+Iftcemioz8bvdH/udEaUjsPyzm5JDqHafo08S2dEN+ZrJfIbw26HFl3LClYIxSdZ
+L+nMjs7YCYWeC5oZVW3pepqDcT5IejgZL94IHgV6BvHcwwsDiW8lAdgHmz5Vs9o=
+=g35i
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 	
@@ -338,25 +354,6 @@ D3+sWZF/WACfeNAu1/1hwZtUo1bR+MWiCjpvHtwAnA1R3IHqFLQ2X3xJ40XPuAyY
 -----END PGP PUBLIC KEY BLOCK-----]=]
 	},
 
-	syspeek =
-	{
-		--ppaRepo = "ppa:emptythevoid/syspeeknew",
-		listEntry = "deb http://ppa.launchpad.net/emptythevoid/syspeeknew/ubuntu quantal main\ndeb-src http://ppa.launchpad.net/emptythevoid/syspeeknew/ubuntu quantal main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.1.4
-Comment: Hostname: keyserver.ubuntu.com
-
-mI0EUI9MHQEEAN6pIGqrOfIV4/lj+Yf5Sct8CulM1nnvwfwkKkm2HlP7oj49rJ/eZpF0zL7X
-/KwRVYBfjGGsqEDpuaBL/1txL6LUtUoDlE1dFe4lrSBYXAihGNA80Vmmg4FNAUTFZf7ndxvc
-jAn1q7zrDE05LmYAyQEECJsHjs3mZkjNmhIB2/lpABEBAAG0HkxhdW5jaHBhZCBQUEEgZm9y
-IGVtcHR5dGhldm9pZIi4BBMBAgAiBQJQj0wdAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIX
-gAAKCRAHyGRjeAgdFdAhBADQ9o23ykZSA/0jkb4s8hSzsuSt/fFgGxihzyq9EgSM6d9BCLqA
-QmsU0L1TnP7lWcX3yztBMf8OkEsSdVHILeJ+3Rt1jQ05W2BlDJzhjVFJTiWb3QdtKYmKOxfS
-uy1pABBlTj2tiUpI2RKTjAsvJHGuYEYiBHNnfjEUYkMLthjwNw==
-=imbP
------END PGP PUBLIC KEY BLOCK-----]=],
-	},
-
 	exfat =
 	{
 		ppaRepo = "ppa:relan/exfat",
@@ -374,24 +371,6 @@ vEFxcnTV6NPI4nrqt/SNQBEKNYRdznOeqMkVlC2W2HNa18L17QFBkzJxhdnNm/4YbUSweg==
 =+jvj
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
-
-	--[===[unetbootin =
-	{
-		ppaRepo = "ppa:gezakovacs/ppa",
-		listEntry = "deb http://ppa.launchpad.net/gezakovacs/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/gezakovacs/ppa/ubuntu "..distro.." main",
-		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: SKS 1.0.10
-
-mI0ESXZ0aQEEAJuOMpfa92ZgqoLkBTKjN1D3zplRbxCkfCJ7vo5O+lEx5lM8x3K1QU3AY1Vs
-LGPMpTVbl9kdFnOIKc0MD166l3yPPjuEmb7a+odpBJHhfcKPhpHc5kVBSrD+7/LnVRFISQZI
-IbrN+v3CNU0ZqIJ1FbJpkaqPRKKYhGGaFXTWoKl3ABEBAAG0HUxhdW5jaHBhZCBQUEEgZm9y
-IEdlemEgS292YWNziLYEEwECACAFAkl2dGkCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAK
-CRDUXfLo/JGufqS+A/9+5ZIaV3QuW/gEecvZafnYchgF3ZgG82UDflyvptl5KjVEprYcn3Ey
-UAiYCHIu7tiJL2e8Wq3uEp5sGbqdIOqAeAANlvAKJbv1P6tePGPhTRRvWwULnU+xfGzk3HeL
-SVKYjJboojJ/ntFqP0vrr4FIKgzXbKNSVjoOMsHRvpeoaA==
-=c5Rb
------END PGP PUBLIC KEY BLOCK-----]=],
-	},]===]
 }
 
 function AddExtraAptSources()
@@ -424,49 +403,26 @@ function AddExtraAptSources()
 end
 
 function InstallNonAptApplications()
-	-- Diffuse diff tool
-	--local diffuseFilename = "diffuse_0.4.6-1_all.deb"
-	--os.execute( string.format( "wget --output-document=%s http://sourceforge.net/projects/diffuse/files/diffuse/0.4.6/%s/download", diffuseFilename, diffuseFilename ) )
-	-- Install
-	--os.execute( "dpkg -i " .. diffuseFilename )
-	-- Cleanup
-	--os.remove( diffuseFilename )
-
-	-- Penlight Lua module
-	--local penlightFilename	= "penlight-latest.zip"
-	--os.execute( string.format( "wget --no-check-certificate --output-document=%s http://github.com/stevedonovan/Penlight/zipball/master", penlightFilename ) )
-	-- Extract
-	--os.execute( string.format( "unzip -oj %s *lua/* -d pl", penlightFilename ) )
-	-- Create directories if don't exist
-	--os.execute( "sudo mkdir -p /usr/share/lua/5.1/")
-	-- Move to location
-	--os.execute( "sudo mv pl/ /usr/share/lua/5.1/")
-	-- Cleanup
-	--os.remove( penlightFilename )
-
 	-- VirtualBox 4.x Extension Pack (gives USB2.0 support)
-	local virtualBoxExtensionFilename	= "Oracle_VM_VirtualBox_Extension_Pack-4.2.2-81494.vbox-extpack"
-	os.execute( string.format( "wget --no-check-certificate --output-document=%s http://download.virtualbox.org/virtualbox/4.2.2/%s", virtualBoxExtensionFilename, virtualBoxExtensionFilename ) )
+	local virtualBoxExtensionUrl = "http://download.virtualbox.org/virtualbox/4.3.10/Oracle_VM_VirtualBox_Extension_Pack-4.3.10-93012.vbox-extpack"
+	local virtualBoxExtensionFilename = virtualBoxExtensionUrl:gsub( "\\", "/" ):match( "([^/]-[^%.]+)$" )
+	os.execute( ("wget --no-check-certificate --output-document=%s %s"):format( virtualBoxExtensionFilename, virtualBoxExtensionUrl ) )
 	-- Install
-	os.execute( "VBoxManage extpack install " .. virtualBoxExtensionFilename )
+	os.execute( ("VBoxManage extpack install %s"):format( virtualBoxExtensionFilename ) )
 	-- Cleanup
 	os.remove( virtualBoxExtensionFilename )
 end
 
 function AddManualUserLogin()
-	local file = io.open( "/etc/lightdm/lightdm.conf.d/50-unity-greeter.conf", "a+" )
+	local filePath = "/etc/lightdm/lightdm.conf.d/50-manual-login.conf"
+	os.execute( ("mkdir -p %s"):format( filePath:match( ".*/" ) ) )
+	os.execute( ("touch %s"):format( filePath ) )
+	local file = io.open( filePath, "w+" )
 	if file then
 		print( ">>", "Making manual user login possible..." )
-
-		-- Make a backup
-		os.execute( "cp /etc/lightdm/lightdm.conf.d/50-unity-greeter.conf /etc/lightdm/50-unity-greeter.conf.bak" )
-
-		-- Check to see if it has been added already
-		local lineToAdd = "greeter-show-manual-login=true"
-		if nil == string.find( file:read( "*a" ), lineToAdd:gsub( "-", "%%-" ) ) then
-			file:write( ("%s\n"):format( lineToAdd ) )
-		end
-
+		
+		local linesToAdd = "[SeatDefaults]\nallow-guest=false\ngreeter-show-manual-login=true"
+		file:write( ("%s\n"):format( linesToAdd ) )
 		file:close()
 	end
 end
@@ -505,10 +461,6 @@ function main()
 	print( ">>", "Upgrading packages..." )
 	os.execute( "apt-get -y dist-upgrade" )
 
-	-- FIX: RabbitVCS is broken in 13.04 so these symlinks are needed.
-	--os.execute( "ln -s /usr/lib/x86_64-linux-gnu/libpython2.7.so.1.0 /usr/lib/libpython2.7.so.1.0" )
-	--os.execute( "ln -s /usr/lib/x86_64-linux-gnu/libpython2.7.so.1.0 /usr/lib/x86_64-linux-gnu/libpython2.7.so" )
-
 	-- Build the packages into a string.
 	local allPackages = table.concat( generalPackages, " " ).." "
 	allPackages = allPackages..table.concat( develPackages, " " ).." "
@@ -519,7 +471,10 @@ function main()
 	
 	print( ">>", "Full list of packages to be installed..." )
 	print( allPackages )
-
+	
+	-- Make sure Google Chrome does not add Googles repo during the install, because this script does it already.
+	os.execute( "touch /etc/default/google-chrome" )
+	
 	-- Install all packages
 	print( ">>", "Installing packages..." )
 	local cmd = "apt-get -y install "..allPackages
