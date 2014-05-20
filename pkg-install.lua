@@ -13,12 +13,14 @@
 --	                      - Cleaned up PPA repo creation
 --	                      - Fixed Google Chromes install not adding Google's repo to apt,
 --	                        because it is done in this script
+--	05/20/2014 (14.04-03) - Added curl
+--	                      - Added sshpass
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Trusty"
 local appName = "pkg-install"
-local appVer = "14.04-02"
+local appVer = "14.04-03"
 
 -- General Applications
 local generalPackages =
@@ -49,6 +51,7 @@ local generalPackages =
 	"smbnetfs",
 	"cifs-utils",
 	"ssh",
+	"sshpass",
 	"virtualbox",
 	"virtualbox-dkms",
 	"dkms",
@@ -60,6 +63,7 @@ local generalPackages =
 	--"fuse-exfat",
 	--"exfat-utils",
 	"icedtea-7-plugin",
+	"curl",
 }
 
 -- Development packages
@@ -153,6 +157,7 @@ local libraryPackages =
 	--"libmysqlclient-dev",
 	"libsqlite3-dev",
 	"libncurses5-dev",
+	"libcurl4-openssl-dev",
 }
 
 local aptDetails =

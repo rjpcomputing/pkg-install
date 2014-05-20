@@ -2,20 +2,18 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your server machine up and running quickly after a fresh install.
 -- Author:	Ryan P. <rjpcomputing@gmail.com>
--- Date:	01/13/2011
--- Notes:	Built against Ubuntu 13.10 (Saucy Salamander).
+-- Date:	05/20/2014
+-- Notes:	Built against Ubuntu 14.04 (Saucy Salamander).
 --			Assumes root privileges.
 --
 -- Changes:
---	01/13/2011 (13.10-01) - Initial Release
---	                        Updated to wxWidgets 3.0
---	01/17/2011 (13.10-02) - Added wxWidgets media library
+--	05/20/2014 (14.04-01) - Initial Release
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Saucy"
+local distro = "Trusty"
 local appName = "pkg-install-srv"
-local appVer = "13.10-02"
+local appVer = "14.04-01"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -45,8 +43,10 @@ local generalPackages =
 	"cifs-utils",
 	"smbnetfs",
 	"ssh",
+	"sshpass",
 	"dos2unix",
 	"openjdk-7-jdk",
+	"curl",
 }
 
 -- Development packages
@@ -67,6 +67,7 @@ local develPackages =
 	"lintian",
 	"dput",
 	"dh-make",
+	"devscripts",
 	"libtool",
 	"autoconf",
 	"subversion",
@@ -122,16 +123,17 @@ local libraryPackages =
 	"qt4-dev-tools",
 	"libgtk2.0-dev",
 	"libgtk2.0-0-dbg",
-	"libboost1.54-all-dev",
-	"libboost1.54-dbg",
+	"libboost1.55-all-dev",
+	"libboost1.55-dbg",
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
 	"libneon27-gnutls-dev",
 	"libpq-dev",
-	"libmysqlclient-dev",
+	--"libmysqlclient-dev",
 	"libsqlite3-dev",
 	"libncurses5-dev",
+	"libcurl4-openssl-dev",
 }
 
 local aptDetails =
@@ -172,7 +174,7 @@ FZNAsp3EmvwZr+hRfX+z2KbV01yxU5ITSx47tUB3orVc
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 	
-	wxwidgets =
+	--[[wxwidgets =
 	{
 		ppaRepo = "ppa:wxformbuilder/wxwidgets",
 		listEntry = "deb http://ppa.launchpad.net/wxformbuilder/wxwidgets/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/wxwidgets/ubuntu "..distro:lower().." main",
@@ -189,7 +191,7 @@ FqNHhZtWdnp7WmOMnOIXLRqtbUViZVoUdEN9PKqrjmmEIjWKkF+8Xt71vZ8bVvWH5+v7m/90
 TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
 =S2Rj
 -----END PGP PUBLIC KEY BLOCK-----]=],
-	},
+	},]]
 	
 	wxformbuilder =
 	{
