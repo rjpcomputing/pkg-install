@@ -8,12 +8,13 @@
 --
 -- Changes:
 --	05/20/2014 (14.04-01) - Initial Release
+--	05/30/2014 (14.04-02) - Replaced libneon with libserf for SVN support
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Trusty"
 local appName = "pkg-install-srv"
-local appVer = "14.04-01"
+local appVer = "14.04-02"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -128,7 +129,8 @@ local libraryPackages =
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
-	"libneon27-gnutls-dev",
+	--"libneon27-gnutls-dev",
+	"libserf-dev",
 	"libpq-dev",
 	--"libmysqlclient-dev",
 	"libsqlite3-dev",

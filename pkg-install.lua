@@ -15,12 +15,13 @@
 --	                        because it is done in this script
 --	05/20/2014 (14.04-03) - Added curl
 --	                      - Added sshpass
+--	05/30/2014 (14.04-04) - Replaced libneon with libserf for SVN.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Trusty"
 local appName = "pkg-install"
-local appVer = "14.04-03"
+local appVer = "14.04-04"
 
 -- General Applications
 local generalPackages =
@@ -152,7 +153,8 @@ local libraryPackages =
 	"liblua5.1-0-dev",
 	"liblua5.1-0-dbg",
 	"libsvn-dev",
-	"libneon27-gnutls-dev",
+	--"libneon27-gnutls-dev",
+	"libserf-dev",
 	"libpq-dev",
 	--"libmysqlclient-dev",
 	"libsqlite3-dev",
