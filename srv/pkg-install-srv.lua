@@ -3,18 +3,20 @@
 -- Script to get your server machine up and running quickly after a fresh install.
 -- Author:	Ryan P. <rjpcomputing@gmail.com>
 -- Date:	05/20/2014
--- Notes:	Built against Ubuntu 14.04 (Saucy Salamander).
+-- Notes:	Built against Ubuntu 14.04 (Trusty Tahr).
 --			Assumes root privileges.
 --
 -- Changes:
 --	05/20/2014 (14.04-01) - Initial Release
 --	05/30/2014 (14.04-02) - Replaced libneon with libserf for SVN support
+--	06/05/2014 (14.04-03) - Added sqlite3 commandline tool.
+--	                      - Changed over to using LuaRocks for all Lua Modules.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Trusty"
 local appName = "pkg-install-srv"
-local appVer = "14.04-02"
+local appVer = "14.04-03"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -48,6 +50,7 @@ local generalPackages =
 	"dos2unix",
 	"openjdk-7-jdk",
 	"curl",
+	"sqlite3",
 }
 
 -- Development packages
@@ -82,32 +85,8 @@ local develPackages =
 	"rake",
 	"doxygen",
 	"graphviz",
-	"xavante",
 	"luarocks",
-	"lua-bitop*",
-	"lua-copas",
-	"lua-cosmo",
-	"lua-coxpcall",
-	"lua-curl*",
-	"lua-dbi-*",
-	"lua-doc",
-	"lua-expat*",
-	"lua-filesystem*",
-	"lua-json",
-	"lua-logging",
-	"lua-lpeg*",
-	"lua-markdown",
-	"lua-md5*",
-	"lua-orbit",
-	"lua-penlight*",
-	"lua-posix*",
-	"lua-rex-*",
-	"lua-rings*",
-	"lua-sec*",
-	"lua-socket*",
-	"lua-sql-*",
-	"lua-zip*",
-	"lua-zlib*",
+	"lua-zip",
 	"liblua5.1-sublua*",
 	"exuberant-ctags",
 }
@@ -132,10 +111,46 @@ local libraryPackages =
 	--"libneon27-gnutls-dev",
 	"libserf-dev",
 	"libpq-dev",
-	--"libmysqlclient-dev",
 	"libsqlite3-dev",
 	"libncurses5-dev",
 	"libcurl4-openssl-dev",
+	"libzzip-dev",
+	"zlib1g-dev",
+}
+
+local rocks =
+{
+	"busted",
+	"copas",
+	"cosmo",
+	"coxpcall",
+	"ldoc",
+	"lpeg",
+	"lua-discount",
+	"luabitop",
+	"luacurl",
+	{ "luadbi-postgresql", options = { PGSQL_INCDIR = "/usr/include/postgresql", POSTGRES_INCDIR = "/usr/include/postgresql" } },
+	"luadbi-sqlite3",
+	"luaexpat",
+	"luafilesystem",
+	"luajson",
+	--{ "lualogging", from = "http://luarocks.org/repositories/rocks-cvs/" },
+	"lualogging",
+	"luaposix",
+	{ "luasec", options = { OPENSSL_LIBDIR = "/lib/x86_64-linux-gnu" } },
+	"luasocket",
+	{ "luasql-postgres", options = { PGSQL_INCDIR = "/usr/include/postgresql", POSTGRES_INCDIR = "/usr/include/postgresql" } },
+	{ "luasql-sqlite3", from = "http://luarocks.org/repositories/rocks-cvs/" },
+	{ "lzlib", options = { ZLIB_LIBDIR = "/usr/lib/x86_64-linux-gnu" } },
+	"markdown",
+	"md5",
+	"orbit",
+	"penlight",
+	"rings",
+	"struct",
+	{ "wsapi-xavante", from = "http://luarocks.org/repositories/rocks-cvs/" },
+	--"lunary",
+	--"luazip",
 }
 
 local aptDetails =
@@ -250,7 +265,6 @@ function InstallNonAptApplications()
 
 end
 
-
 local function ProcessCommand( cmd )
 	-- Check to see if the command to run is a function
 	if "function" == type( cmd ) then
@@ -261,6 +275,31 @@ local function ProcessCommand( cmd )
 		os.execute( cmd )
 	else
 		error( "Invalid command type (" .. type( cmd ) .. "). Only string and function are valid." )
+	end
+end
+
+local function InstallRocks()
+	-- Update LuaRocks
+	os.execute( "luarocks install luarocks" )
+	--os.execute( "apt-get remove -y luarocks" )	-- Seems to break the updated installation, so leaving it
+	
+	-- Install rocks one at a time because LuaRocks doen't support lists
+	for _, rock in pairs( rocks ) do
+		local cmd = ("luarocks install %s")
+		if "table" == type( rock ) then
+			local options = {}
+			if rock.from then options[1 + #options] = "--from=" .. rock.from end
+			if rock.options then
+				for name, value in pairs( rock.options ) do
+					options[1 + #options] = ("%s=%s"):format( name, value )
+				end
+			end
+			print( ("[%s] %s"):format( rock[1], string.rep( "-", 20 ) ) )
+			os.execute( cmd:format( ("%s %s"):format( rock[1], table.concat( options, " " ) ) ) )
+		else
+			print( ("[%s] %s"):format( rock, string.rep( "-", 20 ) ) )
+			os.execute( cmd:format( rock ) )
+		end
 	end
 end
 
@@ -338,6 +377,9 @@ function main()
 
 	print( ">>", "Installing packages that don't have any APT repository..." )
 	InstallNonAptApplications()
+	
+	print( ">>", "Installing rocks..." )
+	InstallRocks()
 
 	if tweaks then
 		print( ">>", "Processing tweaks..." )
