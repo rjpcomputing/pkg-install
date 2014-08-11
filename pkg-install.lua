@@ -144,7 +144,7 @@ local libraryPackages =
 
 local rocks =
 {
-	"busted",
+	{ "busted", version = "1.11.1-1" },
 	"copas",
 	"cosmo",
 	"coxpcall",
@@ -158,13 +158,12 @@ local rocks =
 	"luaexpat",
 	"luafilesystem",
 	"luajson",
-	--{ "lualogging", from = "http://luarocks.org/repositories/rocks-cvs/" },
 	"lualogging",
 	"luaposix",
 	{ "luasec", options = { OPENSSL_LIBDIR = "/lib/x86_64-linux-gnu" } },
 	"luasocket",
 	{ "luasql-postgres", options = { PGSQL_INCDIR = "/usr/include/postgresql", POSTGRES_INCDIR = "/usr/include/postgresql" } },
-	{ "luasql-sqlite3", from = "http://luarocks.org/repositories/rocks-cvs/" },
+	{ "luasql-sqlite3", version = "cvs-1", from = "http://rocks.moonscript.org/dev" },
 	{ "lzlib", options = { ZLIB_LIBDIR = "/usr/lib/x86_64-linux-gnu" } },
 	"markdown",
 	"md5",
@@ -172,7 +171,7 @@ local rocks =
 	"penlight",
 	"rings",
 	"struct",
-	{ "wsapi-xavante", from = "http://luarocks.org/repositories/rocks-cvs/" },
+	{ "wsapi-xavante", version = "cvs-1", from = "http://rocks.moonscript.org/dev" },
 	--"lunary",
 	--"luazip",
 }
@@ -437,25 +436,26 @@ end
 
 local function InstallRocks()
 	-- Update LuaRocks
-	os.execute( "luarocks install luarocks" )
+	os.execute( "luarocks --from=http://rocks.moonscript.org install luarocks" )
 	--os.execute( "apt-get remove -y luarocks" )	-- Seems to break the updated installation, so leaving it
 	
 	-- Install rocks one at a time because LuaRocks doen't support lists
 	for _, rock in pairs( rocks ) do
-		local cmd = ("luarocks install %s")
+		local cmd = ("luarocks %s install %s")
 		if "table" == type( rock ) then
 			local options = {}
-			if rock.from then options[1 + #options] = "--from=" .. rock.from end
+			options[1 + #options] = "--from=" .. ( rock.from or "http://rocks.moonscript.org" )
 			if rock.options then
 				for name, value in pairs( rock.options ) do
 					options[1 + #options] = ("%s=%s"):format( name, value )
 				end
 			end
 			print( ("[%s] %s"):format( rock[1], string.rep( "-", 20 ) ) )
-			os.execute( cmd:format( ("%s %s"):format( rock[1], table.concat( options, " " ) ) ) )
+--			print( cmd:format( table.concat( options, " " ), ("%s %s"):format( rock[1], rock.version or ""  ) ) )
+			os.execute( cmd:format( table.concat( options, " " ), ("%s %s"):format( rock[1], rock.version or ""  ) ) )
 		else
 			print( ("[%s] %s"):format( rock, string.rep( "-", 20 ) ) )
-			os.execute( cmd:format( rock ) )
+			os.execute( cmd:format( "--from=http://rocks.moonscript.org", rock ) )
 		end
 	end
 end
