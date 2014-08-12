@@ -11,12 +11,13 @@
 --	05/30/2014 (14.04-02) - Replaced libneon with libserf for SVN support
 --	06/05/2014 (14.04-03) - Added sqlite3 commandline tool.
 --	                      - Changed over to using LuaRocks for all Lua Modules.
+--	08/12/2014 (14.04-06) - Fixed the LuaLogging install.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Trusty"
 local appName = "pkg-install-srv"
-local appVer = "14.04-03"
+local appVer = "14.04-04"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -120,7 +121,7 @@ local libraryPackages =
 
 local rocks =
 {
-	{ "busted", version = "1.11.1-1" },
+	{ "busted", version = "1.11.1-1" },		-- Version specified because the latest RC2 has a bug
 	"copas",
 	"cosmo",
 	"coxpcall",
@@ -134,7 +135,7 @@ local rocks =
 	"luaexpat",
 	"luafilesystem",
 	"luajson",
-	"lualogging",
+	{ "lualogging", version = "1.2.0-1" },	-- the current latest stable (1.3.0-1) seems to be corrupt, so i am pinning the version.
 	"luaposix",
 	{ "luasec", options = { OPENSSL_LIBDIR = "/lib/x86_64-linux-gnu" } },
 	"luasocket",
