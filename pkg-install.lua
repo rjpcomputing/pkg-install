@@ -19,12 +19,13 @@
 --	06/05/2014 (14.04-05) - Added sqlite3 commandline tool.
 --	                      - Changed over to using LuaRocks for all Lua Modules.
 --	08/12/2014 (14.04-06) - Fixed the LuaLogging install.
+--	08/12/2014 (14.04-07) - Added LuaZip as a rock install.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Trusty"
 local appName = "pkg-install"
-local appVer = "14.04-06"
+local appVer = "14.04-07"
 
 -- General Applications
 local generalPackages =
@@ -110,7 +111,6 @@ local develPackages =
 	"doxygen",
 	"graphviz",
 	"luarocks",
-	"lua-zip",
 	"liblua5.1-sublua*",
 	"rabbitvcs-nautilus3",
 	"exuberant-ctags",
@@ -165,6 +165,7 @@ local rocks =
 	"luasocket",
 	{ "luasql-postgres", options = { PGSQL_INCDIR = "/usr/include/postgresql", POSTGRES_INCDIR = "/usr/include/postgresql" } },
 	{ "luasql-sqlite3", version = "cvs-1", from = "http://rocks.moonscript.org/dev" },
+	"luazip",
 	{ "lzlib", options = { ZLIB_LIBDIR = "/usr/lib/x86_64-linux-gnu" } },
 	"markdown",
 	"md5",
@@ -174,7 +175,6 @@ local rocks =
 	"struct",
 	{ "wsapi-xavante", version = "cvs-1", from = "http://rocks.moonscript.org/dev" },
 	--"lunary",
-	--"luazip",
 }
 
 local aptDetails =
