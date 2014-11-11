@@ -2,22 +2,19 @@
 -- ----------------------------------------------------------------------------
 -- Script to get your server machine up and running quickly after a fresh install.
 -- Author:	Ryan P. <rjpcomputing@gmail.com>
--- Date:	05/20/2014
--- Notes:	Built against Ubuntu 14.04 (Trusty Tahr).
+-- Date:	11/11/2014
+-- Notes:	Built against Ubuntu 14.10 (Utopic Unicorn).
 --			Assumes root privileges.
 --
 -- Changes:
---	05/20/2014 (14.04-01) - Initial Release
---	05/30/2014 (14.04-02) - Replaced libneon with libserf for SVN support
---	06/05/2014 (14.04-03) - Added sqlite3 commandline tool.
---	                      - Changed over to using LuaRocks for all Lua Modules.
---	08/12/2014 (14.04-04) - Fixed the LuaLogging install.
+--	05/20/2014 (14.10-01) - Initial Release
+--	                      - Removed premake install. Now it is gone in Utopic.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Trusty"
+local distro = "Utopic"
 local appName = "pkg-install-srv"
-local appVer = "14.04-04"
+local appVer = "14.10-01"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -49,7 +46,7 @@ local generalPackages =
 	"ssh",
 	"sshpass",
 	"dos2unix",
-	"openjdk-7-jdk",
+	"openjdk-8-jdk",
 	"curl",
 	"sqlite3",
 }
@@ -79,7 +76,7 @@ local develPackages =
 	"git",
 	"git-svn",
 	"svnwcrev",
-	"premake",
+	--"premake",
 	"premake4",
 	"valgrind",
 	"debhelper",
@@ -116,6 +113,7 @@ local libraryPackages =
 	"libcurl4-openssl-dev",
 	"libzzip-dev",
 	"zlib1g-dev",
+	"libbz2-dev",
 }
 
 local rocks =

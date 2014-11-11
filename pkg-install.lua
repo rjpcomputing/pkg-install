@@ -3,29 +3,21 @@
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan P. <rjpcomputing@gmail.com>
 -- Date:	04/15/2014
--- Notes:	Built against Ubuntu 14.04 (Trusty Tahr).
+-- Notes:	Built against Ubuntu 14.10 (Utopic Unicorn).
 --			Assumes root privileges.
 --
 -- Changes:
---	04/15/2014 (14.04-01) - Initial Release
---	04/28/2014 (14.04-02) - Added PowerBroker Identity Services for domain authentication
---	                      - Updated CodeLite to use their PPA
---	                      - Cleaned up PPA repo creation
---	                      - Fixed Google Chromes install not adding Google's repo to apt,
---	                        because it is done in this script
---	05/20/2014 (14.04-03) - Added curl
---	                      - Added sshpass
---	05/30/2014 (14.04-04) - Replaced libneon with libserf for SVN.
---	06/05/2014 (14.04-05) - Added sqlite3 commandline tool.
---	                      - Changed over to using LuaRocks for all Lua Modules.
---	08/12/2014 (14.04-06) - Fixed the LuaLogging install.
---	08/12/2014 (14.04-07) - Added LuaZip as a rock install.
+--	11/10/2014 (14.10-01) - Initial Release.
+--	                      - Removed premake install. Now it is gone in Utopic.
+--	                      - Removing exFAT PPA it does not contain Utopic packages.
+--	                      - Removing VirtualBox PPA because it is not updated for Utopic.
+--	                      - Because of a bug in icedtea java plugin switching to orcle java.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
-local distro = "Trusty"
+local distro = "Utopic"
 local appName = "pkg-install"
-local appVer = "14.04-07"
+local appVer = "14.10-01"
 
 -- General Applications
 local generalPackages =
@@ -67,7 +59,9 @@ local generalPackages =
 	"synergy",
 	--"fuse-exfat",
 	--"exfat-utils",
-	"icedtea-7-plugin",
+	--"icedtea-plugin",
+	"oracle-java8-installer",
+	"oracle-java8-set-default",
 	"curl",
 	"sqlite3",
 }
@@ -97,7 +91,7 @@ local develPackages =
 	"git",
 	"git-svn",
 	"svnwcrev",
-	"premake",
+	--"premake",
 	"premake4",
 	"valgrind",
 	"debhelper",
@@ -141,6 +135,7 @@ local libraryPackages =
 	"libcurl4-openssl-dev",
 	"libzzip-dev",
 	"zlib1g-dev",
+	"libbz2-dev",
 }
 
 local rocks =
@@ -305,7 +300,7 @@ TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
 
-	virtualbox =
+	--[[virtualbox =
 	{
 		listEntry = "deb http://download.virtualbox.org/virtualbox/debian "..distro:lower().." contrib non-free",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -338,11 +333,11 @@ o8Mz0KuFpClp9B7c78+QBzTbiEkEGBECAAkFAkvy0LACGwwACgkQVEIqS5irUTnq
 qACgtXuTbe2b72sgKdc6gGRKPhLDoEMAmgLwGVN3a4CqewQL+03bqfcKczNH
 =19g1
 -----END PGP PUBLIC KEY BLOCK-----]=]
-	},
+	},]]
 	
 	chrome =
 	{
-		listEntry = "deb http://dl.google.com/linux/chrome/deb/ stable main",
+		listEntry = "deb https://dl.google.com/linux/chrome/deb/ stable main",
 		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.2.2 (GNU/Linux)
 
@@ -375,8 +370,27 @@ D3+sWZF/WACfeNAu1/1hwZtUo1bR+MWiCjpvHtwAnA1R3IHqFLQ2X3xJ40XPuAyY
 =Quqp
 -----END PGP PUBLIC KEY BLOCK-----]=]
 	},
+	
+	oraclejava =
+	{
+		ppaRepo = "ppa:webupd8team/java",
+		listEntry = "deb http://ppa.launchpad.net/webupd8team/java/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/webupd8team/java/ubuntu "..distro.." main",
+		key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: SKS 1.1.4
+Comment: Hostname: keyserver.ubuntu.com
 
-	exfat =
+mI0ES9/P3AEEAPbI+9BwCbJucuC78iUeOPKl/HjAXGV49FGat0PcwfDd69MVp6zUtIMbLgkU
+OxIlhiEkDmlYkwWVS8qy276hNg9YKZP37ut5+GPObuS6ZWLpwwNus5PhLvqeGawVJ/obu7d7
+gM8mBWTgvk0ErnZDaqaU2OZtHataxbdeW8qH/9FJABEBAAG0DUxhdW5jaHBhZCBWTEOItgQT
+AQIAIAUCS9/P3AIbAwYLCQgHAwIEFQIIAwQWAgMBAh4BAheAAAoJEMJRgkjuoUiG5wYEANCd
+jhXXEpPUbP7cRGXL6cFvrUFKpHHopSC9NIQ9qxJVlUK2NjkzCCFhTxPSHU8LHapKKvie3e+l
+kvWW5bbFN3IuQUKttsgBkQe2aNdGBC7dVRxKSAcx2fjqP/s32q1lRxdDRM6xlQlEA1j94ewG
+9SDVwGbdGcJ43gLxBmuKvUJ4
+=0Cp+
+-----END PGP PUBLIC KEY BLOCK-----]=],
+	},
+
+	--[[exfat =
 	{
 		ppaRepo = "ppa:relan/exfat",
 		listEntry = "deb http://ppa.launchpad.net/relan/exfat/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/relan/exfat/ubuntu "..distro.." main",
@@ -392,7 +406,7 @@ F9rnugwEuBOfguGenVVARTH3asNl1uLTBUAMgwdHiLNGd9zR70JADgFZobH1oVkAQ0xvos50
 vEFxcnTV6NPI4nrqt/SNQBEKNYRdznOeqMkVlC2W2HNa18L17QFBkzJxhdnNm/4YbUSweg==
 =+jvj
 -----END PGP PUBLIC KEY BLOCK-----]=],
-	},
+	},]]
 }
 
 function AddExtraAptSources()
