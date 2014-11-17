@@ -12,12 +12,13 @@
 --	                      - Removing exFAT PPA it does not contain Utopic packages.
 --	                      - Removing VirtualBox PPA because it is not updated for Utopic.
 --	                      - Because of a bug in icedtea java plugin switching to orcle java.
+--	11/17/2014 (14.10-02) - Added deleting apt partial lists because in 14.10 it seems fragile.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Utopic"
 local appName = "pkg-install"
-local appVer = "14.10-01"
+local appVer = "14.10-02"
 
 -- General Applications
 local generalPackages =
@@ -436,6 +437,9 @@ function AddExtraAptSources()
 	end
 
 	file:close()
+	
+	-- Cleans up partial list. Seen for 14.10
+	os.execute( "sudo rm -rf /var/lib/apt/lists/partial/*")
 end
 
 function InstallNonAptApplications()

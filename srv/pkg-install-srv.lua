@@ -9,12 +9,13 @@
 -- Changes:
 --	05/20/2014 (14.10-01) - Initial Release
 --	                      - Removed premake install. Now it is gone in Utopic.
+--	11/17/2014 (14.10-02) - Added deleting apt partial lists because in 14.10 it seems fragile.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Utopic"
 local appName = "pkg-install-srv"
-local appVer = "14.10-01"
+local appVer = "14.10-02"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
@@ -256,6 +257,9 @@ function AddExtraAptSources()
 	end
 
 	file:close()
+	
+	-- Cleans up partial list. Seen for 14.10
+	os.execute( "sudo rm -rf /var/lib/apt/lists/partial/*")
 end
 
 function InstallNonAptApplications()
