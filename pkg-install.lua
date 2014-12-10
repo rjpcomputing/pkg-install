@@ -13,12 +13,13 @@
 --	                      - Removing VirtualBox PPA because it is not updated for Utopic.
 --	                      - Because of a bug in icedtea java plugin switching to orcle java.
 --	11/17/2014 (14.10-02) - Added deleting apt partial lists because in 14.10 it seems fragile.
+--	12/10/2014 (14.10-03) - Updated domain script to add the user to dialout.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Utopic"
 local appName = "pkg-install"
-local appVer = "14.10-02"
+local appVer = "14.10-03"
 
 -- General Applications
 local generalPackages =
