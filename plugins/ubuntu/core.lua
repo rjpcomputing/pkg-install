@@ -50,7 +50,7 @@ local _M =
 		"git",
 		"git-svn",
 		--"svnwcrev",
-		--"premake",
+		"premake4",
 		"valgrind",
 		"debhelper",
 		"rake",

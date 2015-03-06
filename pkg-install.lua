@@ -9,8 +9,9 @@
 -- Changes:
 --	11/10/2014 (14.10-01) - Initial Release with plugin support.
 -- ----------------------------------------------------------------------------
-require( "pl" )
-print( "test edit from Zed" )
+-- require( "pl" )
+local argparser = require( "argparser" )
+
 -- Helper Functions -----------------------------------------------------------
 --
 local function FileExists( fileName )
@@ -137,8 +138,13 @@ function PkgInstall.new()
 	-- Allow plugins to require other plugins
 	package.path	= package.path .. (";%s/.pkg-install/plugins/?.lua;%s/.pkg-install/plugins/?/init.lua;./plugins/?.lua;./plugins/?/init.lua"):format( self.homeDir, self.homeDir )
 	package.cpath	= package.cpath .. (";%s/.pkg-install/plugins/?.so;./plugins/?.so;%s/.pkg-install/plugins/?.dll;./plugins/?.dll;%s/.pkg-install/plugins/?/init.so;./plugins/?/init.so;%s/.pkg-install/plugins/?/init.dll;./plugins/?/init.dll"):format( self.homeDir, self.homeDir, self.homeDir, self.homeDir)
-
-
+    local parser = argparse()
+        :name( self._NAME )
+        :description( "Script to get your machine up and running quickly after a fresh install." )
+        
+    local args = parser:parse()
+    for k, v in pairs(args) do print(k, v) end
+    
 	return self
 end
 
