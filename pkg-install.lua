@@ -10,7 +10,7 @@
 --	11/10/2014 (14.10-01) - Initial Release with plugin support.
 -- ----------------------------------------------------------------------------
 require( "pl" )
-
+print( "test edit from Zed" )
 -- Helper Functions -----------------------------------------------------------
 --
 local function FileExists( fileName )
