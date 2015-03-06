@@ -7,19 +7,148 @@
 --			Assumes root privileges.
 --
 -- Changes:
---	11/10/2014 (14.10-01) - Initial Release.
---	                      - Removed premake install. Now it is gone in Utopic.
---	                      - Removing exFAT PPA it does not contain Utopic packages.
---	                      - Removing VirtualBox PPA because it is not updated for Utopic.
---	                      - Because of a bug in icedtea java plugin switching to orcle java.
---	11/17/2014 (14.10-02) - Added deleting apt partial lists because in 14.10 it seems fragile.
---	12/10/2014 (14.10-03) - Updated domain script to add the user to dialout.
+--	11/10/2014 (14.10-01) - Initial Release with plugin support.
 -- ----------------------------------------------------------------------------
+require( "pl" )
 
--- General Setup
-local distro = "Utopic"
+-- Helper Functions -----------------------------------------------------------
+--
+local function FileExists( fileName )
+	local file = io.open( fileName )
+	if file then
+		io.close( file )
+		return true
+	else
+		return false
+	end
+end
+
+local function OperatingSystemDetails()
+	local lsbRelease = io.popen( "lsb_release -idrc" )
+	local releaseInfo = lsbRelease:read( "*all" )
+	lsbRelease:close()
+
+	-- parse info
+	local osDetails = {}
+	for k, v in string.gmatch( releaseInfo, "([%w%s]+):%s(.-)%c" ) do
+		osDetails[k:gsub(" ", "_"):lower()] = v
+	end
+
+	return osDetails
+end
+
+-- Utils Class ----------------------------------------------------------------
+--
+Utils = {}
+
+--- assert that the given argument is in fact of the correct type.
+-- @param n argument index
+-- @param val the value
+-- @param tp the type
+-- @param verify an optional verfication function
+-- @param msg an optional custom message
+-- @param lev optional stack position for trace, default 2
+-- @raise if the argument n is not the correct type
+-- @usage assert_arg(1,t,'table')
+-- @usage assert_arg(n,val,'string',path.isdir,'not a directory')
+function Utils.AssertArg(n,val,tp,verify,msg,lev)
+    if type(val) ~= tp then
+        error(("argument %d expected a '%s', got a '%s'"):format(n,tp,type(val)),lev or 2)
+    end
+    if verify and not verify(val) then
+        error(("argument %d: '%s' %s"):format(n,val,msg),lev or 2)
+    end
+end
+
+--- assert the common case that the argument is a string.
+-- @param n argument index
+-- @param val a value that must be a string
+-- @raise val must be a string
+function Utils.AssertString (n,val)
+    Utils.AssertArg(n,val,'string',nil,nil,3)
+end
+
+-- Copy a table into another in-place
+-- @returns first table with t2 contents
+function Utils.TableUpdate( t1, t2 )
+	Utils.AssertArg( 1,t1,'table' )
+	Utils.AssertArg( 2,t2,'table' )
+	for k, v in pairs( t1 ) do
+		t1[k] = v
+	end
+
+	return t1
+end
+
+--- insert values into a table.
+-- similar to table.insert but inserts values from given table values,
+-- not the object itself, into table t at position pos.
+-- @within Copying
+-- @array t the list
+-- @int[opt] position (default is at end)
+-- @array values
+function Utils.InsertValues(t, ...)
+    Utils.AssertArg(1,t,'table')
+    local pos, values
+    if select('#', ...) == 1 then
+        pos,values = #t+1, ...
+    else
+        pos,values = ...
+    end
+    if #values > 0 then
+        for i=#t,pos,-1 do
+            t[i+#values] = t[i]
+        end
+        local offset = 1 - pos
+        for i=pos,pos+#values-1 do
+            t[i] = values[i + offset]
+        end
+    end
+    return t
+end
+
+-- DebInit Class --------------------------------------------------------------
+--
+local PkgInstall =
+{
+	_NAME		= "pkg-install",
+	_VERSION	= "2.0-dev",
+	args		= args,
+	hello		=
+[=[       __                                             __             ___    ___
+      /\ \                        __                 /\ \__         /\_ \  /\_ \
+ _____\ \ \/'\      __           /\_\    ___     ____\ \ ,_\    __  \//\ \ \//\ \
+/\ '__`\ \ , <    /'_ `\  _______\/\ \ /' _ `\  /',__\\ \ \/  /'__`\  \ \ \  \ \ \
+\ \ \L\ \ \ \\`\ /\ \L\ \/\______\\ \ \/\ \/\ \/\__, `\\ \ \_/\ \L\.\_ \_\ \_ \_\ \_
+ \ \ ,__/\ \_\ \_\ \____ \/______/ \ \_\ \_\ \_\/\____/ \ \__\ \__/.\_\/\____\/\____\
+  \ \ \/  \/_/\/_/\/___L\ \         \/_/\/_/\/_/\/___/   \/__/\/__/\/_/\/____/\/____/
+   \ \_\            /\____/
+    \/_/            \_/__/
+]=]
+
+}
+PkgInstall.__index = PkgInstall
+function PkgInstall.new()
+	local self = setmetatable( {}, PkgInstall )
+	self.operatingSystemDetails = OperatingSystemDetails()
+	print( pretty.write( self.operatingSystemDetails ) )
+
+	self.homeDir	= os.getenv( "HOME" )
+	-- Allow plugins to require other plugins
+	package.path	= package.path .. (";%s/.pkg-install/plugins/?.lua;%s/.pkg-install/plugins/?/init.lua;./plugins/?.lua;./plugins/?/init.lua"):format( self.homeDir, self.homeDir )
+	package.cpath	= package.cpath .. (";%s/.pkg-install/plugins/?.so;./plugins/?.so;%s/.pkg-install/plugins/?.dll;./plugins/?.dll;%s/.pkg-install/plugins/?/init.so;./plugins/?/init.so;%s/.pkg-install/plugins/?/init.dll;./plugins/?/init.dll"):format( self.homeDir, self.homeDir, self.homeDir, self.homeDir)
+
+
+	return self
+end
+
+-- Returns the operating systems name in lowercase
+function PkgInstall:GetOperatingSystemName()
+	return "debian" == self.operatingSystemDetails.distributor_id:lower()
+end
+
 local appName = "pkg-install"
-local appVer = "14.10-03"
+local appVer = "2.0-dev"
 
 -- General Applications
 local generalPackages =
@@ -283,7 +412,7 @@ L+nMjs7YCYWeC5oZVW3pepqDcT5IejgZL94IHgV6BvHcwwsDiW8lAdgHmz5Vs9o=
 =g35i
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
-	
+
 	wxformbuilder =
 	{
 		ppaRepo = "ppa:wxformbuilder/release",
@@ -336,7 +465,7 @@ qACgtXuTbe2b72sgKdc6gGRKPhLDoEMAmgLwGVN3a4CqewQL+03bqfcKczNH
 =19g1
 -----END PGP PUBLIC KEY BLOCK-----]=]
 	},]]
-	
+
 	chrome =
 	{
 		listEntry = "deb https://dl.google.com/linux/chrome/deb/ stable main",
@@ -372,7 +501,7 @@ D3+sWZF/WACfeNAu1/1hwZtUo1bR+MWiCjpvHtwAnA1R3IHqFLQ2X3xJ40XPuAyY
 =Quqp
 -----END PGP PUBLIC KEY BLOCK-----]=]
 	},
-	
+
 	oraclejava =
 	{
 		ppaRepo = "ppa:webupd8team/java",
@@ -438,7 +567,7 @@ function AddExtraAptSources()
 	end
 
 	file:close()
-	
+
 	-- Cleans up partial list. Seen for 14.10
 	os.execute( "sudo rm -rf /var/lib/apt/lists/partial/*")
 end
@@ -452,46 +581,6 @@ function InstallNonAptApplications()
 	os.execute( ("VBoxManage extpack install %s"):format( virtualBoxExtensionFilename ) )
 	-- Cleanup
 	os.remove( virtualBoxExtensionFilename )
-end
-
-local function InstallRocks()
-	-- Update LuaRocks
-	os.execute( "luarocks --from=http://rocks.moonscript.org install luarocks" )
-	--os.execute( "apt-get remove -y luarocks" )	-- Seems to break the updated installation, so leaving it
-	
-	-- Install rocks one at a time because LuaRocks doen't support lists
-	for _, rock in pairs( rocks ) do
-		local cmd = ("luarocks %s install %s")
-		if "table" == type( rock ) then
-			local options = {}
-			options[1 + #options] = "--from=" .. ( rock.from or "http://rocks.moonscript.org" )
-			if rock.options then
-				for name, value in pairs( rock.options ) do
-					options[1 + #options] = ("%s=%s"):format( name, value )
-				end
-			end
-			print( ("[%s] %s"):format( rock[1], string.rep( "-", 20 ) ) )
---			print( cmd:format( table.concat( options, " " ), ("%s %s"):format( rock[1], rock.version or ""  ) ) )
-			os.execute( cmd:format( table.concat( options, " " ), ("%s %s"):format( rock[1], rock.version or ""  ) ) )
-		else
-			print( ("[%s] %s"):format( rock, string.rep( "-", 20 ) ) )
-			os.execute( cmd:format( "--from=http://rocks.moonscript.org", rock ) )
-		end
-	end
-end
-
-function AddManualUserLogin()
-	local filePath = "/etc/lightdm/lightdm.conf.d/50-manual-login.conf"
-	os.execute( ("mkdir -p %s"):format( filePath:match( ".*/" ) ) )
-	os.execute( ("touch %s"):format( filePath ) )
-	local file = io.open( filePath, "w+" )
-	if file then
-		print( ">>", "Making manual user login possible..." )
-		
-		local linesToAdd = "[SeatDefaults]\nallow-guest=false\ngreeter-show-manual-login=true"
-		file:write( ("%s\n"):format( linesToAdd ) )
-		file:close()
-	end
 end
 
 local function IsRunningInVm()
@@ -528,20 +617,11 @@ function main()
 	print( ">>", "Upgrading packages..." )
 	os.execute( "apt-get -y dist-upgrade" )
 
-	-- Build the packages into a string.
-	local allPackages = table.concat( generalPackages, " " ).." "
-	allPackages = allPackages..table.concat( develPackages, " " ).." "
-	allPackages = allPackages..table.concat( libraryPackages, " " ).." "
-	if IsRunningInVm() then
-		allPackages = allPackages.." virtualbox-guest-dkms"
-	end
-	
-	print( ">>", "Full list of packages to be installed..." )
-	print( allPackages )
-	
+
+
 	-- Make sure Google Chrome does not add Googles repo during the install, because this script does it already.
 	os.execute( "touch /etc/default/google-chrome" )
-	
+
 	-- Install all packages
 	print( ">>", "Installing packages..." )
 	local cmd = "apt-get -y install "..allPackages
@@ -549,10 +629,10 @@ function main()
 
 	print( ">>", "Installing packages that don't have any APT repository..." )
 	InstallNonAptApplications()
-	
+
 	print( ">>", "Installing rocks..." )
 	InstallRocks()
-	
+
 	-- Upgrade all packages again. In case there was a failure during install.
 	print( ">>", "Finish with a full system package upgrate..." )
 	os.execute( "apt-get -y dist-upgrade" )
