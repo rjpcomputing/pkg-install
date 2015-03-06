@@ -10,7 +10,7 @@
 --	11/10/2014 (14.10-01) - Initial Release with plugin support.
 -- ----------------------------------------------------------------------------
 -- require( "pl" )
-local argparser = require( "argparser" )
+local argparser = require( "argparse" )
 
 -- Helper Functions -----------------------------------------------------------
 --
@@ -141,10 +141,10 @@ function PkgInstall.new()
     local parser = argparse()
         :name( self._NAME )
         :description( "Script to get your machine up and running quickly after a fresh install." )
-        
+
     local args = parser:parse()
     for k, v in pairs(args) do print(k, v) end
-    
+
 	return self
 end
 

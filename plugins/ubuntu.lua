@@ -1,4 +1,21 @@
+-- Plugins this uses
+local debCore = require( "deb-core" )
 require( "lua-package-install" )
+
+local _M =
+{
+	plugin			= "Ubuntu",
+	description		= "Installs packages for based on the Ubuntu version",
+	_VERSION		= "1.0",
+	core			= require( "ubuntu.core" ),
+	PreInstall	= function()
+		AddManualUserLogin()
+	end,
+	Install		= function()
+	end,
+	PostInstall = function()
+	end
+}
 
 local generalPackages =
 {
@@ -147,20 +164,7 @@ local function GetAllPackages( self )
 	print( allPackages )
 end
 
-local _M =
-{
-	plugin			= "Ubuntu",
-	description		= "Installs packages for based on the Ubuntu version",
-	_VERSION		= "1.0",
-	core			= require( "ubuntu.core" ),
-	PreInstall	= function()
-		AddManualUserLogin()
-	end,
-	Install		= function()
-	end,
-	PostInstall = function()
-	end
-}
+
 
 function _M:InstallPackages()
 	local allPackages = GetAllPackages( self )
@@ -168,40 +172,6 @@ function _M:InstallPackages()
 	os.execute( cmd )
 end
 
-
-	local rocks =
-	{
-		{ "busted", version = "1.11.1-1" },		-- Version specified because the latest RC2 has a bug
-		"copas",
-		"cosmo",
-		"coxpcall",
-		"ldoc",
-		"lpeg",
-		"lua-discount",
-		"luabitop",
-		"luacurl",
-		{ "luadbi-postgresql", options = { PGSQL_INCDIR = "/usr/include/postgresql", POSTGRES_INCDIR = "/usr/include/postgresql" } },
-		"luadbi-sqlite3",
-		"luaexpat",
-		"luafilesystem",
-		"luajson",
-		{ "lualogging", version = "1.2.0-1" },	-- the current latest stable (1.3.0-1) seems to be corrupt, so i am pinning the version.
-		"luaposix",
-		{ "luasec", options = { OPENSSL_LIBDIR = "/lib/x86_64-linux-gnu" } },
-		"luasocket",
-		{ "luasql-postgres", options = { PGSQL_INCDIR = "/usr/include/postgresql", POSTGRES_INCDIR = "/usr/include/postgresql" } },
-		{ "luasql-sqlite3", version = "cvs-1", from = "http://rocks.moonscript.org/dev" },
-		"luazip",
-		{ "lzlib", options = { ZLIB_LIBDIR = "/usr/lib/x86_64-linux-gnu" } },
-		"markdown",
-		"md5",
-		"orbit",
-		"penlight",
-		"rings",
-		"struct",
-		{ "wsapi-xavante", version = "cvs-1", from = "http://rocks.moonscript.org/dev" },
-		--"lunary",
-	}
 
 	local aptDetails =
 	{
@@ -440,7 +410,7 @@ end
 		},]]
 	}
 
-	function AddExtraAptSources()
+	function AddExtraAptSources( aptDetails )
 		local file = io.output( "/etc/apt/sources.list.d/pkg-install-additional.list" )
 		file:write( "# This file was created by a script, don't edit this by hand.\n# Any changes made will be lost.\n\n" )
 
@@ -472,16 +442,7 @@ end
 		os.execute( "sudo rm -rf /var/lib/apt/lists/partial/*")
 	end
 
-	function InstallNonAptApplications()
-		-- VirtualBox 4.x Extension Pack (gives USB2.0 support)
-		local virtualBoxExtensionUrl = "http://download.virtualbox.org/virtualbox/4.3.10/Oracle_VM_VirtualBox_Extension_Pack-4.3.10-93012.vbox-extpack"
-		local virtualBoxExtensionFilename = virtualBoxExtensionUrl:gsub( "\\", "/" ):match( "([^/]-[^%.]+)$" )
-		os.execute( ("wget --no-check-certificate --output-document=%s %s"):format( virtualBoxExtensionFilename, virtualBoxExtensionUrl ) )
-		-- Install
-		os.execute( ("VBoxManage extpack install %s"):format( virtualBoxExtensionFilename ) )
-		-- Cleanup
-		os.remove( virtualBoxExtensionFilename )
-	end
+
 
 return function( osDetails, options )
 	_M.osDetails		= osDetails
