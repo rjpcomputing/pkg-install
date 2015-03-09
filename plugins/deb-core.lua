@@ -3,6 +3,7 @@ local _M =
 	name		= "Debian Core",
 	description	= "Packages installed on all Debian based systems",
 	_VERSION	= "1.0-dev",
+	packageInstallCommand = "apt-get -y install",
 	packages =
 	{
 		--
@@ -63,14 +64,13 @@ local _M =
 		"libwxgtk-media3.0*",
 		"wx3.0-headers",
 		"wx-common",
-		"libwxadditions30*",
 		"libqt4-dev",
 		"libqt4-dbg",
 		"qt4-dev-tools",
 		"libgtk2.0-dev",
 		"libgtk2.0-0-dbg",
-		"libboost1.55-all-dev",
-		"libboost1.55-dbg",
+		"libboost-all-dev",
+		"libboost-dbg",
 		"liblua5.1-0-dev",
 		"liblua5.1-0-dbg",
 		"libsvn-dev",
@@ -85,9 +85,35 @@ local _M =
 	},
 	desktopPackages =
 	{
-		-- General
-		-- Development
-		-- Libraries
+		--
+		-- General --
+		--
+		"alacarte",
+		"synaptic",
+		"google-chrome-stable",
+		"geany",
+		"pinta",
+		"gimp",
+		"kupfer",
+		"guake",
+		"pidgin",
+		"nautilus-open-terminal",
+		"virtualbox",
+		"virtualbox-dkms",
+		"dkms",
+		"unetbootin",
+		"synergy",
+		--"icedtea-plugin",
+		--
+		-- Development --
+		--
+		"codelite",
+		"meld",
+		"diffuse",
+		"ghex",
+		--
+		-- Libraries --
+		--
 	},
 	PreInstall	= function()
 	end,
@@ -113,11 +139,7 @@ end
 
 return function( options )
 	if options and options.desktop then
-		_M.desktop = options.desktop or true
 
-		for _, desktopPackage in ipairs( _M.desktopPackages ) do
-			table.insert( _M.packages, desktopPackage )
-		end
 	end
 
 	return _M

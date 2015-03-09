@@ -1,7 +1,7 @@
 local _M =
 {
-	name		= "14.10",
-	description	= "Specific details for installing Ubnutu 14.10 (Utopic)",
+	name		= "Stable",
+	description	= "Specific details for installing Debian Stable (Wheezy)",
 	_VERSION	= "1.0-dev",
 	packages	=
 	{

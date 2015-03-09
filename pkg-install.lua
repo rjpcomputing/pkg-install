@@ -628,9 +628,16 @@ function main()
 	-- Make sure Google Chrome does not add Googles repo during the install, because this script does it already.
 	os.execute( "touch /etc/default/google-chrome" )
 
+	-- Desktop install
+	local desktop = args.desktop or true
+
+	for _, desktopPackage in ipairs( app.desktopPackages ) do
+		table.insert( allPackages, desktopPackage )
+	end
+
 	-- Install all packages
 	print( ">>", "Installing packages..." )
-	local cmd = "apt-get -y install "..allPackages
+	local cmd = "apt-get -y install " .. allPackages
 	os.execute( cmd )
 
 	print( ">>", "Installing packages that don't have any APT repository..." )
