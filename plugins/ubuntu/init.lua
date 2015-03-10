@@ -1,10 +1,12 @@
 -- Plugins this uses
-local debCore = require( "deb-core" )
+local plugins = require( "plugins" )
+local debCore = plugins.loadedPlugins["deb-core"]
+print( pretty.write( debCore ) )
 require( "lua-package-install" )
 
 local _M =
 {
-	plugin			= "Ubuntu",
+	name			= "Ubuntu",
 	description		= "Installs packages for based on the Ubuntu version",
 	_VERSION		= "1.0",
 	core			= require( "ubuntu.core" ),
@@ -55,7 +57,7 @@ function _M:InstallPackages()
 	os.execute( cmd )
 end
 
-
+function poot()
 	local aptDetails =
 	{
 		--[[["boost-latest"] =
@@ -292,46 +294,45 @@ end
 	-----END PGP PUBLIC KEY BLOCK-----]=],
 		},]]
 	}
+end
+function AddExtraAptSources( aptDetails )
+	local file = io.output( "/etc/apt/sources.list.d/pkg-install-additional.list" )
+	file:write( "# This file was created by a script, don't edit this by hand.\n# Any changes made will be lost.\n\n" )
 
-	function AddExtraAptSources( aptDetails )
-		local file = io.output( "/etc/apt/sources.list.d/pkg-install-additional.list" )
-		file:write( "# This file was created by a script, don't edit this by hand.\n# Any changes made will be lost.\n\n" )
+	for ppa, value in pairs( aptDetails ) do
+		print( ">>", "Adding '" .. ppa .. "' PPA" )
+		if value.ppaRepo ~= nil then
+			-- Add key using add-apt-repository.
+			os.execute( "sudo add-apt-repository -y " .. value.ppaRepo )
+		else
+			-- Write the comment to the file.
+			file:write( "# "..ppa.." PPA\n" )
+			-- Write the list entry.
+			file:write( value.listEntry )
+			file:write( "\n\n" )
 
-		for ppa, value in pairs( aptDetails ) do
-			print( ">>", "Adding '" .. ppa .. "' PPA" )
-			if value.ppaRepo ~= nil then
-				-- Add key using add-apt-repository.
-				os.execute( "sudo add-apt-repository -y " .. value.ppaRepo )
-			else
-				-- Write the comment to the file.
-				file:write( "# "..ppa.." PPA\n" )
-				-- Write the list entry.
-				file:write( value.listEntry )
-				file:write( "\n\n" )
-
-				-- Write the key file to a file so apt-key can add it.
-				local keyFile = io.output( ppa..".key" )
-				keyFile:write( value.key )
-				keyFile:close()
-				-- Add key using apt-key.
-				os.execute( "apt-key add "..ppa..".key" )
-				os.remove( ppa..".key" )
-			end
+			-- Write the key file to a file so apt-key can add it.
+			local keyFile = io.output( ppa..".key" )
+			keyFile:write( value.key )
+			keyFile:close()
+			-- Add key using apt-key.
+			os.execute( "apt-key add "..ppa..".key" )
+			os.remove( ppa..".key" )
 		end
-
-		file:close()
-
-		-- Cleans up partial list. Seen for 14.10
-		os.execute( "sudo rm -rf /var/lib/apt/lists/partial/*")
 	end
 
+	file:close()
 
+	-- Cleans up partial list. Seen for 14.10
+	os.execute( "sudo rm -rf /var/lib/apt/lists/partial/*")
+end
 
-return function( osDetails, options )
-	_M.osDetails		= osDetails
-	_M.options			= options or {}
-	local osVersion		= options.version:gsub( "%.", "_" ) or "14.04"
-	_M.versionSpecific	= require( "ubuntu." .. osVersion )
+return function( options )
+	_M.options			= options or { release = "" }
+	if options.distributor_id:lower() == "ubuntu" then
+		_M.versionSpecific	= require( "ubuntu." .. options.codename )
+		print( ("Loaded sub-module %q"):format( "ubuntu." .. options.codename ) )
+	end
 
 	return _M
 end

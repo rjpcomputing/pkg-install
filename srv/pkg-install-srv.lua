@@ -189,7 +189,7 @@ FZNAsp3EmvwZr+hRfX+z2KbV01yxU5ITSx47tUB3orVc
 =g/kS
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},
-	
+
 	--[[wxwidgets =
 	{
 		ppaRepo = "ppa:wxformbuilder/wxwidgets",
@@ -208,7 +208,7 @@ TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
 =S2Rj
 -----END PGP PUBLIC KEY BLOCK-----]=],
 	},]]
-	
+
 	wxformbuilder =
 	{
 		ppaRepo = "ppa:wxformbuilder/release",
@@ -258,7 +258,7 @@ function AddExtraAptSources()
 	end
 
 	file:close()
-	
+
 	-- Cleans up partial list. Seen for 14.10
 	os.execute( "sudo rm -rf /var/lib/apt/lists/partial/*")
 end
@@ -284,7 +284,7 @@ local function InstallRocks()
 	-- Update LuaRocks
 	os.execute( "luarocks --from=http://rocks.moonscript.org install luarocks" )
 	--os.execute( "apt-get remove -y luarocks" )	-- Seems to break the updated installation, so leaving it
-	
+
 	-- Install rocks one at a time because LuaRocks doen't support lists
 	for _, rock in pairs( rocks ) do
 		local cmd = ("luarocks %s install %s")
@@ -380,7 +380,7 @@ function main()
 
 	print( ">>", "Installing packages that don't have any APT repository..." )
 	InstallNonAptApplications()
-	
+
 	print( ">>", "Installing rocks..." )
 	InstallRocks()
 

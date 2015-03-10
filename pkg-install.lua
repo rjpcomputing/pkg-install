@@ -136,7 +136,7 @@ function PkgInstall.new()
 
 	self.homeDir	= os.getenv( "HOME" )
 	-- Allow plugins to require other plugins
-	package.path	= package.path .. (";%s/.pkg-install/plugins/?.lua;%s/.pkg-install/plugins/?/init.lua;./plugins/?.lua;./plugins/?/init.lua"):format( self.homeDir, self.homeDir )
+	package.path	= package.path .. (";%s/.pkg-install/plugins/?.lua;%s/.pkg-install/plugins/?/init.lua;./plugins/?.lua;./?.lua;./plugins/?/init.lua"):format( self.homeDir, self.homeDir )
 	package.cpath	= package.cpath .. (";%s/.pkg-install/plugins/?.so;./plugins/?.so;%s/.pkg-install/plugins/?.dll;./plugins/?.dll;%s/.pkg-install/plugins/?/init.so;./plugins/?/init.so;%s/.pkg-install/plugins/?/init.dll;./plugins/?/init.dll"):format( self.homeDir, self.homeDir, self.homeDir, self.homeDir)
     local parser = argparse()
         :name( self._NAME )
