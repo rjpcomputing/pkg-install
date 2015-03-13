@@ -1,21 +1,52 @@
--- Plugins this uses
-local plugins = require( "plugins" )
-local debCore = plugins.loadedPlugins["deb-core"]
-print( pretty.write( debCore ) )
-require( "lua-package-install" )
+local plugin = require( "plugins.interface" )
 
 local _M =
 {
 	name			= "Ubuntu",
+	distro			= "Ubuntu",
 	description		= "Installs packages for based on the Ubuntu version",
 	_VERSION		= "1.0",
-	core			= require( "ubuntu.core" ),
-	PreInstall	= function()
-		AddManualUserLogin()
+	plugins			= -- Plugins this uses
+	{
+		"deb-core",
+		"lua-package-install"
+	},
+	packages =
+	{
+		"liblua5.1-sublua*",
+		"premake4",
+	},
+	desktopPackages =
+	{
+		"ubuntu-restricted-extras",
+		"unity-tweak-tool",
+		"xul-ext-lightning",
+		"rabbitvcs-nautilus3",
+		--"chromium-browser",
+
+		"wxformbuilder",
+		"wxfb-wxadditions",
+		"libwxadditions30*",
+	},
+	PreInstall	= function( self, options )
+		print( "[DEBUG]", self.name, "PreInstall() called..." )
 	end,
-	Install		= function()
+	Install		= function( self, options )
+		print( "[DEBUG]", self.name, "Install() called..." )
+		local allPackages = self:GetAllPackages( options )
+		Utils.InsertValues( allPackages, self.versionSpecific.packages or {} )
+		if options.desktop then Utils.InsertValues( allPackages, self.versionSpecific.desktopPackages or {} ) end
+		table.sort( allPackages )
+
+		local allPackagesString = table.concat( allPackages, " " )
+		print( (">> %i packages to be installed..."):format( #allPackages ) )
+		local cmd = "apt-get -y install " .. allPackagesString
+		print( "$ " .. cmd )
+--		os.execute( cmd )
 	end,
-	PostInstall = function()
+	PostInstall = function( self, options )
+		print( "[DEBUG]", self.name, "PostInstall() called..." )
+--		AddManualUserLogin()
 	end
 }
 
@@ -31,30 +62,6 @@ function AddManualUserLogin()
 		file:write( ("%s\n"):format( linesToAdd ) )
 		file:close()
 	end
-end
-
-local function GetAllPackages( self )
-	local core = require( "ubuntu.core" )
-	local versionSpecific = require( "ubuntu." .. self.options.version:gsub( "%.", "_" ) )
-	print( pretty.write( versionSpecificPackages ) )
-	-- Build the packages into a string.
-	local allPackages = table.concat( generalPackages, " " ).." "
-	allPackages = allPackages..table.concat( develPackages, " " ).." "
-	allPackages = allPackages..table.concat( libraryPackages, " " ).." "
-	if IsRunningInVm() then
-		allPackages = allPackages.." virtualbox-guest-dkms"
-	end
-
-	print( ">>", "Full list of packages to be installed..." )
-	print( allPackages )
-end
-
-
-
-function _M:InstallPackages()
-	local allPackages = GetAllPackages( self )
-	local cmd = "apt-get -y install "..allPackages
-	os.execute( cmd )
 end
 
 function poot()
@@ -295,6 +302,7 @@ function poot()
 		},]]
 	}
 end
+
 function AddExtraAptSources( aptDetails )
 	local file = io.output( "/etc/apt/sources.list.d/pkg-install-additional.list" )
 	file:write( "# This file was created by a script, don't edit this by hand.\n# Any changes made will be lost.\n\n" )
@@ -328,11 +336,11 @@ function AddExtraAptSources( aptDetails )
 end
 
 return function( options )
-	_M.options			= options or { release = "" }
+	_M.options = options or { distributor_id = "" }
 	if options.distributor_id:lower() == "ubuntu" then
-		_M.versionSpecific	= require( "ubuntu." .. options.codename )
+		_M.versionSpecific	= require( "ubuntu." .. options.codename )( options )
 		print( ("Loaded sub-module %q"):format( "ubuntu." .. options.codename ) )
 	end
 
-	return _M
+	return plugin.new( _M )
 end

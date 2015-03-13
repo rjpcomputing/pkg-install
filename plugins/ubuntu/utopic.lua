@@ -16,11 +16,13 @@ local _M =
 		-- Libraries
 	},
 	PreInstall	= function()
-
+		print( "[DEBUG]", self.name, "PreInstall() called..." )
 	end,
 	Install		= function()
+		print( "[DEBUG]", self.name, "Install() called..." )
 	end,
 	PostInstall = function()
+		print( "[DEBUG]", self.name, "PostInstall() called..." )
 	end
 }
 

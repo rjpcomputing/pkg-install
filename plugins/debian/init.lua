@@ -1,8 +1,16 @@
+local plugin = require( "plugins.interface" )
+
 local _M =
 {
-	name		= "Debian",
-	description	= "Packages installed on all Debian systems",
-	_VERSION	= "1.0-dev",
+	name			= "Debian",
+	distro			= "Debian",
+	description		= "Packages installed on all Debian systems",
+	_VERSION		= "1.0-dev",
+	plugins			= -- Plugins this uses
+	{
+		"deb-core",
+		"lua-package-install"
+	},
 	packages =
 	{
 	},
@@ -13,17 +21,19 @@ local _M =
 		--"chromium",
 		--"iceowl-extension",
 	},
-	PreInstall	= function()
+	PreInstall	= function( self, options )
+		print( "[DEBUG]", self.name, "PreInstall() called..." )
 	end,
-	Install		= function()
+	Install		= function( self, options )
+		print( "[DEBUG]", self.name, "Install() called..." )
 	end,
-	PostInstall = function()
+	PostInstall = function( self, options )
+		print( "[DEBUG]", self.name, "PostInstall() called..." )
 	end
 }
 
 return function( options )
-	_M.options			= options or { release = "" }
-	local osVersion		= options.release:gsub( "%.", "_" ) or "stable"
+	options = options or { distributor_id = "" }
 	if options.distributor_id:lower() == "debian" then
 		_M.versionSpecific	= require( "debian." .. options.codename )
 		print( ("Loaded sub-module %q"):format( "debian." .. options.codename ) )

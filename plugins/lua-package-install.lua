@@ -72,13 +72,16 @@ local _M =
 		{ "wsapi-xavante", version = "cvs-1", from = "http://rocks.moonscript.org/dev" },
 		--"lunary",
 	},
-	PreInstall	= function()
-		InstallLuaRocks()
+	PreInstall	= function( self, options )
+		if options.debug then print( "[DEBUG]", self.name, "PreInstall() called..." ) end
+--		InstallLuaRocks()
 	end,
-	Install		= function()
-		InstallRocks()
+	Install		= function( self, options )
+		if options.debug then print( "[DEBUG]", self.name, "Install() called..." ) end
+--		InstallRocks()
 	end,
-	PostInstall = function()
+	PostInstall = function( self, options )
+		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end
 	end
 }
 

@@ -1,9 +1,10 @@
+local plugin = require( "plugins.interface" )
+
 local _M =
 {
 	name		= "Debian Core",
 	description	= "Packages installed on all Debian based systems",
 	_VERSION	= "1.0-dev",
-	packageInstallCommand = "apt-get -y install",
 	packages =
 	{
 		--
@@ -115,12 +116,15 @@ local _M =
 		-- Libraries --
 		--
 	},
-	PreInstall	= function()
+	PreInstall	= function( self, options )
+		if options.debug then print( "[DEBUG]", self.name, "PreInstall() called..." ) end
 	end,
-	Install		= function()
+	Install		= function( self, options )
+		if options.debug then print( "[DEBUG]", self.name, "Install() called..." ) end
 	end,
-	PostInstall = function()
-		if _M.desktop then
+	PostInstall = function( self, options )
+		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end
+		if self.desktop then
 			InstallVirtualBoxExtensionPack()
 		end
 	end
@@ -139,8 +143,7 @@ end
 
 return function( options )
 	if options and options.desktop then
-
 	end
 
-	return _M
+	return plugin.new( _M )
 end

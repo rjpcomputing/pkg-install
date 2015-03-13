@@ -5,36 +5,28 @@
 -- ----------------------------------------------------------------------------
 local Plugins =
 {
-	-- Add plugins here
+	-- Add plugin names here
 	plugins	= { "deb-core", "lua-package-install", "ubuntu", "debian" },
 	loadedPlugins = {},
 }
-Plugins.__index = Plugins
-function Plugins.new( options )
-	local self = setmetatable( {}, Plugins )
-	self.options	= options
 
-	return self
-end
-
--- Constructor
-function Plugins:Add( pluginName )
+function Plugins:Add( pluginName, options )
 	assert( "string"	== type( pluginName ), "Invalid pluginName. Expected string, but found " .. type( pluginName ) )
 	local plugin = require( pluginName )
-	assert( "function"	== type( plugin ), "Invalid arg1. Expected function, but found " .. type( plugin ) )
+	assert( "function"	== type( plugin ), "Error loading plugin. Expected function to be returned, but found " .. type( plugin ) )
 	-- Initialize the plugin passing in details about the current run
-	plugin = plugin( self.options )
+	plugin = plugin( options )
 	assert( "string"	== type( plugin.name ), "Invalid plugin.name. Expected string, but found " .. type( plugin.name ) )
 	assert( "string"	== type( plugin._VERSION ), "Invalid plugin._VERSION. Expected string, but found " .. type( plugin._VERSION ) )
-	self.loadedPlugins[plugin.name] = plugin
+	self.loadedPlugins[pluginName] = plugin
 
 	return plugin
 end
 
-function Plugins:Load()
+function Plugins:Load( options )
 	print( ("Loading %i plugins..."):format( #self.plugins ) )
 	for _, plugin in ipairs( self.plugins ) do
-		self:Add( plugin )
+		self:Add( plugin, options )
 		print( ("Loaded %q..."):format( plugin ) )
 	end
 
