@@ -1,12 +1,13 @@
 local _M =
 {
-	name		= "14.04",
-	description	= "Specific details for installing Ubnutu 14.04 (Trusty)",
-	_VERSION	= "1.0",
+	name		= "Jessie",
+	description	= "Specific details for installing Debian Testing (Jessie)",
+	_VERSION	= "1.0-dev",
 	packages	=
 	{
 		-- General
 		-- Development
+		"premake4",
 		-- Libraries
 	},
 	desktopPackages =

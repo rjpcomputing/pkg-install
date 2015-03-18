@@ -10,13 +10,7 @@
 --	11/10/2014 (14.10-01) - Initial Release with plugin support.
 -- ----------------------------------------------------------------------------
 -- require( "pl" )
--- Allow plugins to require other plugins
-package.path	= package.path .. (";%s/.pkg-install/plugins/?.lua;%s/.pkg-install/plugins/?/init.lua;./plugins/?.lua;./?/init.lua;./plugins/?/init.lua"):format( homeDir, homeDir )
-package.cpath	= package.cpath .. (";%s/.pkg-install/plugins/?.so;./plugins/?.so;%s/.pkg-install/plugins/?.dll;./plugins/?.dll;%s/.pkg-install/plugins/?/init.so;./plugins/?/init.so;./?/init.so;%s/.pkg-install/plugins/?/init.dll;./plugins/?/init.dll;./?/init.dll"):format( homeDir, homeDir, homeDir, homeDir)
-local Plugins = require( "plugins" )
-local argparser = require( "argparse" )
-
-local homeDir	= os.getenv( "HOME" )
+local argparse = require( "argparse" )
 
 -- Helper Functions -----------------------------------------------------------
 --
@@ -42,6 +36,19 @@ local function OperatingSystemDetails()
 	end
 
 	return osDetails
+end
+
+local function IsRunningInVm()
+	os.execute( "apt-get install -y virt-what" )
+	local cmdOutput = io.popen( "virt-what 2>&1" ):read( "*all" )
+	local vmNames = { "kvm", "parallels", "qemu", "virtualbox", "vmware", "xen" }
+	for _, name in ipairs( vmNames ) do
+		if cmdOutput:find( name ) then
+			return true
+		end
+	end
+
+	return false
 end
 
 -- Utils Class ----------------------------------------------------------------
@@ -120,7 +127,7 @@ local PkgInstall =
 {
 	_NAME		= "pkg-install",
 	_VERSION	= "2.0-dev",
-	args		= args,
+--	args		= args,
 	hello		=
 [=[       __                                             __             ___    ___
       /\ \                        __                 /\ \__         /\_ \  /\_ \
@@ -137,40 +144,35 @@ local PkgInstall =
 PkgInstall.__index = PkgInstall
 function PkgInstall.new()
 	local self = setmetatable( {}, PkgInstall )
-	self.operatingSystemDetails = OperatingSystemDetails()
-	print( pretty.write( self.operatingSystemDetails ) )
 
 	self.homeDir	= os.getenv( "HOME" )
 	-- Allow plugins to require other plugins
-	package.path	= package.path .. (";%s/.pkg-install/plugins/?.lua;%s/.pkg-install/plugins/?/init.lua;./plugins/?.lua;./?.lua;./plugins/?/init.lua"):format( self.homeDir, self.homeDir )
+	package.path	= package.path .. (";%s/.pkg-install/plugins/?.lua;%s/.pkg-install/plugins/?/init.lua;./plugins/?.lua;./?.lua;./?/init.lua;./plugins/?/init.lua"):format( self.homeDir, self.homeDir )
 	package.cpath	= package.cpath .. (";%s/.pkg-install/plugins/?.so;./plugins/?.so;%s/.pkg-install/plugins/?.dll;./plugins/?.dll;%s/.pkg-install/plugins/?/init.so;./plugins/?/init.so;%s/.pkg-install/plugins/?/init.dll;./plugins/?/init.dll"):format( self.homeDir, self.homeDir, self.homeDir, self.homeDir)
     local parser = argparse()
         :name( self._NAME )
         :description( "Script to get your machine up and running quickly after a fresh install." )
+	parser:flag "-n" "--no-desktop"
+	parser:flag "-d" "--debug"
 
     local args = parser:parse()
     for k, v in pairs(args) do print(k, v) end
 
-	return self
-end
-
--- Returns the operating systems name in lowercase
-function PkgInstall:GetOperatingSystemName()
-	return self.operatingSystemDetails.distributor_id:lower()
-end
-
-local function IsRunningInVm()
-	local cmdOutput = io.popen( "dmidecode  | grep -i product" ):read( "*all" )
-	if cmdOutput:find( "VirtualBox" ) or cmdOutput:find( "VMWare" ) then
-		return true
+	self.operatingSystemDetails = OperatingSystemDetails()
+	self.operatingSystemDetails.runningAsVm = IsRunningInVm()
+	if args["no-desktop"] then
+		self.operatingSystemDetails.desktop = false
 	else
-		return false
+		self.operatingSystemDetails.desktop = true
 	end
+
+	return self
 end
 
 function main()
 	local app = PkgInstall.new()
 	print( app._NAME .. " v" .. app._VERSION .. " - Script to get your machine up and running quickly after a fresh install." )
+	print( app.hello )
 
 	-- Check if script is being ran as root.
 	local username = os.getenv( "USER" )
@@ -178,45 +180,45 @@ function main()
 		error( "Please run this as root. Use 'sudo' to run this as root" )
 	end
 
-	if arg[1] ~= "--no-add-apt-sources" then
-		-- Add the needed apt repository
-		print( ">>", "Adding needed PPA's and keys to APT..." )
-		AddExtraAptSources()
+	local options = app.operatingSystemDetails
+	--print( pretty.write( options ) )
+	local Plugins = require( "plugins" )
+	local loadedPlugins = Plugins:Load( options )
+
+	-- Find plugins that focus on distros
+	local mainPlugin = {}
+	for pluginName, plugin in pairs( loadedPlugins ) do
+		if plugin.distro then
+			if options.distributor_id:lower() == plugin.distro:lower() then
+				mainPlugin = plugin
+
+				break
+			end
+		end
 	end
 
-	-- Update apt.
-	print( ">>", "Updating APT..." )
-	os.execute( "apt-get update" )
-	-- Upgrade all packages
-	print( ">>", "Upgrading packages..." )
-	os.execute( "apt-get -y dist-upgrade" )
-
-
-
-	-- Make sure Google Chrome does not add Googles repo during the install, because this script does it already.
-	os.execute( "touch /etc/default/google-chrome" )
-
-	-- Desktop install
-	local desktop = args.desktop or true
-
-	for _, desktopPackage in ipairs( app.desktopPackages ) do
-		table.insert( allPackages, desktopPackage )
+	print( ">>", ("%s (%s) is being installed..."):format( mainPlugin.distro, options.codename ) )
+	-- Pre-install Event
+	for _, pluginName in ipairs( mainPlugin.plugins ) do
+		local plugin = loadedPlugins[pluginName]
+		if plugin.PreInstall then plugin:PreInstall( options ) end
 	end
+	if mainPlugin.PreInstall then mainPlugin:PreInstall( options ) end
 
-	-- Install all packages
-	print( ">>", "Installing packages..." )
-	local cmd = "apt-get -y install " .. allPackages
-	os.execute( cmd )
+	-- Install Event
+	for _, pluginName in ipairs( mainPlugin.plugins ) do
+		local plugin = loadedPlugins[pluginName]
+		if plugin.Install then plugin:Install( options ) end
+	end
+	if mainPlugin.Install then mainPlugin:Install( options ) end
 
-	print( ">>", "Installing packages that don't have any APT repository..." )
-	InstallNonAptApplications()
 
-	print( ">>", "Installing rocks..." )
-	InstallRocks()
-
-	-- Upgrade all packages again. In case there was a failure during install.
-	print( ">>", "Finish with a full system package upgrate..." )
-	os.execute( "apt-get -y dist-upgrade" )
+	-- Post-install Event
+	for _, pluginName in ipairs( mainPlugin.plugins ) do
+		local plugin = loadedPlugins[pluginName]
+		if plugin.PostInstall then plugin:PostInstall( options ) end
+	end
+	if mainPlugin.PostInstall then mainPlugin:PostInstall( options ) end
 
 	local success, domain = pcall( dofile, "domain-setup.lua" )
 	if success then

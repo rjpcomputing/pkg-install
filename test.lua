@@ -31,7 +31,6 @@ end
 local function IsRunningInVm()
 	os.execute( "apt-get install -y virt-what" )
 	local cmdOutput = io.popen( "virt-what 2>&1" ):read( "*all" )
-print( ">>", cmdOutput )
 	local vmNames = { "kvm", "parallels", "qemu", "virtualbox", "vmware", "xen" }
 	for _, name in ipairs( vmNames ) do
 		if cmdOutput:find( name ) then
@@ -117,7 +116,6 @@ local options = OperatingSystemDetails()
 options.desktop = arg[1] or true
 options.runningAsVm = IsRunningInVm()
 print( pretty.write( options ) )
---local plugins = require( "plugins" ).new( options )
 
 local function main()
 	local loadedPlugins = Plugins:Load( options )

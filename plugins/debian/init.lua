@@ -39,5 +39,9 @@ return function( options )
 		print( ("Loaded sub-module %q"):format( "debian." .. options.codename ) )
 	end
 
-	return _M
+	if options.desktop then
+		table.insert( _M.plugins, "domain-setup" )
+	end
+
+	return plugin.new( _M )
 end

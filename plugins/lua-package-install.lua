@@ -1,41 +1,8 @@
-
-local function InstallLuaRocks()
-	os.execute( "wget http://luarocks.org/releases/luarocks-2.2.0.tar.gz" )
-	os.execute( "tar zxpf luarocks-2.2.0.tar.gz" )
-	os.execute( "cd luarocks-2.2.0; ./configure; sudo make bootstrap" )
-end
-
-local function InstallRocks()
-	-- Update LuaRocks
-	os.execute( "luarocks --from=http://rocks.moonscript.org install luarocks" )
-	--os.execute( "apt-get remove -y luarocks" )	-- Seems to break the updated installation, so leaving it
-
-	-- Install rocks one at a time because LuaRocks doen't support lists
-	for _, rock in pairs( rocks ) do
-		local cmd = ("luarocks %s install %s")
-		if "table" == type( rock ) then
-			local options = {}
-			options[1 + #options] = "--from=" .. ( rock.from or "http://rocks.moonscript.org" )
-			if rock.options then
-				for name, value in pairs( rock.options ) do
-					options[1 + #options] = ("%s=%s"):format( name, value )
-				end
-			end
-			print( ("[%s] %s"):format( rock[1], string.rep( "-", 20 ) ) )
---			print( cmd:format( table.concat( options, " " ), ("%s %s"):format( rock[1], rock.version or ""  ) ) )
-			os.execute( cmd:format( table.concat( options, " " ), ("%s %s"):format( rock[1], rock.version or ""  ) ) )
-		else
-			print( ("[%s] %s"):format( rock, string.rep( "-", 20 ) ) )
-			os.execute( cmd:format( "--from=http://rocks.moonscript.org", rock ) )
-		end
-	end
-end
-
 local _M =
 {
 	name		= "Lua",
 	description	= "Install Lua batteries",
-	_VERSION	= "1.0-dev",
+	_VERSION	= "1.0",
 	packages	=
 	{
 	},
@@ -74,11 +41,35 @@ local _M =
 	},
 	PreInstall	= function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PreInstall() called..." ) end
---		InstallLuaRocks()
+		os.execute( "wget http://luarocks.org/releases/luarocks-2.2.0.tar.gz" )
+		os.execute( "tar zxpf luarocks-2.2.0.tar.gz" )
+		os.execute( "cd luarocks-2.2.0; ./configure; sudo make bootstrap" )
 	end,
 	Install		= function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "Install() called..." ) end
---		InstallRocks()
+		-- Update LuaRocks
+		os.execute( "luarocks --from=http://rocks.moonscript.org install luarocks" )
+		--os.execute( "apt-get remove -y luarocks" )	-- Seems to break the updated installation, so leaving it
+
+		-- Install rocks one at a time because LuaRocks doen't support lists
+		for _, rock in pairs( self.rocks ) do
+			local cmd = ("luarocks %s install %s")
+			if "table" == type( rock ) then
+				local options = {}
+				options[1 + #options] = "--from=" .. ( rock.from or "http://rocks.moonscript.org" )
+				if rock.options then
+					for name, value in pairs( rock.options ) do
+						options[1 + #options] = ("%s=%s"):format( name, value )
+					end
+				end
+				print( ("[%s] %s"):format( rock[1], string.rep( "-", 20 ) ) )
+				--print( cmd:format( table.concat( options, " " ), ("%s %s"):format( rock[1], rock.version or ""  ) ) )
+				os.execute( cmd:format( table.concat( options, " " ), ("%s %s"):format( rock[1], rock.version or ""  ) ) )
+			else
+				print( ("[%s] %s"):format( rock, string.rep( "-", 20 ) ) )
+				os.execute( cmd:format( "--from=http://rocks.moonscript.org", rock ) )
+			end
+		end
 	end,
 	PostInstall = function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end

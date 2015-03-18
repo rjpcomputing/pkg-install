@@ -2,7 +2,7 @@ local _M =
 {
 	name		= "14.10",
 	description	= "Specific details for installing Ubnutu 14.10 (Utopic)",
-	_VERSION	= "1.0-dev",
+	_VERSION	= "1.0",
 	packages	=
 	{
 		-- General
@@ -15,14 +15,14 @@ local _M =
 		-- Development
 		-- Libraries
 	},
-	PreInstall	= function()
-		print( "[DEBUG]", self.name, "PreInstall() called..." )
+	PreInstall	= function( self, options )
+		if options.debug then print( "[DEBUG]", self.name, "PreInstall() called..." ) end
 	end,
-	Install		= function()
-		print( "[DEBUG]", self.name, "Install() called..." )
+	Install		= function( self, options )
+		if options.debug then print( "[DEBUG]", self.name, "Install() called..." ) end
 	end,
-	PostInstall = function()
-		print( "[DEBUG]", self.name, "PostInstall() called..." )
+	PostInstall = function( self, options )
+		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end
 	end
 }
 

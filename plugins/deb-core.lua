@@ -4,7 +4,7 @@ local _M =
 {
 	name		= "Debian Core",
 	description	= "Packages installed on all Debian based systems",
-	_VERSION	= "1.0-dev",
+	_VERSION	= "1.0",
 	packages =
 	{
 		--
@@ -118,15 +118,31 @@ local _M =
 	},
 	PreInstall	= function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PreInstall() called..." ) end
+		-- Update apt.
+		print( ">>", "Updating APT..." )
+		os.execute( "apt-get update" )
+
+		-- Upgrade all packages
+		print( ">>", "Upgrading packages..." )
+		os.execute( "apt-get -y dist-upgrade" )
+
+		if options.desktop then
+			-- Make sure Google Chrome does not add Googles repo during the install, because this script does it already.
+			os.execute( "touch /etc/default/google-chrome" )
+		end
 	end,
 	Install		= function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "Install() called..." ) end
 	end,
 	PostInstall = function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end
-		if self.desktop then
+		if options.desktop and not options.runningAsVm then
 			InstallVirtualBoxExtensionPack()
 		end
+
+		-- Upgrade all packages again. In case there was a failure during install.
+		print( ">>", "Finish with a full system package upgrate..." )
+		os.execute( "apt-get -y dist-upgrade" )
 	end
 }
 

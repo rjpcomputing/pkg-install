@@ -1,13 +1,12 @@
 local _M =
 {
-	name		= "Testing",
-	description	= "Specific details for installing Debian Testing (Jessie)",
+	name		= "Wheezy",
+	description	= "Specific details for installing Debian Stable (Wheezy)",
 	_VERSION	= "1.0-dev",
 	packages	=
 	{
 		-- General
 		-- Development
-		"premake4",
 		-- Libraries
 	},
 	desktopPackages =

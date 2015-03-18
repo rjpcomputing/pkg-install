@@ -11,12 +11,13 @@
 --	                      - Removed premake install. Now it is gone in Utopic.
 --	11/17/2014 (14.10-02) - Added deleting apt partial lists because in 14.10 it seems fragile.
 --	12/04/2014 (14.10-03) - Updated the build agent tweaks.
+--	03/18/2015 (14.10-05) - Updated the build agent tweaks with allowing mount without a password.
 -- ----------------------------------------------------------------------------
 
 -- General Setup
 local distro = "Utopic"
 local appName = "pkg-install-srv"
-local appVer = "14.10-03"
+local appVer = "14.10-05"
 
 ---	Checks for the existance of a file.
 --	@param fileName The file path and name as a string.
