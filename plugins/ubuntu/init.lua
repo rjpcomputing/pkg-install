@@ -6,10 +6,12 @@ local _M =
 	distro			= "Ubuntu",
 	description		= "Installs packages for based on the Ubuntu version",
 	_VERSION		= "1.0",
+	installCommand	= "apt-get -y install",
 	plugins			= -- Plugins this uses
 	{
 		"deb-core",
-		"lua-package-install"
+		"lua-package-install",
+		"domain-setup"
 	},
 	packages =
 	{
@@ -30,7 +32,7 @@ local _M =
 	},
 	PreInstall	= function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PreInstall() called..." ) end
---		AddExtraAptSources()
+		AddExtraAptSources()
 		os.execute( "apt-get update" )
 
 		self.versionSpecific:PreInstall( options )
@@ -44,15 +46,15 @@ local _M =
 
 		local allPackagesString = table.concat( allPackages, " " )
 		print( (">> %i packages to be installed..." ):format( #allPackages ) )
-		local cmd = "apt-get -y install " .. allPackagesString
+		local cmd = options.installCommand .. " " .. allPackagesString
 		print( "$ " .. cmd )
---		os.execute( cmd )
+		os.execute( cmd )
 
 		self.versionSpecific:Install( options )
 	end,
 	PostInstall = function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end
---		AddManualUserLogin()
+		AddManualUserLogin()
 
 		self.versionSpecific:PostInstall( options )
 	end

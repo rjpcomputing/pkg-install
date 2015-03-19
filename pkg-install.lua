@@ -190,6 +190,7 @@ function main()
 	for pluginName, plugin in pairs( loadedPlugins ) do
 		if plugin.distro then
 			if options.distributor_id:lower() == plugin.distro:lower() then
+				options.installCommand = plugin.installCommand
 				mainPlugin = plugin
 
 				break
@@ -201,14 +202,14 @@ function main()
 	-- Pre-install Event
 	for _, pluginName in ipairs( mainPlugin.plugins ) do
 		local plugin = loadedPlugins[pluginName]
-		if plugin.PreInstall then plugin:PreInstall( options ) end
+		if plugin and plugin.PreInstall then plugin:PreInstall( options ) end
 	end
 	if mainPlugin.PreInstall then mainPlugin:PreInstall( options ) end
 
 	-- Install Event
 	for _, pluginName in ipairs( mainPlugin.plugins ) do
 		local plugin = loadedPlugins[pluginName]
-		if plugin.Install then plugin:Install( options ) end
+		if plugin and plugin.Install then plugin:Install( options ) end
 	end
 	if mainPlugin.Install then mainPlugin:Install( options ) end
 
@@ -216,17 +217,9 @@ function main()
 	-- Post-install Event
 	for _, pluginName in ipairs( mainPlugin.plugins ) do
 		local plugin = loadedPlugins[pluginName]
-		if plugin.PostInstall then plugin:PostInstall( options ) end
+		if plugin and plugin.PostInstall then plugin:PostInstall( options ) end
 	end
 	if mainPlugin.PostInstall then mainPlugin:PostInstall( options ) end
-
-	local success, domain = pcall( dofile, "domain-setup.lua" )
-	if success then
-		print( ">>", "Joining computer to domain..." )
-		domain()
-	else
-		print( ">>", "No script for joining the domain found..." )
-	end
 
 	print( ">>", "Finished installing packages..." )
 end
