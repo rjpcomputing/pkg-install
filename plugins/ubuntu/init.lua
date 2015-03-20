@@ -25,6 +25,7 @@ local _M =
 		"ubuntu-restricted-extras",
 		"unity-tweak-tool",
 		"xul-ext-lightning",
+		"nautilus-open-terminal",
 		"rabbitvcs-nautilus3",
 		"unetbootin",
 		--"chromium-browser",

@@ -96,7 +96,6 @@ local _M =
 		"kupfer",
 		"guake",
 		"pidgin",
-		"nautilus-open-terminal",
 		"dkms",
 		"synergy",
 		--"icedtea-plugin",
