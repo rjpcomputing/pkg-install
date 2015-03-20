@@ -19,25 +19,27 @@ function PluginInterface.new( plugin )
 	return self
 end
 
-function PluginInterface:GetAllPackages( plugin )
+function PluginInterface:GetAllPackages( options )
 	local allPackages = {}
 	AppendValues( allPackages, self.packages or {} )
-	if self.options.debug then print( "[DEBUG]", "allpackages count:", #allPackages  ) end
-	if self.options.desktop then
+	if options.debug then print( "[DEBUG]", "allpackages count:", #allPackages  ) end
+	if options.desktop then
 		AppendValues( allPackages, self.desktopPackages or {} )
-		if self.options.debug then print( "[DEBUG]", "allpackages after desktop count:", #allPackages ) end
+		if options.debug then print( "[DEBUG]", "allpackages after desktop count:", #allPackages ) end
 	end
-
-	for _, requiredPluginName in ipairs( Plugins.plugins or {} ) do
+	for _, requiredPluginName in ipairs( self.plugins or {} ) do
+		if not Plugins.loadedPlugins[requiredPluginName] then
+			error( ("Plugin %q not properly loaded. Please make sure it is added to the 'Plugins.plugins' array."):format( requiredPluginName ) )
+		end
 		allPackages = AppendValues( allPackages, Plugins.loadedPlugins[requiredPluginName].packages or {} )
-		if self.options.desktop then allPackages = AppendValues( allPackages, Plugins.loadedPlugins[requiredPluginName].desktopPackages or {} ) end
-		if self.options.debug then print( "[DEBUG]", ("Required plugin %q. allPackages count: %i"):format( requiredPluginName, #allPackages ) ) end
+		if options.desktop then allPackages = AppendValues( allPackages, Plugins.loadedPlugins[requiredPluginName].desktopPackages or {} ) end
+		if options.debug then print( "[DEBUG]", ("Required plugin %q. allPackages count: %i"):format( requiredPluginName, #allPackages ) ) end
 	end
 
-	if self.options.runningAsVm then
+	if options.runningAsVm then
 		allPackages[1 + #allPackages] = "virtualbox-guest-dkms"
 	end
-	if self.options.debug then print( "[DEBUG]", "allpackages count:", #allPackages  ) end
+	if options.debug then print( "[DEBUG]", "allpackages count:", #allPackages  ) end
 
 	return allPackages
 end

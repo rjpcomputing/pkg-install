@@ -6,7 +6,7 @@
 local Plugins =
 {
 	-- Add plugin names here
-	plugins	= { "deb-core", "lua-package-install", "ubuntu", "debian" },
+	plugins	= { "deb-core", "lua-package-install", "domain-setup", "ubuntu", "debian" },
 	loadedPlugins = {},
 }
 
@@ -18,6 +18,9 @@ function Plugins:Add( pluginName, options )
 	plugin = plugin( options )
 	assert( "string"	== type( plugin.name ), "Invalid plugin.name. Expected string, but found " .. type( plugin.name ) )
 	assert( "string"	== type( plugin._VERSION ), "Invalid plugin._VERSION. Expected string, but found " .. type( plugin._VERSION ) )
+	if plugin.distro then
+		assert( "string"	== type( plugin.installCommand ), "Invalid plugin.installCommand. Expected string, but found " .. type( plugin.installCommand ) )
+	end
 	self.loadedPlugins[pluginName] = plugin
 
 	return plugin

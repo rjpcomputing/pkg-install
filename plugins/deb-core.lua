@@ -24,7 +24,6 @@ local _M =
 		"ssh",
 		"sshpass",
 		"dos2unix",
-		"openjdk-8-jdk",
 		"curl",
 		"sqlite3",
 		--
@@ -34,7 +33,6 @@ local _M =
 		"gdb",
 		"clang",
 		"linux-source",
-		"linux-headers-generic",
 		"automake",
 		"checkinstall",
 		"patchutils",
@@ -51,7 +49,6 @@ local _M =
 		"subversion",
 		"git",
 		"git-svn",
-		"premake4",
 		"valgrind",
 		"debhelper",
 		"rake",
@@ -75,6 +72,7 @@ local _M =
 		"liblua5.1-0-dev",
 		"liblua5.1-0-dbg",
 		"libsvn-dev",
+		"libssl-dev",
 		"libserf-dev",
 		"libpq-dev",
 		"libsqlite3-dev",
@@ -99,10 +97,7 @@ local _M =
 		"guake",
 		"pidgin",
 		"nautilus-open-terminal",
-		"virtualbox",
-		"virtualbox-dkms",
 		"dkms",
-		"unetbootin",
 		"synergy",
 		--"icedtea-plugin",
 		--
@@ -159,6 +154,11 @@ end
 
 return function( options )
 	if options and options.desktop then
+	end
+
+	if options.desktop and not options.runningAsVm then
+		table.insert( _M.desktopPackages, "virtualbox" )
+		table.insert( _M.desktopPackages, "virtualbox-dkms" )
 	end
 
 	return plugin.new( _M )

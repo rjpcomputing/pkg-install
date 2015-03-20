@@ -121,6 +121,16 @@ function Utils.InsertValues(t, ...)
     return t
 end
 
+--io.output( "pkg-install.print.txt" ):write( ("pkg-install started at %s\n"):format( os.date() ) )
+--local oldPrint = print
+--function print(...)
+--	local o = io.open( "pkg-install.print.txt", "a+" )
+--	o:write( ... )
+--	o:write( "\n" )
+--	o:close()
+--	oldPrint( ... ); io.stdout:flush()
+--end
+
 -- DebInit Class --------------------------------------------------------------
 --
 local PkgInstall =
@@ -153,13 +163,15 @@ function PkgInstall.new()
         :name( self._NAME )
         :description( "Script to get your machine up and running quickly after a fresh install." )
 	parser:flag "-n" "--no-desktop"
+		:description "Install the server packages only."
 	parser:flag "-d" "--debug"
+		:description "Show verbose debug messages."
 
     local args = parser:parse()
-    for k, v in pairs(args) do print(k, v) end
 
 	self.operatingSystemDetails = OperatingSystemDetails()
 	self.operatingSystemDetails.runningAsVm = IsRunningInVm()
+	self.operatingSystemDetails.debug = args.debug
 	if args["no-desktop"] then
 		self.operatingSystemDetails.desktop = false
 	else
@@ -207,19 +219,18 @@ function main()
 	if mainPlugin.PreInstall then mainPlugin:PreInstall( options ) end
 
 	-- Install Event
+	if mainPlugin.Install then mainPlugin:Install( options ) end
 	for _, pluginName in ipairs( mainPlugin.plugins ) do
 		local plugin = loadedPlugins[pluginName]
 		if plugin and plugin.Install then plugin:Install( options ) end
 	end
-	if mainPlugin.Install then mainPlugin:Install( options ) end
-
 
 	-- Post-install Event
+	if mainPlugin.PostInstall then mainPlugin:PostInstall( options ) end
 	for _, pluginName in ipairs( mainPlugin.plugins ) do
 		local plugin = loadedPlugins[pluginName]
 		if plugin and plugin.PostInstall then plugin:PostInstall( options ) end
 	end
-	if mainPlugin.PostInstall then mainPlugin:PostInstall( options ) end
 
 	print( ">>", "Finished installing packages..." )
 end

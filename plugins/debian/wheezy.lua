@@ -12,6 +12,7 @@ local _M =
 	desktopPackages =
 	{
 		-- General
+		"unetbootin",
 		-- Development
 		-- Libraries
 	},

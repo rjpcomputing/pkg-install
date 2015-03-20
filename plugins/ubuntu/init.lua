@@ -15,8 +15,10 @@ local _M =
 	},
 	packages =
 	{
-		"liblua5.1-sublua*",
 		"premake4",
+		"liblua5.1-sublua*",
+		"openjdk-8-jdk",
+		"linux-headers-generic",
 	},
 	desktopPackages =
 	{
@@ -24,6 +26,7 @@ local _M =
 		"unity-tweak-tool",
 		"xul-ext-lightning",
 		"rabbitvcs-nautilus3",
+		"unetbootin",
 		--"chromium-browser",
 
 		"wxformbuilder",
@@ -32,7 +35,7 @@ local _M =
 	},
 	PreInstall	= function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PreInstall() called..." ) end
-		AddExtraAptSources()
+		self:AddExtraAptSources( options )
 		os.execute( "apt-get update" )
 
 		self.versionSpecific:PreInstall( options )
@@ -54,13 +57,13 @@ local _M =
 	end,
 	PostInstall = function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end
-		AddManualUserLogin()
+		self:AddManualUserLogin()
 
 		self.versionSpecific:PostInstall( options )
 	end
 }
 
-local function AddManualUserLogin()
+function _M:AddManualUserLogin()
 	local filePath = "/etc/lightdm/lightdm.conf.d/50-manual-login.conf"
 	os.execute( ("mkdir -p %s"):format( filePath:match( ".*/" ) ) )
 	os.execute( ("touch %s"):format( filePath ) )
@@ -74,13 +77,13 @@ local function AddManualUserLogin()
 	end
 end
 
-local function AddExtraAptSources()
+function _M:AddExtraAptSources( options )
 	local aptDetails =
 	{
 		--[[["boost-latest"] =
 		{
 			ppaRepo = "ppa:boost-latest/ppa",
-			listEntry = "deb http://ppa.launchpad.net/boost-latest/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/boost-latest/ppa/ubuntu "..distro:lower().." main",
+			listEntry = "deb http://ppa.launchpad.net/boost-latest/ppa/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/boost-latest/ppa/ubuntu "..options.codename:lower().." main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -98,7 +101,7 @@ hzXKImEEiTVJc40nhLfZXtQ0qBdGFqLPsRww
 		rabbitvcs =
 		{
 			ppaRepo = "ppa:rabbitvcs/ppa",
-			listEntry = "deb http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..distro:lower().." main",
+			listEntry = "deb http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..options.codename:lower().." main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -116,7 +119,7 @@ APlN9ZheYInv1XLS4G+jDQjnMbd0VdzP
 		--[[kupfer =
 			{
 				ppaRepo = "ppa:kupfer-team/ppa",
-				listEntry = "deb http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..distro.." main",
+				listEntry = "deb http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..options.codename:lower().." main",
 				key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.1.4
 Comment: Hostname: keyserver.ubuntu.com
@@ -135,7 +138,7 @@ D/r6CSKuBlF4zOVAwzFwAD+aaBZU
 		codegear =
 		{
 			ppaRepo = "ppa:codegear/release",
-			listEntry = "deb http://ppa.launchpad.net/codegear/release/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/codegear/release/ubuntu "..distro:lower().." main",
+			listEntry = "deb http://ppa.launchpad.net/codegear/release/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/codegear/release/ubuntu "..options.codename:lower().." main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -152,7 +155,7 @@ FZNAsp3EmvwZr+hRfX+z2KbV01yxU5ITSx47tUB3orVc
 
 		codelite =
 		{
-			listEntry = "deb http://repos.codelite.org/ubuntu/ "..distro:lower().." universe",
+			listEntry = "deb http://repos.codelite.org/ubuntu/ "..options.codename:lower().." universe",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
@@ -188,7 +191,7 @@ L+nMjs7YCYWeC5oZVW3pepqDcT5IejgZL94IHgV6BvHcwwsDiW8lAdgHmz5Vs9o=
 		wxformbuilder =
 		{
 			ppaRepo = "ppa:wxformbuilder/release",
-			listEntry = "deb http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..distro:lower().." main",
+			listEntry = "deb http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..options.codename:lower().." main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.0.10
 
@@ -205,7 +208,7 @@ TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
 
 		--[[virtualbox =
 		{
-			listEntry = "deb http://download.virtualbox.org/virtualbox/debian "..distro:lower().." contrib non-free",
+			listEntry = "deb http://download.virtualbox.org/virtualbox/debian "..options.codename:lower().." contrib non-free",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.9 (GNU/Linux)
 
@@ -240,7 +243,7 @@ qACgtXuTbe2b72sgKdc6gGRKPhLDoEMAmgLwGVN3a4CqewQL+03bqfcKczNH
 
 		chrome =
 		{
-			listEntry = "deb https://dl.google.com/linux/chrome/deb/ stable main",
+			listEntry = "deb http://dl.google.com/linux/chrome/deb/ stable main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.2.2 (GNU/Linux)
 
@@ -277,7 +280,7 @@ D3+sWZF/WACfeNAu1/1hwZtUo1bR+MWiCjpvHtwAnA1R3IHqFLQ2X3xJ40XPuAyY
 		oraclejava =
 		{
 			ppaRepo = "ppa:webupd8team/java",
-			listEntry = "deb http://ppa.launchpad.net/webupd8team/java/ubuntu "..distro:lower().." main\ndeb-src http://ppa.launchpad.net/webupd8team/java/ubuntu "..distro.." main",
+			listEntry = "deb http://ppa.launchpad.net/webupd8team/java/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/webupd8team/java/ubuntu "..options.codename:lower().." main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: SKS 1.1.4
 Comment: Hostname: keyserver.ubuntu.com

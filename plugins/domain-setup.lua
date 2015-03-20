@@ -10,7 +10,7 @@
 -- ----------------------------------------------------------------------------
 local _M =
 {
-	name		= "domain-setup",
+	name		= "Domain Setup",
 	description	= "Install PowerBroker Identity Services and join the domain",
 	_VERSION	= "1.0",
 	packages	=
