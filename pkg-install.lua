@@ -214,7 +214,10 @@ function main()
 	-- Pre-install Event
 	for _, pluginName in ipairs( mainPlugin.plugins ) do
 		local plugin = loadedPlugins[pluginName]
-		if plugin and plugin.PreInstall then plugin:PreInstall( options ) end
+		-- Uncomment to debug specific plugin
+		--if plugin.name:lower() == "lua" then
+		if plugin.PreInstall then plugin:PreInstall( options ) end
+		--end
 	end
 	if mainPlugin.PreInstall then mainPlugin:PreInstall( options ) end
 
@@ -222,14 +225,20 @@ function main()
 	if mainPlugin.Install then mainPlugin:Install( options ) end
 	for _, pluginName in ipairs( mainPlugin.plugins ) do
 		local plugin = loadedPlugins[pluginName]
-		if plugin and plugin.Install then plugin:Install( options ) end
+		-- Uncomment to debug specific plugin
+		--if plugin.name:lower() == "lua" then
+		if plugin.Install then plugin:Install( options ) end
+		--end
 	end
 
 	-- Post-install Event
 	if mainPlugin.PostInstall then mainPlugin:PostInstall( options ) end
 	for _, pluginName in ipairs( mainPlugin.plugins ) do
 		local plugin = loadedPlugins[pluginName]
-		if plugin and plugin.PostInstall then plugin:PostInstall( options ) end
+		-- Uncomment to debug specific plugin
+		--if plugin.name:lower() == "lua" then
+		if plugin.PostInstall then plugin:PostInstall( options ) end
+		--end
 	end
 
 	print( ">>", "Finished installing packages..." )
