@@ -35,7 +35,7 @@ local _M =
 
 		-- Fix an Ubuntu 14.04 bug where it doesn't allow a login to finish and start X11/Unity
 		if options.distributor_id:lower() == "ubuntu" and options.release == "14.04" then
-			FixPAM1404()
+			self:FixPAM1404()
 		end
 
 		-- Set the proper user domain prefix
@@ -49,11 +49,11 @@ local _M =
 	end,
 	PostInstall = function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end
-		MakeUserAdmin()
+		self:MakeUserAdmin()
 	end
 }
 
-local function MakeUserAdmin()
+function _M:MakeUserAdmin()
 	print( "Do you want to add a user as admin? [yN]" )
 	local shouldAddUser = io.stdin:read():lower() == "y"
 	if shouldAddUser then
@@ -94,7 +94,7 @@ local function MakeUserAdmin()
 	end
 end
 
-local function FixPAM1404()
+function _M:FixPAM1404()
 	-- Read the file contents
 	local commonSession = io.input( "/etc/pam.d/common-session" )
 	local commonSessionContents = commonSession:read( "*all" )

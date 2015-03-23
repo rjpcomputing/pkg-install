@@ -24,7 +24,6 @@ local _M =
 		"luajson",
 		{ "lualogging", version = "1.2.0-1" },	-- the current latest stable (1.3.0-1) seems to be corrupt, so i am pinning the version.
 		"luaposix",
-		{ "luasec", options = { OPENSSL_LIBDIR = "/lib/x86_64-linux-gnu" } },
 		"luasocket",
 		{ "luasql-postgres", options = { PGSQL_INCDIR = "/usr/include/postgresql", POSTGRES_INCDIR = "/usr/include/postgresql" } },
 		{ "luasql-sqlite3", version = "cvs-1", from = "http://rocks.moonscript.org/dev" },
@@ -78,5 +77,10 @@ local _M =
 }
 
 return function( options )
+	if options.distributor_id:lower() == "ubuntu" then
+		table.insert( _M.rocks, 1, { "luasec", options = { OPENSSL_LIBDIR = "/lib/x86_64-linux-gnu" } } )
+	else
+		table.insert( _M.rocks, 1, "luasec" )
+	end
 	return _M
 end
