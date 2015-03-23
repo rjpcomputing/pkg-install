@@ -6,7 +6,7 @@ local _M =
 	distro			= "Ubuntu",
 	description		= "Installs packages for based on the Ubuntu version",
 	_VERSION		= "1.0",
-	installCommand	= "apt-get -y install",
+	installCommand	= "apt-get --force-yes install",
 	plugins			= -- Plugins this uses
 	{
 		"deb-core",

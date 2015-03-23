@@ -6,7 +6,7 @@ local _M =
 	distro			= "Debian",
 	description		= "Packages installed on all Debian systems",
 	_VERSION		= "1.0-dev",
-	installCommand	= "apt-get -y install",
+	installCommand	= "apt-get --force-yes install",
 	plugins			= -- Plugins this uses
 	{
 		"deb-core",
