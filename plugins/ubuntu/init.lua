@@ -6,7 +6,7 @@ local _M =
 	distro			= "Ubuntu",
 	description		= "Installs packages for based on the Ubuntu version",
 	_VERSION		= "1.0",
-	installCommand	= "apt-get --force-yes install",
+	installCommand	= "apt-get -y install",
 	plugins			= -- Plugins this uses
 	{
 		"deb-core",
@@ -52,7 +52,8 @@ local _M =
 		print( (">> %i packages to be installed..." ):format( #allPackages ) )
 		local cmd = options.installCommand .. " " .. allPackagesString
 		print( "$ " .. cmd )
-		os.execute( cmd )
+		local exitCode = os.execute( cmd )
+		if exitCode ~= 0 then error( "Packages not installed correctly. Can not continue until the situation is fixed.") end
 
 		self.versionSpecific:Install( options )
 	end,
