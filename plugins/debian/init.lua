@@ -14,6 +14,7 @@ local _M =
 	},
 	packages =
 	{
+		"sudo",
 		"openjdk-7-jdk",
 		"libexpat1-dev",
 	},
