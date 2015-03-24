@@ -17,6 +17,10 @@ local _M =
 		"sudo",
 		"openjdk-7-jdk",
 		"libexpat1-dev",
+		"firmware-linux-nonfree",
+		"libgl1-mesa-dri",
+		"xserver-xorg-video-ati",
+		"xserver-xorg-video-nvidia",
 	},
 	desktopPackages =
 	{
