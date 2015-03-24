@@ -131,7 +131,7 @@ local _M =
 	PostInstall = function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end
 		if options.desktop and not options.runningAsVm then
-			InstallVirtualBoxExtensionPack()
+			self:InstallVirtualBoxExtensionPack()
 		end
 
 		-- Upgrade all packages again. In case there was a failure during install.
@@ -140,7 +140,7 @@ local _M =
 	end
 }
 
-local function InstallVirtualBoxExtensionPack()
+function _M:InstallVirtualBoxExtensionPack()
 	-- VirtualBox 4.x Extension Pack (gives USB2.0 support)
 	local virtualBoxExtensionUrl = "http://download.virtualbox.org/virtualbox/4.3.10/Oracle_VM_VirtualBox_Extension_Pack-4.3.10-93012.vbox-extpack"
 	local virtualBoxExtensionFilename = virtualBoxExtensionUrl:gsub( "\\", "/" ):match( "([^/]-[^%.]+)$" )
