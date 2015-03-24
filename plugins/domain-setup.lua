@@ -109,6 +109,12 @@ function _M:FixPAM1404()
 	commonSession:close()
 end
 
+-- Uncomment to run independently from plugin
+--local options = { debug = false, distributor_id = "" }
+--_M.PreInstall( _M, options )
+--_M.Install( _M, options )
+--_M.PostInstall( _M, options )
+
 return function( options )
 	return _M
 end
