@@ -27,8 +27,11 @@ local _M =
 		"cups",
 		"cups-client",
 		"cups-pdf",
+		"dmz-cursor-theme",
+		"gnome-themes-extras",
 		"gnome-tweak-tool",
 		"rabbitvcs-nautilus",
+		"flashplugin-nonfree",
 		--"chromium",
 		--"iceowl-extension",
 	},
@@ -57,6 +60,8 @@ local _M =
 	end,
 	PostInstall = function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end
+		-- Set the cursor so apps like Chrome use it.
+		os.execute( "update-alternatives --set x-cursor-theme /usr/share/icons/DMZ-White/cursor.theme" )
 		self.versionSpecific:PostInstall( options )
 	end
 }
