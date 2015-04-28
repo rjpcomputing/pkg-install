@@ -12,7 +12,9 @@ local _M =
 	desktopPackages =
 	{
 		-- General
+		"nautilus-open-terminal",
 		-- Development
+		"rabbitvcs-nautilus3",
 		-- Libraries
 	},
 	PreInstall	= function( self, options )

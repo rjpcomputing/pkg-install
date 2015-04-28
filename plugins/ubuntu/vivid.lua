@@ -1,7 +1,7 @@
 local _M =
 {
-	name		= "14.04",
-	description	= "Specific details for installing Ubnutu 14.04 (Trusty)",
+	name		= "15.04",
+	description	= "Specific details for installing Ubnutu 15.04 (Vivid)",
 	_VERSION	= "1.0",
 	packages	=
 	{
@@ -12,9 +12,8 @@ local _M =
 	desktopPackages =
 	{
 		-- General
-		"nautilus-open-terminal",
 		-- Development
-		"rabbitvcs-nautilus3",
+		"rabbitvcs-nautilus",
 		-- Libraries
 	},
 	PreInstall	= function( self, options )
