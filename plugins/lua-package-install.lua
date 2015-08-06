@@ -40,7 +40,7 @@ local _M =
 	},
 	PreInstall	= function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PreInstall() called..." ) end
-		os.execute( options.installCommand .. " liblua5.1-0-dev" )
+		os.execute( options.installCommand .. " liblua5.1-0-dev luajit" )
 		os.execute( "wget http://luarocks.org/releases/luarocks-2.2.1.tar.gz" )
 		os.execute( "tar zxpf luarocks-2.2.1.tar.gz" )
 		os.execute( "cd luarocks-2.2.1; ./configure; sudo make bootstrap" )
