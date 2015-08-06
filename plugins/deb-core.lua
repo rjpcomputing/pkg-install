@@ -81,6 +81,7 @@ local _M =
 		"libzzip-dev",
 		"zlib1g-dev",
 		"libbz2-dev",
+		"libjpeg-dev",
 	},
 	desktopPackages =
 	{
