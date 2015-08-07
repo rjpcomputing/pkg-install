@@ -22,7 +22,7 @@ local _M =
 	Install		= function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "Install() called..." ) end
 		-- Install  PowerBroker Identity Services
-		local url = "http://download.beyondtrust.com/PBISO/8.2.1/linux.deb.x64/pbis-open-8.2.1.2979.linux.x86_64.deb.sh"
+		local url = "http://download.beyondtrust.com/PBISO/8.3/pbis-open-8.3.0.3287.linux.x86_64.deb.sh"
 		local filename = url:gsub( "\\", "/" ):match( "([^/]-[^%.]+)$" )
 		os.execute( ("wget %s"):format( url ) )
 		os.execute( ("chmod +x %s"):format( filename ) )
@@ -50,6 +50,8 @@ local _M =
 	PostInstall = function( self, options )
 		if options.debug then print( "[DEBUG]", self.name, "PostInstall() called..." ) end
 		self:MakeUserAdmin()
+		-- Properly configure PAM
+		os.execute( "/opt/pbis/bin/domainjoin-cli configure --enable pam" )
 	end
 }
 
