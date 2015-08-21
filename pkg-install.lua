@@ -136,7 +136,7 @@ end
 local PkgInstall =
 {
 	_NAME		= "pkg-install",
-	_VERSION	= "2.0-dev",
+	_VERSION	= "2.0-2",
 --	args		= args,
 	hello		=
 [=[       __                                             __             ___    ___

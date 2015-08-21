@@ -12,5 +12,5 @@
 apt-get install lua5.1 sudo
 
 # Run the install script.
-sudo lua pkg-install.lua
+sudo lua pkg-install.lua "$@"
 
