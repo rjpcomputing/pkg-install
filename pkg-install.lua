@@ -3,11 +3,11 @@
 -- Script to get your machine up and running quickly after a fresh install.
 -- Author:	Ryan P. <rjpcomputing@gmail.com>
 -- Date:	04/15/2014
--- Notes:	Built against Ubuntu 14.10 (Utopic Unicorn).
+-- Notes:
 --			Assumes root privileges.
 --
 -- Changes:
---	11/10/2014 (14.10-01) - Initial Release with plugin support.
+--	04/28/2015 (2.0-dev) - Initial Release with plugin support.
 -- ----------------------------------------------------------------------------
 -- require( "pl" )
 local argparse = require( "argparse" )
@@ -136,7 +136,7 @@ end
 local PkgInstall =
 {
 	_NAME		= "pkg-install",
-	_VERSION	= "2.0-2",
+	_VERSION	= "2.0-3",
 --	args		= args,
 	hello		=
 [=[       __                                             __             ___    ___
@@ -172,7 +172,7 @@ function PkgInstall.new()
 	self.operatingSystemDetails = OperatingSystemDetails()
 	self.operatingSystemDetails.runningAsVm = IsRunningInVm()
 	self.operatingSystemDetails.debug = args.debug
-	if args["no-desktop"] then
+	if args["no_desktop"] then
 		self.operatingSystemDetails.desktop = false
 	else
 		self.operatingSystemDetails.desktop = true

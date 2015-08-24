@@ -10,8 +10,7 @@ local _M =
 	plugins			= -- Plugins this uses
 	{
 		"deb-core",
-		"lua-package-install",
-		"domain-setup"
+		"lua-package-install"
 	},
 	packages =
 	{

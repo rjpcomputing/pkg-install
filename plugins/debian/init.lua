@@ -18,9 +18,6 @@ local _M =
 		"openjdk-7-jdk",
 		"libexpat1-dev",
 		"firmware-linux-nonfree",
-		"libgl1-mesa-dri",
-		"xserver-xorg-video-ati",
-		"xserver-xorg-video-nvidia",
 	},
 	desktopPackages =
 	{
@@ -32,6 +29,9 @@ local _M =
 		"gnome-tweak-tool",
 		"rabbitvcs-nautilus",
 		"flashplugin-nonfree",
+		"libgl1-mesa-dri",
+		"xserver-xorg-video-ati",
+		"xserver-xorg-video-nvidia",
 		--"chromium",
 		--"iceowl-extension",
 	},
