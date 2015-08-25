@@ -8,6 +8,7 @@
 --
 -- Changes:
 --	04/28/2015 (2.0-dev) - Initial Release with plugin support.
+--	08/25/2015 (2.0-4) - Adding tweak support.
 -- ----------------------------------------------------------------------------
 -- require( "pl" )
 local argparse = require( "argparse" )
@@ -136,7 +137,7 @@ end
 local PkgInstall =
 {
 	_NAME		= "pkg-install",
-	_VERSION	= "2.0-3",
+	_VERSION	= "2.0-4",
 --	args		= args,
 	hello		=
 [=[       __                                             __             ___    ___
@@ -162,6 +163,8 @@ function PkgInstall.new()
     local parser = argparse()
         :name( self._NAME )
         :description( "Script to get your machine up and running quickly after a fresh install." )
+	parser:argument( "tweaks", "File to run after all normal operations are complete." )
+	   :args "?"
 	parser:flag "-n" "--no-desktop"
 		:description "Install the server packages only."
 	parser:flag "-d" "--debug"
@@ -172,6 +175,22 @@ function PkgInstall.new()
 	self.operatingSystemDetails = OperatingSystemDetails()
 	self.operatingSystemDetails.runningAsVm = IsRunningInVm()
 	self.operatingSystemDetails.debug = args.debug
+
+	if args.tweaks then
+		local tweaks = nil
+		if FileExists( args.tweaks ) then
+			tweaks = dofile( args.tweaks )
+			-- Verify the tweaks file is valid
+			if "table" == type( tweaks ) then
+				print( ">>", ("Loaded %i tweaks from %q"):format( #tweaks, args.tweaks ) )
+			else
+				error( ("Invalid tweaks file loaded (%s). The file must return a table of tweak objects."):format( args.tweaks ) )
+			end
+		end
+
+		self.tweaks = tweaks
+	end
+
 	if args["no_desktop"] then
 		self.operatingSystemDetails.desktop = false
 	else
@@ -179,6 +198,42 @@ function PkgInstall.new()
 	end
 
 	return self
+end
+
+local function ProcessCommand( cmd )
+	-- Check to see if the command to run is a function
+	if "function" == type( cmd ) then
+		print( ">>", tostring( cmd ) )
+		cmd()
+	elseif "string" == type( cmd ) then
+		print( ">>", cmd )
+		os.execute( cmd )
+	else
+		error( "Invalid command type (" .. type( cmd ) .. "). Only string and function are valid." )
+	end
+end
+
+---	Tweak object
+--	@class table
+--	@name Tweaks
+--	@field name {string} The name of the tweak
+--	@field comment {string} A comment/short description of the tweak
+--	@field command {table/string/function} If it is a table it can have values of either string or function. Each element in the table will be processed. If it is a string then os.execute() will be called on it. If it is a function it will call that function for you.
+
+---	Processes the tweaks from the supplied .tweaks file
+--	@param tweaks {table} Table of tweak objects. {name = "tweak name", comment = "Some comment", command = "cmd --to --execute"}
+--		Command can be
+local function ProcessTweaks( tweaks )
+	for i = 1, #tweaks do
+		print( ">", ("Tweak %q - %s"):format( tweaks[i].name, tweaks[i].comment ) )
+		if "table" == type( tweaks[i].command ) then
+			for j = 1, #tweaks[i].command do
+				ProcessCommand( tweaks[i].command[j] )
+			end
+		else
+			ProcessCommand( tweaks[i].command )
+		end
+	end
 end
 
 function main()
@@ -239,6 +294,12 @@ function main()
 		--if plugin.name:lower() == "lua" then
 		if plugin.PostInstall then plugin:PostInstall( options ) end
 		--end
+	end
+
+	-- Run any tweakfile passed in
+	if app.tweaks then
+		print( ">>", "Processing tweaks..." )
+		ProcessTweaks( tweaks )
 	end
 
 	print( ">>", "Finished installing packages..." )
