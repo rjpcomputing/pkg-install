@@ -25,13 +25,12 @@ local _M =
 		"cups-client",
 		"cups-pdf",
 		"dmz-cursor-theme",
-		"gnome-themes-extras",
 		"gnome-tweak-tool",
 		"rabbitvcs-nautilus",
 		"flashplugin-nonfree",
 		"libgl1-mesa-dri",
-		"xserver-xorg-video-ati",
-		"xserver-xorg-video-nvidia",
+		--"xserver-xorg-video-ati",
+		--"xserver-xorg-video-nvidia",
 		--"chromium",
 		--"iceowl-extension",
 	},
@@ -211,7 +210,7 @@ return function( options )
 		print( ("Loaded sub-module %q"):format( "debian." .. options.codename ) )
 	end
 
-	if options.desktop then
+	if options.desktop and options.joindomain then
 		table.insert( _M.plugins, "domain-setup" )
 	end
 

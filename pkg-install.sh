@@ -9,7 +9,7 @@
 # ############################################################################
 
 # Install Lua first so we can run the install script.
-apt-get install lua5.1 sudo
+sudo apt-get install lua5.1
 
 # Run the install script.
 sudo lua pkg-install.lua "$@"

@@ -334,7 +334,7 @@ return function( options )
 		print( ("Loaded sub-module %q"):format( "ubuntu." .. options.codename ) )
 	end
 
-	if options.desktop then
+	if options.desktop and options.joindomain then
 		table.insert( _M.plugins, "domain-setup" )
 	end
 

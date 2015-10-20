@@ -1,8 +1,8 @@
 local _M =
 {
 	name		= "Jessie",
-	description	= "Specific details for installing Debian Testing (Jessie)",
-	_VERSION	= "1.0-dev",
+	description	= "Specific details for installing Debian Stable (Jessie)",
+	_VERSION	= "1.0",
 	packages	=
 	{
 		-- General
@@ -13,6 +13,7 @@ local _M =
 	desktopPackages =
 	{
 		-- General
+		"gnome-themes-extras",
 		-- Development
 		-- Libraries
 	},

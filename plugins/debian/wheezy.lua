@@ -1,8 +1,8 @@
 local _M =
 {
 	name		= "Wheezy",
-	description	= "Specific details for installing Debian Stable (Wheezy)",
-	_VERSION	= "1.0-dev",
+	description	= "Specific details for installing Debian (Wheezy)",
+	_VERSION	= "1.0",
 	packages	=
 	{
 		-- General
@@ -13,6 +13,7 @@ local _M =
 	{
 		-- General
 		"unetbootin",
+		"gnome-themes-extras",
 		-- Development
 		-- Libraries
 	},

@@ -1,20 +1,19 @@
 local _M =
 {
-	name		= "14.04",
-	description	= "Specific details for installing Ubnutu 14.04 (Trusty)",
-	_VERSION	= "1.0",
+	name		= "Sid",
+	description	= "Specific details for installing Debian Unstable (Sid)",
+	_VERSION	= "1.0-dev",
 	packages	=
 	{
 		-- General
 		-- Development
+		"premake4",
 		-- Libraries
 	},
 	desktopPackages =
 	{
 		-- General
-		"nautilus-open-terminal",
 		-- Development
-		"rabbitvcs-nautilus3",
 		-- Libraries
 	},
 	PreInstall	= function( self, options )

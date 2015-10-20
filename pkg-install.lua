@@ -9,6 +9,9 @@
 -- Changes:
 --	04/28/2015 (2.0-dev) - Initial Release with plugin support.
 --	08/25/2015 (2.0-4) - Adding tweak support.
+--	08/25/2015 (2.0-5) - Made tweaks aware of OS details so they can make choices specific to OS.
+--	10/20/2015 (2.0-6) - Added Sid and Stretch Debian support.
+--	                   - Added no-domain flag to skip domain joining.
 -- ----------------------------------------------------------------------------
 -- require( "pl" )
 local argparse = require( "argparse" )
@@ -137,7 +140,7 @@ end
 local PkgInstall =
 {
 	_NAME		= "pkg-install",
-	_VERSION	= "2.0-4",
+	_VERSION	= "2.0-6",
 --	args		= args,
 	hello		=
 [=[       __                                             __             ___    ___
@@ -167,6 +170,8 @@ function PkgInstall.new()
 	   :args "?"
 	parser:flag "-n" "--no-desktop"
 		:description "Install the server packages only."
+	parser:flag "-o" "--no-domain"
+		:description "Skip joining the domain."
 	parser:flag "-d" "--debug"
 		:description "Show verbose debug messages."
 
@@ -197,6 +202,12 @@ function PkgInstall.new()
 		self.operatingSystemDetails.desktop = true
 	end
 
+	if args["no_domain"] then
+		self.operatingSystemDetails.joindomain = false
+	else
+		self.operatingSystemDetails.joindomain = true
+	end
+
 	return self
 end
 
@@ -204,7 +215,7 @@ local function ProcessCommand( cmd )
 	-- Check to see if the command to run is a function
 	if "function" == type( cmd ) then
 		print( ">>", tostring( cmd ) )
-		cmd()
+		cmd( OperatingSystemDetails() )
 	elseif "string" == type( cmd ) then
 		print( ">>", cmd )
 		os.execute( cmd )
@@ -299,7 +310,7 @@ function main()
 	-- Run any tweakfile passed in
 	if app.tweaks then
 		print( ">>", "Processing tweaks..." )
-		ProcessTweaks( tweaks )
+		ProcessTweaks( app.tweaks )
 	end
 
 	print( ">>", "Finished installing packages..." )
