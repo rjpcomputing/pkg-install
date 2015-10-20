@@ -1,0 +1,14 @@
+return {
+  [ "argparse" ] = true,
+  [ "plugins.deb-core" ] = true,
+  [ "plugins.domain-setup" ] = true,
+  [ "plugins.init" ] = true,
+  [ "plugins.interface" ] = true,
+  [ "plugins.lua-package-install" ] = true,
+  [ "plugins.debian.init" ] = true,
+  [ "plugins.debian.jessie" ] = true,
+  [ "plugins.debian.wheezy" ] = true,
+  [ "plugins.ubuntu.init" ] = true,
+  [ "plugins.ubuntu.trusty" ] = true,
+  [ "plugins.ubuntu.utopic" ] = true,
+}
