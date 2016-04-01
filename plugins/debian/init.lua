@@ -18,6 +18,7 @@ local _M =
 		"openjdk-7-jdk",
 		"libexpat1-dev",
 		"firmware-linux-nonfree",
+		"libwxgtk-webview3.0-dev",
 	},
 	desktopPackages =
 	{

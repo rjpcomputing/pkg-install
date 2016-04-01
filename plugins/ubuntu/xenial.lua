@@ -8,6 +8,7 @@ local _M =
 		-- General
 		-- Development
 		-- Libraries
+		"libwxgtk-webview3.0-dev",
 	},
 	desktopPackages =
 	{
