@@ -9,6 +9,7 @@ local _M =
 		-- Development
 		"premake4",
 		-- Libraries
+		"qt5-default",
 	},
 	desktopPackages =
 	{
