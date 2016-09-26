@@ -12,6 +12,11 @@
 --	08/25/2015 (2.0-5) - Made tweaks aware of OS details so they can make choices specific to OS.
 --	10/20/2015 (2.0-6) - Added Sid and Stretch Debian support.
 --	                   - Added no-domain flag to skip domain joining.
+--	11/04/2015 (2.0-7) - Added Wily and Xenial Ubuntu support.
+--	                   - With no-desktop only add certain PPAs.
+--	04/01/2016 (2.0-8) - Added wxWebview.
+--	                   - Added log4cplus.
+--	                   - Added asio.
 -- ----------------------------------------------------------------------------
 -- require( "pl" )
 local argparse = require( "argparse" )
@@ -140,7 +145,7 @@ end
 local PkgInstall =
 {
 	_NAME		= "pkg-install",
-	_VERSION	= "2.0-6",
+	_VERSION	= "2.0-8",
 --	args		= args,
 	hello		=
 [=[       __                                             __             ___    ___
@@ -197,12 +202,14 @@ function PkgInstall.new()
 	end
 
 	if args["no_desktop"] then
+		print( ">>", "Server install started..." )
 		self.operatingSystemDetails.desktop = false
 	else
 		self.operatingSystemDetails.desktop = true
 	end
 
 	if args["no_domain"] then
+		print( ">>", "No domain support..." )
 		self.operatingSystemDetails.joindomain = false
 	else
 		self.operatingSystemDetails.joindomain = true

@@ -1,21 +1,20 @@
 local _M =
 {
-	name		= "Jessie",
-	description	= "Specific details for installing Debian Stable (Jessie)",
+	name		= "15.10",
+	description	= "Specific details for installing Ubnutu 15.10 (Wily)",
 	_VERSION	= "1.0",
 	packages	=
 	{
 		-- General
 		-- Development
-		"premake4",
 		-- Libraries
-		"qt5-default",
+		"libwxgtk-webview3.0-dev",
 	},
 	desktopPackages =
 	{
 		-- General
-		"gnome-themes-extras",
 		-- Development
+		"rabbitvcs-nautilus",
 		-- Libraries
 	},
 	PreInstall	= function( self, options )

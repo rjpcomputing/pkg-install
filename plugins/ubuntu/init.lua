@@ -81,6 +81,7 @@ function _M:AddExtraAptSources( options )
 	{
 		--[[["boost-latest"] =
 		{
+			desktop	= false,
 			ppaRepo = "ppa:boost-latest/ppa",
 			listEntry = "deb http://ppa.launchpad.net/boost-latest/ppa/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/boost-latest/ppa/ubuntu "..options.codename:lower().." main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -99,6 +100,7 @@ hzXKImEEiTVJc40nhLfZXtQ0qBdGFqLPsRww
 
 		rabbitvcs =
 		{
+			desktop	= true,
 			ppaRepo = "ppa:rabbitvcs/ppa",
 			listEntry = "deb http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/rabbitvcs/ppa/ubuntu "..options.codename:lower().." main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -117,6 +119,7 @@ APlN9ZheYInv1XLS4G+jDQjnMbd0VdzP
 
 		--[[kupfer =
 			{
+				desktop	= true,
 				ppaRepo = "ppa:kupfer-team/ppa",
 				listEntry = "deb http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/kupfer-team/ppa/ubuntu "..options.codename:lower().." main",
 				key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -136,6 +139,7 @@ D/r6CSKuBlF4zOVAwzFwAD+aaBZU
 
 		codegear =
 		{
+			desktop	= false,
 			ppaRepo = "ppa:codegear/release",
 			listEntry = "deb http://ppa.launchpad.net/codegear/release/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/codegear/release/ubuntu "..options.codename:lower().." main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -154,6 +158,7 @@ FZNAsp3EmvwZr+hRfX+z2KbV01yxU5ITSx47tUB3orVc
 
 		codelite =
 		{
+			desktop	= true,
 			listEntry = "deb http://repos.codelite.org/ubuntu/ "..options.codename:lower().." universe",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.10 (GNU/Linux)
@@ -189,6 +194,7 @@ L+nMjs7YCYWeC5oZVW3pepqDcT5IejgZL94IHgV6BvHcwwsDiW8lAdgHmz5Vs9o=
 
 		wxformbuilder =
 		{
+			desktop	= true,
 			ppaRepo = "ppa:wxformbuilder/release",
 			listEntry = "deb http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/wxformbuilder/release/ubuntu "..options.codename:lower().." main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -207,6 +213,7 @@ TlBREjjfeQKun9Vo5LLM6ns/whDb5g==
 
 		--[[virtualbox =
 		{
+			desktop	= true,
 			listEntry = "deb http://download.virtualbox.org/virtualbox/debian "..options.codename:lower().." contrib non-free",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.9 (GNU/Linux)
@@ -242,6 +249,7 @@ qACgtXuTbe2b72sgKdc6gGRKPhLDoEMAmgLwGVN3a4CqewQL+03bqfcKczNH
 
 		chrome =
 		{
+			desktop	= true,
 			listEntry = "deb http://dl.google.com/linux/chrome/deb/ stable main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.2.2 (GNU/Linux)
@@ -278,6 +286,7 @@ D3+sWZF/WACfeNAu1/1hwZtUo1bR+MWiCjpvHtwAnA1R3IHqFLQ2X3xJ40XPuAyY
 
 		oraclejava =
 		{
+			desktop	= true,
 			ppaRepo = "ppa:webupd8team/java",
 			listEntry = "deb http://ppa.launchpad.net/webupd8team/java/ubuntu "..options.codename:lower().." main\ndeb-src http://ppa.launchpad.net/webupd8team/java/ubuntu "..options.codename:lower().." main",
 			key = [=[-----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -299,7 +308,7 @@ kvWW5bbFN3IuQUKttsgBkQe2aNdGBC7dVRxKSAcx2fjqP/s32q1lRxdDRM6xlQlEA1j94ewG
 	local file = io.output( "/etc/apt/sources.list.d/pkg-install-additional.list" )
 	file:write( "# This file was created by a script, don't edit this by hand.\n# Any changes made will be lost.\n\n" )
 
-	for ppa, value in pairs( aptDetails ) do
+	local function AddPPA( ppa, value )
 		print( ">>", "Adding '" .. ppa .. "' PPA" )
 		if value.ppaRepo ~= nil then
 			-- Add key using add-apt-repository.
@@ -318,6 +327,14 @@ kvWW5bbFN3IuQUKttsgBkQe2aNdGBC7dVRxKSAcx2fjqP/s32q1lRxdDRM6xlQlEA1j94ewG
 			-- Add key using apt-key.
 			os.execute( "apt-key add "..ppa..".key" )
 			os.remove( ppa..".key" )
+		end
+	end
+
+	for ppa, value in pairs( aptDetails ) do
+		if options.desktop == false then
+			if value.desktop == false then AddPPA( ppa, value ) end
+		else
+			AddPPA( ppa, value )
 		end
 	end
 
