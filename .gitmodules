@@ -1,0 +1,3 @@
+[submodule "buildagent"]
+	path = buildagent
+	url = http://vcs.gentex.com/git/tools/teamcity/buildagents/pkg-install.git
