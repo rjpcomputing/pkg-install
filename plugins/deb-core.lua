@@ -97,7 +97,7 @@ local _M =
 		"geany",
 		"pinta",
 		"gimp",
-		"kupfer",
+		"synapse",
 		"guake",
 		"pidgin",
 		"dkms",
