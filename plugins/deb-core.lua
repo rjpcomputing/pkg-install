@@ -11,6 +11,7 @@ local _M =
 		-- General --
 		--
 		"aptitude",
+		"apt-transport-https",
 		"gdebi-core",
 		"joe",
 		"htop",
