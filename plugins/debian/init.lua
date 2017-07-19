@@ -159,28 +159,6 @@ Y3B83Y34PxuSIq2kokIGo8JhqfqPB/ohtTLHg/o9RhP8xmfvALRD
 -----END PGP PUBLIC KEY BLOCK-----]=]
 		},
 
-		debmultimedia =
-		{
-			listEntry = "deb http://www.deb-multimedia.org "..options.codename:lower().." main non-free",
-			key = [=[-----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAABCAAGBQJZaL0wAAoJEFyAjCtlVYEXm3gP/R1BsQg95smLQVmxiIAnMCE+
-iXRansJ7sI2aj+3JOasy+AcX7u9WM60KMlXp/pdzI3sU6DQJMCPe0n8CpqWdSX3W
-fBYIho6E0BV7aPc91RN1vV5OXcp/oCz6LpIOhXlJKfskBw0W83/YOKHjw8Tj+NJS
-AS/flWDYXKcc9Jw3DaGSpSWSBy+h3uJki5RC75rorBLpMAXes60SHd+LIUc9YwG+
-l3alirliTMIooxSVg9Ns9eLXu79TPSkeyBEI6RGyJnGJBKTycTZtdAXenWcW7nN0
-ASFZDhfkVsXGb7Yg4POt759kKb7iBx2GRjDUypFRS4TLmcvMRJSVkH8MEFSbBRf/
-cG5HOOhC9YNCWlxwCSPgyCTla3tJxqAA2ZH9bZCgsMiGbzkCma7pG71CbzCKcBbC
-pWP/g5ri5ir5YgSU0i5ifPXDxsx6dBnYdP/4tjoeevVcyjnpFgLENLEgrL4p0HpI
-f4OmNmai4EbXVOLdGfni/FBHVIzYIbAPPCWCO5SWJKko+S8VJ4c2NAXcJ8u1jVHQ
-dQFhmBJMIOMIs1CVo49ZYIKN9LS95LHr1T5sOzzw74vP1rA1sHkXVFMq43nABoKD
-zUWP/Z0ZA18mcIfkfFn2anpj8RFGPDlcYfxHkYheBs3JmSbJEKxVpRVwg15pwYzg
-exSlQphWRzjshzX3Pr0b
-=lkKj
------END PGP SIGNATURE-----]=]
-		},
-
 		chrome =
 		{
 			listEntry = "deb http://dl.google.com/linux/chrome/deb/ stable main",

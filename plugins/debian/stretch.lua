@@ -15,8 +15,6 @@ local _M =
 	desktopPackages =
 	{
 		-- General
-		"flashplayer-chromium",
-		"flashplayer-mozilla",
 		-- Development
 		-- Libraries
 	},

@@ -21,6 +21,7 @@
 --	                   - Added openjdk-8-jdk for sid and stretch.
 --	                   - Changed virtualbox to v5.1.
 --	                   - Added flash player for sid and stretch.
+--	07/19/2017 (2.0-10) - Removed flash player for sid and stretch. Must use Google Chrome.
 -- ----------------------------------------------------------------------------
 -- require( "pl" )
 local argparse = require( "argparse" )
@@ -149,7 +150,7 @@ end
 local PkgInstall =
 {
 	_NAME		= "pkg-install",
-	_VERSION	= "2.0-9",
+	_VERSION	= "2.0-10",
 --	args		= args,
 	hello		=
 [=[       __                                             __             ___    ___

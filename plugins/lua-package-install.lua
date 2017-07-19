@@ -2,7 +2,7 @@ local _M =
 {
 	name		= "Lua",
 	description	= "Install Lua batteries",
-	_VERSION	= "1.1",
+	_VERSION	= "1.2",
 	packages	=
 	{
 	},
@@ -81,7 +81,7 @@ return function( options )
 		table.insert( _M.rocks, 1, { "luasec", options = { OPENSSL_LIBDIR = "/lib/x86_64-linux-gnu" } } )
 		table.insert( _M.rocks, { "lualdap", options = { LIBLDAP_LIBDIR = "/usr/lib/x86_64-linux-gnu" } } )
 	else
-		table.insert( _M.rocks, 1, "luasec" )
+		table.insert( _M.rocks, 1, { "luasec", version = "scm-1", from = "http://rocks.luarocks.org/dev" } )
 		table.insert( _M.rocks, "lualdap" )
 	end
 	return _M
