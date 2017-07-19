@@ -6,6 +6,7 @@ local _M =
 	packages	=
 	{
 		-- General
+		"openjdk-7-jdk",
 		-- Development
 		-- Libraries
 	},
@@ -14,6 +15,7 @@ local _M =
 		-- General
 		"unetbootin",
 		"gnome-themes-extras",
+		"flashplugin-nonfree",
 		-- Development
 		-- Libraries
 	},

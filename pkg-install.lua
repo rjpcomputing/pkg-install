@@ -17,6 +17,10 @@
 --	04/01/2016 (2.0-8) - Added wxWebview.
 --	                   - Added log4cplus.
 --	                   - Added asio.
+--	07/19/2017 (2.0-9) - Removed libboost-dbg.
+--	                   - Added openjdk-8-jdk for sid and stretch.
+--	                   - Changed virtualbox to v5.1.
+--	                   - Added flash player for sid and stretch.
 -- ----------------------------------------------------------------------------
 -- require( "pl" )
 local argparse = require( "argparse" )
@@ -145,7 +149,7 @@ end
 local PkgInstall =
 {
 	_NAME		= "pkg-install",
-	_VERSION	= "2.0-8",
+	_VERSION	= "2.0-9",
 --	args		= args,
 	hello		=
 [=[       __                                             __             ___    ___

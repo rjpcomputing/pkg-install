@@ -4,7 +4,7 @@ local _M =
 {
 	name		= "Debian Core",
 	description	= "Packages installed on all Debian based systems",
-	_VERSION	= "1.0",
+	_VERSION	= "1.1",
 	packages =
 	{
 		--
@@ -69,7 +69,7 @@ local _M =
 		"libgtk2.0-dev",
 		"libgtk2.0-0-dbg",
 		"libboost-all-dev",
-		"libboost-dbg",
+		--"libboost-dbg",
 		"liblua5.1-0-dev",
 		"liblua5.1-0-dbg",
 		"libsvn-dev",
@@ -107,7 +107,7 @@ local _M =
 		--
 		-- Development --
 		--
-		"codelite",
+		--"codelite",
 		"meld",
 		"diffuse",
 		"ghex",
@@ -147,7 +147,7 @@ local _M =
 
 function _M:InstallVirtualBoxExtensionPack()
 	-- VirtualBox 4.x Extension Pack (gives USB2.0 support)
-	local virtualBoxExtensionUrl = "http://download.virtualbox.org/virtualbox/4.3.10/Oracle_VM_VirtualBox_Extension_Pack-4.3.10-93012.vbox-extpack"
+	local virtualBoxExtensionUrl = "http://download.virtualbox.org/virtualbox/5.1.24/Oracle_VM_VirtualBox_Extension_Pack-5.1.24-117012.vbox-extpack"
 	local virtualBoxExtensionFilename = virtualBoxExtensionUrl:gsub( "\\", "/" ):match( "([^/]-[^%.]+)$" )
 	os.execute( ("wget --no-check-certificate --output-document=%s %s"):format( virtualBoxExtensionFilename, virtualBoxExtensionUrl ) )
 	-- Install
@@ -161,8 +161,8 @@ return function( options )
 	end
 
 	if options.desktop and not options.runningAsVm then
-		table.insert( _M.desktopPackages, "virtualbox" )
-		table.insert( _M.desktopPackages, "virtualbox-dkms" )
+		table.insert( _M.desktopPackages, "virtualbox-5.1" )
+		--table.insert( _M.desktopPackages, "virtualbox-dkms" )
 	end
 
 	return plugin.new( _M )

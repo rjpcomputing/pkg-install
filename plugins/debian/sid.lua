@@ -2,10 +2,11 @@ local _M =
 {
 	name		= "Sid",
 	description	= "Specific details for installing Debian Unstable (Sid)",
-	_VERSION	= "1.0-dev",
+	_VERSION	= "1.0",
 	packages	=
 	{
 		-- General
+		"openjdk-8-jdk",
 		-- Development
 		"premake4",
 		-- Libraries
@@ -14,6 +15,8 @@ local _M =
 	desktopPackages =
 	{
 		-- General
+		"flashplayer-chromium",
+		"flashplayer-mozilla",
 		-- Development
 		-- Libraries
 	},
